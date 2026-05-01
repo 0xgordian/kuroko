@@ -1,0 +1,53 @@
+---
+title: "Portfolio"
+description: "Track your positions, P&L, alerts, and position guards"
+---
+
+## Overview
+
+The Portfolio page has four tabs: Positions, Alerts, Guards, and Trade History.
+
+## Positions
+
+Shows your open Polymarket positions when a wallet is connected. Each position displays:
+- Market question
+- Side (YES/NO)
+- Shares held
+- Current probability
+- Unrealized P&L
+- Entry price
+
+## Alerts
+
+Price alerts notify you when a market crosses a threshold.
+
+**Creating an alert:**
+1. Click **New Alert** or ask the AI: "Set an alert when X hits 70%"
+2. Select the market, condition (above/below), and threshold
+3. Enable browser notifications when prompted
+
+Alerts check every 60 seconds against live market data.
+
+## Position Guards
+
+Stop-loss and take-profit rules that auto-execute when triggered.
+
+**Creating a guard:**
+1. Click **New Guard** or ask the AI: "Set a stop-loss at 30% on my position"
+2. Select the market, trigger condition, and shares to exit
+3. Optionally set both a stop-loss and take-profit
+
+When a guard triggers:
+- **With wallet connected** — Attempts a live exit order through aomi → Para signing
+- **Without wallet** — Records a paper trade and fires a browser notification
+
+Guards deactivate after triggering to prevent re-execution.
+
+## Trade History
+
+Complete log of all paper and live trades with:
+- Market, side, shares, price
+- Total cost
+- Outcome (if resolved)
+- P&L
+- CSV export
