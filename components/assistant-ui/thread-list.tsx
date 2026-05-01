@@ -6,7 +6,7 @@ import {
   ThreadListPrimitive,
   useAssistantState,
 } from "@assistant-ui/react";
-import { PlusIcon, TrashIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 
 import { Button } from "@/components/ui/button";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
@@ -30,7 +30,7 @@ const ThreadListNew: FC = () => {
         variant="ghost"
         style={{ borderRadius: 0, color: '#ff4500', fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700 }}
       >
-        <PlusIcon className="size-3.5" />
+        <Icon icon="solar:add-circle-linear" className="size-3.5" />
         New Chat
       </Button>
     </ThreadListPrimitive.New>
@@ -111,7 +111,7 @@ const ThreadListItemDelete: FC = () => {
         tooltip="Delete thread"
         onClick={handleDelete}
       >
-        <TrashIcon />
+        <Icon icon="solar:trash-bin-trash-linear" />
       </TooltipIconButton>
     </ThreadListItemPrimitive.Delete>
   );
