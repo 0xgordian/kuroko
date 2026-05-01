@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  BellIcon,
-  CheckIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  CopyIcon,
-  LinkIcon,
-  MicIcon,
-  PencilIcon,
-  RefreshCwIcon,
-  Square,
-} from "lucide-react";
+import { Icon } from "@iconify/react";
 
 import {
   ActionBarPrimitive,
@@ -165,7 +152,7 @@ const ThreadScrollToBottom: FC = () => {
         className="aui-thread-scroll-to-bottom absolute -top-10 left-1/2 z-10 -translate-x-1/2 rounded-none p-2 shadow-md disabled:invisible border"
         style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0' }}
       >
-        <ArrowDownIcon className="size-4" />
+        <Icon icon="solar:arrow-down-linear" className="size-4" />
       </TooltipIconButton>
     </ThreadPrimitive.ScrollToBottom>
   );
@@ -513,14 +500,14 @@ const Composer: FC = () => {
         {/* Quick action buttons row */}
         <div className="flex items-center gap-2">
           <QuickActionButton
-            icon={<BellIcon className="size-3.5" />}
+            icon={<Icon icon="solar:bell-linear" className="size-3.5" />}
             label="Set Alert"
             onClick={() => {
               sendMessage("I want to set a price alert. Show me how to create one.").catch(console.error);
             }}
           />
           <QuickActionButton
-            icon={<LinkIcon className="size-3.5" />}
+            icon={<Icon icon="solar:link-linear" className="size-3.5" />}
             label="Copy Link"
             onClick={() => {
               if (typeof window !== 'undefined') {
@@ -529,7 +516,7 @@ const Composer: FC = () => {
             }}
           />
           <QuickActionButton
-            icon={<RefreshCwIcon className="size-3.5" />}
+            icon={<Icon icon="solar:refresh-linear" className="size-3.5" />}
             label="Refresh"
             onClick={() => {
               if (typeof window !== 'undefined') {
@@ -568,7 +555,8 @@ const Composer: FC = () => {
             }}
             aria-label={isListening ? "Stop recording" : "Voice input"}
           >
-            <MicIcon 
+            <Icon 
+              icon="solar:microphone-bold"
               className="size-4" 
               style={{ color: isListening ? '#fff' : '#a0a0a0' }} 
             />
@@ -591,7 +579,7 @@ const Composer: FC = () => {
                   }}
                   aria-label="Send message"
                 >
-                  <ArrowUpIcon className="size-4" />
+                  <Icon icon="solar:arrow-up-bold" className="size-4" />
                 </TooltipIconButton>
               </ComposerPrimitive.Send>
             </ThreadPrimitive.If>
@@ -604,7 +592,7 @@ const Composer: FC = () => {
                   style={{ borderRadius: 0, borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'transparent', color: '#f0f0f0' }}
                   aria-label="Stop generating"
                 >
-                  <Square className="size-3 fill-current" />
+                  <Icon icon="solar:stop-linear" className="size-3" />
                 </Button>
               </ComposerPrimitive.Cancel>
             </ThreadPrimitive.If>
@@ -761,10 +749,10 @@ const AssistantActionBar: FC = () => {
           style={{ color: '#555' }}
         >
           <MessagePrimitive.If copied>
-            <CheckIcon className="size-3" />
+            <Icon icon="solar:check-circle-linear" className="size-3" />
           </MessagePrimitive.If>
           <MessagePrimitive.If copied={false}>
-            <CopyIcon className="size-3" />
+            <Icon icon="solar:copy-linear" className="size-3" />
           </MessagePrimitive.If>
         </TooltipIconButton>
       </ActionBarPrimitive.Copy>
@@ -774,7 +762,7 @@ const AssistantActionBar: FC = () => {
           className="size-6"
           style={{ color: '#555' }}
         >
-          <RefreshCwIcon className="size-3" />
+          <Icon icon="solar:refresh-linear" className="size-3" />
         </TooltipIconButton>
       </ActionBarPrimitive.Reload>
     </ActionBarPrimitive.Root>
@@ -828,7 +816,7 @@ const UserActionBar: FC = () => {
     >
       <ActionBarPrimitive.Edit asChild>
         <TooltipIconButton tooltip="Edit" className="aui-user-action-edit p-4">
-          <PencilIcon />
+          <Icon icon="solar:pen-linear" />
         </TooltipIconButton>
       </ActionBarPrimitive.Edit>
     </ActionBarPrimitive.Root>
@@ -878,7 +866,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
     >
       <BranchPickerPrimitive.Previous asChild>
         <TooltipIconButton tooltip="Previous">
-          <ChevronLeftIcon />
+          <Icon icon="solar:alt-arrow-left-linear" />
         </TooltipIconButton>
       </BranchPickerPrimitive.Previous>
       <span className="aui-branch-picker-state font-medium">
@@ -886,7 +874,7 @@ const BranchPicker: FC<BranchPickerPrimitive.Root.Props> = ({
       </span>
       <BranchPickerPrimitive.Next asChild>
         <TooltipIconButton tooltip="Next">
-          <ChevronRightIcon />
+          <Icon icon="solar:alt-arrow-right-linear" />
         </TooltipIconButton>
       </BranchPickerPrimitive.Next>
     </BranchPickerPrimitive.Root>
