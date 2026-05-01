@@ -5,7 +5,7 @@
 **Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
-
+![Kuroko — AI Market Intelligence](public/hero.png)
 ## What This Is
 
 Polymarket traders miss moves because they can't watch 1,000 markets simultaneously. Kuroko fixes that.
@@ -16,7 +16,6 @@ The AI has live market data on every message — current probabilities, 24h/7d/3
 
 **The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
 
-![Kuroko — AI Market Intelligence](public/hero.png)
 
 ---
 
