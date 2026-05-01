@@ -145,9 +145,8 @@ function ChatContent() {
     const base = BACK_END_URL.startsWith('http')
       ? BACK_END_URL
       : (typeof window !== 'undefined' ? window.location.origin : '') + BACK_END_URL;
-    if (walletAddress) {
-      return `${base}?wallet=${encodeURIComponent(walletAddress)}`;
-    }
+    // Do NOT append wallet as query param — it corrupts the aomi SDK's path construction
+    // The proxy reads x-wallet-address header instead (set by aomi runtime automatically)
     return base;
   })();
 
