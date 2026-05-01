@@ -1,0 +1,47 @@
+---
+title: "Trading"
+description: "Simulate and execute trades on Polymarket"
+---
+
+## Paper trading vs live trading
+
+**Paper trading** — Available without a wallet. Simulates trades with no real money. All features work identically. Trades are recorded in your local trade history.
+
+**Live trading** — Requires a connected wallet with USDC on Polygon. Orders are submitted to Polymarket's CLOB (Central Limit Order Book) and signed by your wallet via Para.
+
+## Trade simulation
+
+From the AI chat or the Trade dashboard:
+
+1. The AI recommends a trade with a trade card
+2. Click **Simulate** to open the simulation modal
+3. Review: market, side (YES/NO), shares, entry price, cost, potential payout
+4. Adjust shares if needed
+5. Click **Confirm** to record the paper trade
+
+## Live execution
+
+1. Connect your wallet
+2. Navigate to the Execute page or confirm from a trade card
+3. Select a market, side, and shares
+4. Review the order book and current spread
+5. Click **Execute** — your wallet signs the EIP-712 order
+6. The order is submitted to Polymarket's CLOB
+7. Fill status updates in real-time
+
+## Edge scoring
+
+The Trade dashboard scores every market with the edge engine:
+
+- **STRONG** — High volume, tight spread, significant movement. Best execution conditions.
+- **MODERATE** — Decent liquidity, some movement. Tradeable with caution.
+- **WEAK** — Thin liquidity or wide spread. High slippage risk.
+
+## Signals
+
+Each market shows honest signals from the order book:
+- Spread width (tight vs wide)
+- Activity level (high vs low volume)
+- Price movement (trending vs stable)
+- Liquidity depth
+- Time to resolution
