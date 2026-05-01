@@ -65,8 +65,8 @@ const SlashCommandPalette: FC<{
 
   return (
     <div
-      className="absolute bottom-full left-0 right-0 mb-1 border overflow-hidden"
-      style={{ backgroundColor: '#111', borderColor: 'rgba(255,69,0,0.4)', borderRadius: 0, zIndex: 50 }}
+      className="absolute bottom-full left-0 right-0 mb-1 border overflow-y-auto"
+      style={{ backgroundColor: '#111', borderColor: 'rgba(255,69,0,0.4)', borderRadius: 0, zIndex: 50, maxHeight: '280px' }}
       role="listbox"
       aria-label="Slash commands"
     >

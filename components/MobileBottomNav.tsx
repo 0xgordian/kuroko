@@ -9,7 +9,7 @@ const MOBILE_NAV = [
   { href: '/markets', label: 'Markets', icon: 'solar:widget-linear' },
   { href: '/', label: 'AI', icon: 'solar:cpu-bolt-linear' },
   { href: '/portfolio', label: 'Portfolio', icon: 'solar:wallet-linear' },
-  { href: '/execute', label: 'Execute', icon: 'solar:bolt-linear' },
+  { href: '/execute', label: 'Execute', icon: 'solar:arrow-right-up-linear' },
 ];
 
 export function MobileBottomNav() {
