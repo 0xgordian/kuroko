@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, type FC } from "react";
-import { ChevronDownIcon, CheckIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { useControl, cn } from "@aomi-labs/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,7 +66,7 @@ export const AppSelect: FC<AppSelectProps> = ({
                 : selectedApp
               : placeholder}
           </span>
-          <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <Icon icon="solar:alt-arrow-down-linear" className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       {apps.length > 0 && (
@@ -96,7 +96,7 @@ export const AppSelect: FC<AppSelectProps> = ({
                 style={{ borderRadius: 0 }}
               >
                 <span>{app === "khalani" ? "Khalani Swaps" : app}</span>
-                {selectedApp === app && <CheckIcon className="h-4 w-4" />}
+                {selectedApp === app && <Icon icon="solar:check-circle-linear" className="h-4 w-4" />}
               </button>
             ))}
           </div>
