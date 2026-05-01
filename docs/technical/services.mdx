@@ -1,0 +1,86 @@
+---
+title: "Services"
+description: "Core business logic layer"
+---
+
+All services live in `lib/services/`. They are pure TypeScript — no React, no side effects at import time.
+
+## marketService.ts
+
+Fetches and caches active Polymarket markets from the Gamma API.
+
+- 2-minute server-side cache
+- Adaptive polling: 15s when active, 60s when idle
+- Falls back to `lib/data/fallbackMarkets.ts` if API unavailable
+- Enriches top 60 markets with CLOB price history
+
+## edgeEngine.ts
+
+Scores markets 0-100 for trading opportunity.
+
+- Deterministic — same inputs always produce same output
+- Factors: volume, liquidity, spread, 24h movement, time to resolution
+- Labels: STRONG (70+), MODERATE (40-69), WEAK (<40)
+- Never fabricates signals — only scores what the data shows
+
+## signalEngine.ts
+
+Generates honest market signals from order book data.
+
+Signal types: `TIGHT_SPREAD`, `WIDE_SPREAD`, `HIGH_ACTIVITY`, `LOW_VOLUME`, `MOVING`, `NEAR_RESOLUTION`, `LIQUID`
+
+## tradeIntentService.ts
+
+Routes trade intents through aomi Session for EIP-712 signing and CLOB submission.
+
+- Paper trade fallback when no API key configured
+- Caches the aomi Session instance to avoid re-initialization
+- Returns `{ success, mode, txHash }` 
+
+## orderFillService.ts
+
+Polls CLOB fill status after order submission.
+
+- Polls every 3 seconds, max 60 seconds
+- Accepts `AbortSignal` — stops polling on component unmount
+- Emits `PENDING → FILLED | CANCELLED | REJECTED`
+
+## positionGuardService.ts
+
+Stop-loss and take-profit rule management.
+
+- CRUD operations on localStorage
+- `checkGuards(probs)` — returns triggered rules given current probabilities
+- `analyzeGuard(guard, market)` — returns analysis with suggested thresholds
+
+## alertService.ts
+
+Price alert management with browser notifications.
+
+- CRUD on localStorage
+- `checkAlerts(probs)` — returns triggered alerts
+- `fireNotification(alert, prob)` — fires browser notification
+
+## globalAlertPoller.ts
+
+Background poller that runs every 60 seconds across all pages.
+
+- Checks alerts and position guards
+- Auto-executes guards via `sendLiveOrder` when wallet connected
+- Falls back to paper trade + browser notification when no wallet
+- `setPollerWalletAddress(address)` — syncs wallet from `WalletPollerSync` component
+
+## bankrollService.ts
+
+Bankroll tracking and position sizing.
+
+- Stores bankroll in localStorage
+- `getBankrollContext()` — returns sizing recommendations and category exposure
+
+## tradeHistoryService.ts
+
+localStorage trade log with P&L tracking.
+
+- Add, get, clear trades
+- Sorts by timestamp descending
+- CSV export support

@@ -1,0 +1,68 @@
+---
+title: "AI Proxy"
+description: "How the aomi proxy injects context into every AI message"
+---
+
+## Overview
+
+`app/api/aomi/[...path]/route.ts` is a Next.js API route that proxies all requests to the aomi backend. On every chat message, it injects a rich system prompt containing live market data and user positions.
+
+## What gets injected
+
+On every POST to a chat/messages/threads endpoint:
+
+1. **System prompt** — Trading rules, persona, response format instructions
+2. **Live market data** — Top 10 markets by volume with probability, 24h change, volume, liquidity
+3. **User positions** — Open Polymarket positions (if wallet address provided)
+
+## Context injection flow
+
+```
+Incoming request
+  ↓
+Rate limit check (30/min per IP via Upstash Redis)
+  ↓
+Body size check (max 20k chars)
+  ↓
+Wallet address validation (ETH_ADDRESS_RE regex)
+  ↓
+fetchLiveMarketContext()
+  ├── Check 5-min server cache
+  ├── Fetch /api/markets (with deduplication)
+  └── fetchPositionContext() if wallet provided
+  ↓
+Inject system prompt into request body
+  ↓
+Forward to aomi backend
+```
+
+## Caching
+
+- **Market context cache** — 5 minutes, shared across requests on the same instance
+- **Position cache** — 30 seconds per wallet address, max 500 entries (LRU eviction)
+- **Request deduplication** — concurrent market fetches share one in-flight request
+
+## Security
+
+- **SSRF protection** — `UPSTREAM_BASE_URL` validated against `ALLOWED_HOSTS = ['api.aomi.dev', 'aomi.dev']`
+- **Wallet validation** — `ETH_ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/` prevents prompt injection
+- **Rate limiting** — 30 requests/min per IP via Upstash Redis (falls back to in-memory)
+- **Body size limit** — 20,000 characters max
+- **502 errors** — Internal upstream URL never exposed to clients
+
+## UI tool parsing
+
+The `AssistantMessage` component in `thread.tsx` parses `ui_tool` JSON blocks from every AI response. When the AI includes a tool action, it dispatches to the Zustand store which triggers UI changes:
+
+```json
+{
+  "type": "ui_tool_set_alert",
+  "payload": {
+    "marketId": "...",
+    "condition": "above",
+    "threshold": 70
+  }
+}
+```
+
+Available tools: `simulate_bet`, `set_alert`, `set_guard`, `navigate_to_page`

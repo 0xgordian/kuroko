@@ -1,0 +1,63 @@
+---
+title: "Tech Stack"
+description: "Technologies used in Kuroko"
+---
+
+## Frontend
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Next.js | 14.2 | App Router, SSR, API routes |
+| React | 18.3 | UI framework |
+| TypeScript | 5.4 | Type safety |
+| Tailwind CSS | 3.4 | Utility styling |
+| Zustand | 5 | Global state management |
+| @tanstack/react-query | 5 | Server state, caching |
+| motion/react | — | Animations |
+| @iconify/react + Solar | — | Icon library |
+
+## AI & Wallet
+
+| Technology | Purpose |
+|-----------|---------|
+| @aomi-labs/react | AI chat widget, runtime, session |
+| @aomi-labs/client | aomi SDK client |
+| @getpara/react-sdk-lite | Wallet connect modal |
+| @getpara/web-sdk | Para wallet core |
+
+## Data & APIs
+
+| Service | Purpose |
+|---------|---------|
+| Polymarket Gamma API | Market data, positions |
+| Polymarket CLOB API | Order books, price history, execution |
+| aomi backend | LLM inference, trade intent routing |
+
+## Infrastructure
+
+| Service | Purpose |
+|---------|---------|
+| Vercel | Hosting, serverless functions |
+| Upstash Redis | Persistent rate limiting across instances |
+| Vercel KV | Shared market cache (optional) |
+| Sentry | Error tracking |
+| PostHog | Analytics |
+
+## Testing
+
+| Tool | Purpose |
+|------|---------|
+| Vitest | Unit test runner |
+| @testing-library/react | Component testing |
+| fast-check | Property-based testing |
+
+## Design system
+
+Brutalist terminal aesthetic:
+- Zero border-radius everywhere
+- `#ff4500` brand orange
+- `#0d0d0d` page background
+- `#111111` panel background
+- Geist Mono for all labels, numbers, badges
+- Geist Sans for body copy
+- `panel-bracket` — 3px orange left accent bar on all panels

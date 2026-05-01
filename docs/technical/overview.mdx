@@ -1,0 +1,72 @@
+---
+title: "Architecture Overview"
+description: "How Kuroko is built"
+---
+
+## System design
+
+Kuroko is a Next.js 14 App Router application with five layers:
+
+```
+User
+  ↓
+Next.js App (React 18, TypeScript)
+  ↓
+Server-side API proxies (rate limiting, auth, caching)
+  ↓
+External APIs (Polymarket Gamma, CLOB, aomi backend)
+  ↓
+Blockchain (Polygon via Para wallet)
+```
+
+## Data flow
+
+**Market data:**
+```
+Polymarket Gamma API
+  → /api/markets (2min server cache)
+  → marketService.ts (client polling)
+  → Zustand appStore
+  → UI components
+```
+
+**AI chat:**
+```
+User message
+  → /api/aomi proxy
+  → Injects: system prompt + live market data + user positions
+  → aomi backend (LLM)
+  → Streams response back
+  → AssistantMessage parses trade_card + ui_tool JSON
+  → UI reacts
+```
+
+**Trade execution:**
+```
+User confirms trade
+  → tradeIntentService.ts
+  → aomi Session (EIP-712 order construction)
+  → Para wallet modal (user signs)
+  → Polymarket CLOB API
+  → orderFillService.ts (polls fill status)
+```
+
+## Pages
+
+| Route | Purpose |
+|-------|---------|
+| `/` | AI chat — primary interface |
+| `/trade` | Market dashboard with edge scoring |
+| `/markets` | Full market browser |
+| `/portfolio` | Positions, alerts, guards, history |
+| `/execute` | Order terminal |
+
+## Key design decisions
+
+**AI-first** — The AI is the primary interface, not a bolt-on. Every page has AI context.
+
+**Paper-trade default** — Works without a wallet. No friction to try.
+
+**Server-side context injection** — Market data and positions are injected server-side on every AI message, not client-side. This means the AI always has fresh data without the user doing anything.
+
+**Stateless proxies** — All API routes are stateless serverless functions. State lives in localStorage (client) and Upstash Redis (rate limiting).

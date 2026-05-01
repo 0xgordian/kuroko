@@ -1,0 +1,58 @@
+---
+title: "Environment Variables"
+description: "All environment variables required to run Kuroko"
+---
+
+## Required
+
+These are needed for core functionality:
+
+| Variable | Description | Where to get it |
+|----------|-------------|-----------------|
+| `NEXT_PUBLIC_PARA_API_KEY` | Para wallet SDK key | [developer.getpara.com](https://developer.getpara.com) |
+
+## Optional — Wallet
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` | Removes WalletConnect warning banner in Para modal. Get from [cloud.walletconnect.com](https://cloud.walletconnect.com) |
+
+## Optional — AI
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_AOMI_API_KEY` | aomi API key for live intent routing. App works without it in paper mode using the public aomi backend. |
+| `NEXT_PUBLIC_AOMI_PROXY_BASE_URL` | Override the aomi proxy URL. Defaults to `/api/aomi`. |
+
+## Optional — Observability
+
+| Variable | Description | Where to get it |
+|----------|-------------|-----------------|
+| `NEXT_PUBLIC_SENTRY_DSN` | Sentry error tracking DSN | [sentry.io](https://sentry.io) → Project → Settings → Client Keys |
+| `NEXT_PUBLIC_POSTHOG_KEY` | PostHog analytics key | [app.posthog.com](https://app.posthog.com) → Project Settings → API Key |
+
+## Optional — Rate Limiting (Production)
+
+| Variable | Description | Where to get it |
+|----------|-------------|-----------------|
+| `UPSTASH_REDIS_REST_URL` | Upstash Redis URL for persistent rate limiting | [upstash.com](https://upstash.com) → Database → REST API |
+| `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | Same place |
+
+Without these, rate limiting falls back to in-memory (resets on cold start).
+
+## Optional — Shared Cache (Production)
+
+| Variable | Description |
+|----------|-------------|
+| `KV_REST_API_URL` | Vercel KV URL for shared market cache across instances |
+| `KV_REST_API_TOKEN` | Vercel KV token |
+
+## Local setup
+
+Copy `.env.example` to `.env.local` and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+The app runs fully in paper-trade mode with only `NEXT_PUBLIC_PARA_API_KEY` set.

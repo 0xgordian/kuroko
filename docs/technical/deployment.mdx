@@ -1,0 +1,72 @@
+---
+title: "Deployment"
+description: "Deploy Kuroko to Vercel"
+---
+
+## Prerequisites
+
+- Node.js 20+
+- npm
+- A Vercel account
+- A GitHub account with the repo pushed
+
+## Deploy to Vercel
+
+<Steps>
+  <Step title="Connect GitHub repo">
+    Go to [vercel.com](https://vercel.com) → New Project → Import from GitHub → select `kuroko`.
+  </Step>
+  <Step title="Configure build settings">
+    Vercel auto-detects Next.js. The `vercel.json` already sets:
+    - Build command: `npm run build`
+    - Install command: `npm install --legacy-peer-deps`
+    - Region: `iad1` (US East)
+  </Step>
+  <Step title="Add environment variables">
+    In Vercel dashboard → Settings → Environment Variables, add:
+
+    **Required:**
+    - `NEXT_PUBLIC_PARA_API_KEY`
+
+    **Recommended:**
+    - `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID`
+    - `NEXT_PUBLIC_POSTHOG_KEY`
+    - `NEXT_PUBLIC_SENTRY_DSN`
+    - `UPSTASH_REDIS_REST_URL`
+    - `UPSTASH_REDIS_REST_TOKEN`
+  </Step>
+  <Step title="Deploy">
+    Click Deploy. Vercel builds and deploys automatically. Every push to `main` triggers a new deployment.
+  </Step>
+</Steps>
+
+## Local development
+
+```bash
+git clone https://github.com/0xgordian/kuroko
+cd kuroko
+npm install --legacy-peer-deps
+cp .env.example .env.local
+# Fill in your keys in .env.local
+npm run dev:clean
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Function timeouts
+
+Configured in `vercel.json`:
+
+| Route | Max duration |
+|-------|-------------|
+| `/api/aomi/**` | 60 seconds |
+| `/api/markets/**` | 30 seconds |
+| `/api/clob/**` | 30 seconds |
+
+## Troubleshooting
+
+**ChunkLoadError on dev server** — Run `npm run dev:clean` instead of `npm run dev`. This clears the stale `.next` cache.
+
+**Para modal not working** — Check that `NEXT_PUBLIC_PARA_API_KEY` is set correctly in your environment.
+
+**Rate limiting not persisting** — Add `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`. Without these, rate limits reset on every cold start.
