@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FC } from "react";
-import { KeyIcon, CheckIcon, EyeIcon, EyeOffIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { useControl, cn } from "@aomi-labs/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ export const ApiKeyInput: FC<ApiKeyInputProps> = ({
           className={cn("relative rounded-full", className)}
           aria-label={hasApiKey ? "API key configured" : "Set API key"}
         >
-          <KeyIcon className={cn("h-4 w-4", hasApiKey && "text-green-500")} />
+          <Icon icon="solar:key-linear" className={cn("h-4 w-4", hasApiKey && "text-green-500")} />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[280px] rounded-3xl pl-4">
@@ -74,15 +74,15 @@ export const ApiKeyInput: FC<ApiKeyInputProps> = ({
                 aria-label={showKey ? "Hide API key" : "Show API key"}
               >
                 {showKey ? (
-                  <EyeIcon className="h-4 w-4" />
+                  <Icon icon="solar:eye-linear" className="h-4 w-4" />
                 ) : (
-                  <EyeOffIcon className="h-4 w-4" />
+                  <Icon icon="solar:eye-closed-linear" className="h-4 w-4" />
                 )}
               </Button>
             </div>
             {hasApiKey && (
               <p className="text-muted-foreground text-xs">
-                <CheckIcon className="mr-1 inline h-3 w-3 text-green-500" />
+                <Icon icon="solar:check-circle-linear" className="mr-1 inline h-3 w-3 text-green-500" />
                 API key is configured
               </p>
             )}
