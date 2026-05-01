@@ -145,16 +145,18 @@ export const Thread: FC = () => {
 
 const ThreadScrollToBottom: FC = () => {
   return (
-    <ThreadPrimitive.ScrollToBottom asChild>
-      <TooltipIconButton
-        tooltip="Scroll to bottom"
-        variant="outline"
-        className="aui-thread-scroll-to-bottom absolute -top-10 left-1/2 z-10 -translate-x-1/2 rounded-none p-2 shadow-md disabled:invisible border"
-        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0' }}
-      >
-        <Icon icon="solar:arrow-down-linear" className="size-4" />
-      </TooltipIconButton>
-    </ThreadPrimitive.ScrollToBottom>
+    <ThreadPrimitive.If empty={false}>
+      <ThreadPrimitive.ScrollToBottom asChild>
+        <TooltipIconButton
+          tooltip="Scroll to bottom"
+          variant="outline"
+          className="aui-thread-scroll-to-bottom absolute -top-10 left-1/2 z-10 -translate-x-1/2 rounded-none p-2 shadow-md disabled:invisible border"
+          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0' }}
+        >
+          <Icon icon="solar:arrow-down-linear" className="size-4" />
+        </TooltipIconButton>
+      </ThreadPrimitive.ScrollToBottom>
+    </ThreadPrimitive.If>
   );
 };
 
