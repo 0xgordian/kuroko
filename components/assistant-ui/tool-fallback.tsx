@@ -1,7 +1,7 @@
 "use client";
 
 import type { ToolCallMessagePartComponent } from "@assistant-ui/react";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { useState } from "react";
 
 export const ToolFallback: ToolCallMessagePartComponent = ({
@@ -23,7 +23,7 @@ export const ToolFallback: ToolCallMessagePartComponent = ({
     >
       {/* Header */}
       <div className="aui-tool-fallback-header flex items-center gap-2 px-3 py-2">
-        <CheckIcon
+        <Icon icon="solar:check-circle-linear"
           className="aui-tool-fallback-icon size-3 shrink-0"
           style={{ color: '#4ade80' }}
         />
@@ -43,8 +43,8 @@ export const ToolFallback: ToolCallMessagePartComponent = ({
           aria-label={isCollapsed ? 'Expand' : 'Collapse'}
         >
           {isCollapsed
-            ? <ChevronDownIcon className="size-3" />
-            : <ChevronUpIcon className="size-3" />}
+            ? <Icon icon="solar:alt-arrow-down-linear" className="size-3" />
+            : <Icon icon="solar:alt-arrow-up-linear" className="size-3" />}
         </button>
       </div>
 
