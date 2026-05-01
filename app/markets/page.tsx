@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
-import { ChevronDownIcon, CheckIcon } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import type { Market } from '@/types';
 import { fetchActiveMarkets } from '@/lib/services/marketService';
 import { addAlert } from '@/lib/services/alertService';
@@ -59,7 +59,7 @@ function FilterSelect<T extends string>({
           style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 0, fontFamily: MONO_FONT }}
         >
           <span className="truncate">{current?.label ?? value}</span>
-          <ChevronDownIcon className="w-3 h-3 shrink-0 opacity-50" />
+          <Icon icon="solar:alt-arrow-down-linear" className="w-3 h-3 shrink-0 opacity-50" />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -81,7 +81,7 @@ function FilterSelect<T extends string>({
             }}
           >
             <span>{opt.label}</span>
-            {value === opt.value && <CheckIcon className="w-3 h-3 shrink-0" style={{ color: '#ff4500' }} />}
+            {value === opt.value && <Icon icon="solar:check-circle-linear" className="w-3 h-3 shrink-0" style={{ color: '#ff4500' }} />}
           </button>
         ))}
       </PopoverContent>
