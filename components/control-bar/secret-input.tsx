@@ -1,14 +1,7 @@
 "use client";
 
 import { useState, type FC } from "react";
-import {
-  ShieldIcon,
-  CheckIcon,
-  EyeIcon,
-  EyeOffIcon,
-  PlusIcon,
-  XIcon,
-} from "lucide-react";
+import { Icon } from "@iconify/react";
 import { useControl, cn } from "@aomi-labs/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -114,7 +107,7 @@ export const SecretInput: FC<SecretInputProps> = ({
           className={cn("relative rounded-full", className)}
           aria-label={hasSecrets ? "Secrets configured" : "Add secrets"}
         >
-          <ShieldIcon
+          <Icon icon="solar:shield-linear"
             className={cn("h-4 w-4", hasSecrets && "text-green-500")}
           />
         </Button>
@@ -127,7 +120,7 @@ export const SecretInput: FC<SecretInputProps> = ({
         <div className="grid gap-3 py-4">
           {hasSecrets && (
             <div className="text-muted-foreground text-xs">
-              <CheckIcon className="mr-1 inline h-3 w-3 text-green-500" />
+              <Icon icon="solar:check-circle-linear" className="mr-1 inline h-3 w-3 text-green-500" />
               {savedNames.length} secret{savedNames.length > 1 ? "s" : ""}{" "}
               configured: {savedNames.join(", ")}
             </div>
@@ -160,9 +153,9 @@ export const SecretInput: FC<SecretInputProps> = ({
                       aria-label={showValues ? "Hide values" : "Show values"}
                     >
                       {showValues ? (
-                        <EyeIcon className="h-3 w-3" />
+                        <Icon icon="solar:eye-linear" className="h-3 w-3" />
                       ) : (
-                        <EyeOffIcon className="h-3 w-3" />
+                        <Icon icon="solar:eye-closed-linear" className="h-3 w-3" />
                       )}
                     </Button>
                   </Label>
@@ -184,7 +177,7 @@ export const SecretInput: FC<SecretInputProps> = ({
                   onClick={() => removeEntry(index)}
                   aria-label="Remove entry"
                 >
-                  <XIcon className="h-3 w-3" />
+                  <Icon icon="solar:close-circle-linear" className="h-3 w-3" />
                 </Button>
               )}
             </div>
@@ -197,7 +190,7 @@ export const SecretInput: FC<SecretInputProps> = ({
             className="w-fit rounded-full text-xs"
             onClick={addEntry}
           >
-            <PlusIcon className="mr-1 h-3 w-3" />
+            <Icon icon="solar:add-circle-linear" className="mr-1 h-3 w-3" />
             Add another
           </Button>
         </div>
