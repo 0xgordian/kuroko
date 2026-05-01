@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type FC } from "react";
-import { ChevronDownIcon, CheckIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { useAomiRuntime, useControl, cn } from "@aomi-labs/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -94,7 +94,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
           <span className="truncate">
             {isLoading ? "Loading..." : (selectedModel || placeholder)}
           </span>
-          <ChevronDownIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <Icon icon="solar:alt-arrow-down-linear" className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       {!isLoading && (
@@ -126,7 +126,7 @@ export const ModelSelect: FC<ModelSelectProps> = ({
                 style={{ borderRadius: 0 }}
               >
                 <span>{model}</span>
-                {selectedModel === model && <CheckIcon className="h-4 w-4" />}
+                {selectedModel === model && <Icon icon="solar:check-circle-linear" className="h-4 w-4" />}
               </button>
             ))}
           </div>
