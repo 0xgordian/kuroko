@@ -1,0 +1,55 @@
+---
+title: "Alerts & Guards"
+description: "Automated monitoring and risk management"
+---
+
+## Price Alerts
+
+Alerts notify you when a market probability crosses a threshold you set.
+
+**Example:** "Alert me when 'Fed cuts rates in June' goes above 70%"
+
+### Creating alerts
+
+Three ways to create an alert:
+1. Ask the AI: "Set an alert when [market] hits [threshold]"
+2. Click **Set Alert** in the quick action bar in the chat
+3. Go to Portfolio → Alerts → New Alert
+
+### Alert conditions
+- **Above** — triggers when probability rises above threshold
+- **Below** — triggers when probability falls below threshold
+
+### Notifications
+
+Alerts fire browser notifications when triggered. You'll need to grant notification permission the first time.
+
+---
+
+## Position Guards
+
+Guards are automated stop-loss and take-profit rules. When a market hits your trigger price, Kuroko automatically exits your position.
+
+**Example:** "Exit my YES position if probability drops below 30% (stop-loss) or rises above 80% (take-profit)"
+
+### Creating guards
+
+Three ways:
+1. Ask the AI: "Set a stop-loss at 30% on my [market] position"
+2. Go to Portfolio → Guards → New Guard
+3. Use the `/guard` slash command
+
+### Guard execution
+
+When a guard triggers:
+
+| Condition | Action |
+|-----------|--------|
+| Wallet connected + market has CLOB token | Live exit order submitted |
+| No wallet | Paper trade recorded + browser notification |
+
+Guards deactivate after firing. Re-enable manually if needed.
+
+### Auto-approve rules
+
+Set a bankroll threshold on the Execute page. Guards under that amount execute without confirmation.
