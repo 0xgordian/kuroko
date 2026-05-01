@@ -1,0 +1,54 @@
+---
+title: "Execute"
+description: "Direct order execution with live order book"
+---
+
+## Overview
+
+The Execute page is the order terminal — direct access to Polymarket's CLOB for placing limit orders with full order book visibility.
+
+## Order book
+
+The live order book shows bid and ask prices with depth. Updates every 3 seconds.
+
+- **Asks** (red) — prices sellers are willing to accept
+- **Bids** (green) — prices buyers are willing to pay
+- **Spread** — difference between best ask and best bid
+
+A tight spread means better execution. A wide spread means higher slippage.
+
+## Placing an order
+
+<Steps>
+  <Step title="Select a market">
+    Search for a market by name. The order book loads automatically.
+  </Step>
+  <Step title="Choose side and shares">
+    Select YES or NO. Enter the number of shares. The cost and potential payout calculate automatically.
+  </Step>
+  <Step title="Review signals">
+    Check the edge score and signals before confirming. STRONG = good conditions, WEAK = high slippage risk.
+  </Step>
+  <Step title="Execute">
+    Click Execute. Your wallet signs the EIP-712 order. Fill status updates in real-time.
+  </Step>
+</Steps>
+
+## Bankroll management
+
+Set your total bankroll on the Execute page. Kuroko uses this to:
+- Calculate position sizing as a percentage of bankroll
+- Warn when a single trade exceeds 10% of bankroll
+- Show category exposure breakdown in Portfolio
+
+## Fill tracking
+
+After submitting an order, the fill status updates every 3 seconds:
+- **Pending** — order submitted, waiting for fill
+- **Filled** — order fully executed
+- **Partial** — partially filled
+- **Cancelled** / **Rejected** — order not executed
+
+## Paper mode
+
+Without a wallet, all orders are paper trades. The full flow works identically — you see the same order book, signals, and fill tracking, but no real money moves.
