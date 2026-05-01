@@ -265,7 +265,7 @@ The `aomi-client-example` pattern — momentum rotation between risk and stable 
 
 ## Distribution
 
-X thread: [`docs/thread.md`](docs/thread.md)
+X thread: [`docs/thread.md`](docs/thread.md) · One-pager: [`docs/one-pager.md`](docs/one-pager.md)
 
 ---
 

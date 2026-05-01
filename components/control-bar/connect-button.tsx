@@ -2,7 +2,7 @@
 
 import { useEffect, type FC } from "react";
 import { cn, getChainInfo, useUser } from "@aomi-labs/react";
-import { useAomiAuthAdapter } from "@/components/aomi-auth-adapter";
+import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 import {
   Tooltip,
   TooltipContent,
