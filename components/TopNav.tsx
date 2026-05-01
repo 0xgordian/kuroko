@@ -178,7 +178,7 @@ export default function TopNav({
 
           {/* Mobile hamburger */}
           <button
-            className="sm:hidden flex flex-col gap-1 p-2 ml-1"
+            className="sm:hidden flex flex-col gap-1 p-3 ml-1 min-w-[44px] min-h-[44px] items-center justify-center"
             onClick={() => setMobileMenuOpen((v) => !v)}
             aria-label="Toggle menu"
           >

@@ -478,7 +478,7 @@ const Composer: FC = () => {
 
   return (
     <div
-      className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col px-4 pb-20 sm:pb-4 pt-2"
+      className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col px-4 pb-16 sm:pb-4 pt-2"
       style={{ backgroundColor: '#0d0d0d' }}
     >
       <ThreadScrollToBottom />
@@ -828,7 +828,7 @@ const UserActionBar: FC = () => {
 const EditComposer: FC = () => {
   return (
     <div className="aui-edit-composer-wrapper mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-4 first:mt-4">
-      <ComposerPrimitive.Root className="aui-edit-composer-root ml-auto flex w-full max-w-[80%] flex-col border"
+      <ComposerPrimitive.Root className="aui-edit-composer-root ml-auto flex w-full max-w-[90%] sm:max-w-[80%] flex-col border"
         style={{ backgroundColor: '#161616', borderColor: 'rgba(255,255,255,0.1)', borderRadius: 0 }}>
         <ComposerPrimitive.Input
           className="aui-edit-composer-input flex min-h-[60px] w-full resize-none bg-transparent p-4 text-sm outline-none"

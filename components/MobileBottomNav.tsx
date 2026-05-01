@@ -17,7 +17,7 @@ export function MobileBottomNav() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 flex items-center justify-around border-t py-2 px-4 lg:hidden"
+      className="fixed bottom-0 left-0 right-0 flex items-center justify-around border-t py-3 px-2 lg:hidden z-50"
       style={{
         backgroundColor: '#0d0d0d',
         borderColor: 'rgba(255,255,255,0.08)',
@@ -30,11 +30,11 @@ export function MobileBottomNav() {
           <Link
             key={href}
             href={href}
-            className="flex flex-col items-center gap-1 px-4 py-2 transition-colors"
+            className="flex flex-col items-center gap-1 px-3 py-2.5 transition-colors min-w-[56px]"
             style={{ color: isActive ? '#ff4500' : '#555' }}
           >
             <Icon icon={icon} className="size-5" />
-            <span className="text-[10px] font-terminal uppercase tracking-wider">{label}</span>
+            <span className="text-[11px] font-terminal uppercase tracking-wider">{label}</span>
           </Link>
         );
       })}
