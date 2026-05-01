@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, Suspense } from 'react';
-import { ChevronDownIcon, CheckIcon } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import type { Market } from '@/types';
 import { fetchActiveMarkets } from '@/lib/services/marketService';
 import { fetchUserPositions, type UserPosition } from '@/lib/services/clobService';
@@ -46,7 +46,7 @@ function MarketSelect({
           }}
         >
           <span className="truncate text-left">{displayLabel}</span>
-          <ChevronDownIcon className="w-3.5 h-3.5 shrink-0 opacity-50" />
+          <Icon icon="solar:alt-arrow-down-linear" className="w-3.5 h-3.5 shrink-0 opacity-50" />
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -76,7 +76,7 @@ function MarketSelect({
           >
             <span className="truncate text-left flex-1">{m.question.slice(0, 60)}{m.question.length > 60 ? '…' : ''}</span>
             <span className="shrink-0 font-bold" style={{ color: '#ff4500' }}>{m.currentProbability}%</span>
-            {value?.id === m.id && <CheckIcon className="w-3.5 h-3.5 shrink-0" style={{ color: '#ff4500' }} />}
+            {value?.id === m.id && <Icon icon="solar:check-circle-linear" className="w-3.5 h-3.5 shrink-0" style={{ color: '#ff4500' }} />}
           </button>
         ))}
       </PopoverContent>
