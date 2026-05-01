@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FC } from "react";
-import { ChevronDownIcon, CheckIcon } from "lucide-react";
+import { Icon } from "@iconify/react";
 import { cn, SUPPORTED_CHAINS, getChainInfo } from "@aomi-labs/react";
 import { Button } from "@/components/ui/button";
 import {
@@ -50,7 +50,7 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
           style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
         >
           <span className="truncate">{displayName}</span>
-          <ChevronDownIcon className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
+          <Icon icon="solar:alt-arrow-down-linear" className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -78,7 +78,7 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
               style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), monospace" }}
             >
               <span>{chain.name}</span>
-              {chainId === chain.id && <CheckIcon className="h-3.5 w-3.5" style={{ color: '#ff4500' }} />}
+              {chainId === chain.id && <Icon icon="solar:check-circle-linear" className="h-3.5 w-3.5" style={{ color: '#ff4500' }} />}
             </button>
           ))}
         </div>
