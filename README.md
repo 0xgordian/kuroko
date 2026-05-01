@@ -16,6 +16,8 @@ The AI has live market data on every message — current probabilities, 24h/7d/3
 
 **The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
 
+![Kuroko — AI Market Intelligence](public/hero.png)
+
 ---
 
 ## Pages
