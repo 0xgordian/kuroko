@@ -173,10 +173,15 @@ function BackdropInner() {
       const startObserver = () => {
         const modal = document.querySelector('cpsl-auth-modal') as HTMLElement | null;
         if (!modal || !modal.shadowRoot) return;
+        let debounceTimer: ReturnType<typeof setTimeout> | null = null;
         observer = new MutationObserver(() => {
-          injectShadowStyles();
+          // Debounce — only run 300ms after DOM settles to prevent infinite loops
+          if (debounceTimer) clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            injectShadowStyles();
+          }, 300);
         });
-        observer.observe(modal.shadowRoot, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+        observer.observe(modal.shadowRoot, { childList: true, subtree: true });
       };
       const t6 = setTimeout(startObserver, 100);
 
