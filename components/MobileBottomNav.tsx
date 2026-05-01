@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 import { Icon } from '@iconify/react';
 
 const MOBILE_NAV = [
-  { href: '/trade', label: 'Trade', icon: 'solar:chart-linear' },
-  { href: '/markets', label: 'Markets', icon: 'solar:widget-linear' },
-  { href: '/', label: 'AI', icon: 'solar:cpu-bolt-linear' },
+  { href: '/trade', label: 'Trade', icon: 'solar:chart-2-linear' },
+  { href: '/markets', label: 'Markets', icon: 'solar:graph-linear' },
+  { href: '/', label: 'Agent', icon: 'solar:dialog-2-linear' },
   { href: '/portfolio', label: 'Portfolio', icon: 'solar:wallet-linear' },
   { href: '/execute', label: 'Execute', icon: 'solar:arrow-right-up-linear' },
 ];

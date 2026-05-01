@@ -20,7 +20,7 @@ interface TopNavProps {
 }
 
 const NAV_LINKS = [
-  { href: '/', label: 'AI' },
+  { href: '/', label: 'Agent' },
   { href: '/trade', label: 'Trade' },
   { href: '/markets', label: 'Markets' },
   { href: '/portfolio', label: 'Portfolio' },
@@ -172,7 +172,7 @@ export default function TopNav({
                 <rect x="1" y="2" width="5" height="12" rx="0" stroke="currentColor" strokeWidth="1.5" />
                 <rect x="9" y="2" width="6" height="12" rx="0" stroke="currentColor" strokeWidth="1.5" />
               </svg>
-              <span>AI</span>
+              <span>Agent</span>
             </button>
           )}
 
