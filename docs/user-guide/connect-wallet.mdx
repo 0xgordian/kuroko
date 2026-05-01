@@ -1,0 +1,46 @@
+---
+title: "Connect Wallet"
+description: "Connect your wallet to enable live trading on Polymarket"
+---
+
+## Why connect a wallet?
+
+Kuroko works in paper-trade mode without a wallet. Connecting a wallet enables:
+
+- Live order execution on Polymarket (Polygon network)
+- AI sees your open positions and factors them into analysis
+- Position guards auto-execute when triggered
+- Real P&L tracking
+
+## How to connect
+
+Click **Connect Wallet** in the top navigation bar. This opens the Para wallet modal.
+
+<Steps>
+  <Step title="Choose your login method">
+    Select Google, Twitter, Discord, GitHub, or enter your email. No seed phrase required.
+  </Step>
+  <Step title="Complete authentication">
+    Follow the OAuth flow. Para creates a non-custodial wallet tied to your social account.
+  </Step>
+  <Step title="Wallet connected">
+    Your wallet address appears in green in the top nav. The AI now has access to your positions.
+  </Step>
+</Steps>
+
+## Managing your wallet
+
+Click your wallet address (shown in green in the nav) to open the Para account management modal. From there you can:
+
+- View your balance
+- Add funds
+- Send or withdraw
+- Disconnect
+
+## About Para
+
+Kuroko uses [Para](https://getpara.com) for wallet management. Para is a non-custodial wallet SDK — your keys are never stored by Kuroko or Para's servers. Signing happens locally in your browser.
+
+## Network
+
+All Polymarket trades execute on **Polygon** (MATIC). Make sure you have USDC on Polygon to fund live trades.
