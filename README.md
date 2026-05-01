@@ -2,9 +2,9 @@
 
 > An AI trading companion for Polymarket — built on `@aomi-labs/client`, `@aomi-labs/widget-lib`, and Para SDK. The AI watches your positions while you sleep.
 
-- 🌐 **[Live Website](https://kurokodev.vercel.app)**
-- 📖 **[Read Documentation](https://0x-250ca30e.mintlify.app/introduction)**
-- 🗓 **Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
+- **[Live Website](https://kurokodev.vercel.app)**
+- **[Read Documentation](https://0x-250ca30e.mintlify.app/introduction)**
+- **Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
 
