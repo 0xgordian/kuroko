@@ -2,8 +2,6 @@
 
 > An AI trading companion for Polymarket — built on `aomi-widget`, `aomi-sdk`, and Para SDK. The AI watches your positions while you sleep.
 
-**Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
-
 ---
 ![Kuroko — AI Market Intelligence](public/hero.png)
 ## What This Is
@@ -15,7 +13,7 @@ It's a full-stack AI-native trading terminal: live market data injected into eve
 The AI has live market data on every message — current probabilities, 24h/7d/30d price changes, volume, liquidity, and your open positions. It surfaces opportunities, explains the thesis, and routes a trade to your wallet without leaving the chat.
 
 **The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
-
+**Started working:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
 
