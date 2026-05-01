@@ -1,0 +1,67 @@
+---
+title: "AI Chat"
+description: "The main interface — ask anything about Polymarket in plain English"
+---
+
+## Overview
+
+The AI chat is the primary interface in Kuroko. It's powered by the aomi SDK and has live Polymarket market data injected into every message — so the AI always knows current prices, volumes, and movements without you having to paste anything.
+
+## What the AI knows
+
+On every message, the AI receives:
+
+- Top 10 markets by volume with current YES probability, 24h change, volume, and liquidity
+- Biggest movers in the last 24 hours
+- Your open positions (if wallet connected)
+
+## What you can ask
+
+**Market analysis**
+- "What's the best trade right now?"
+- "Analyze the Fed rate cut market — is there edge here?"
+- "What markets have moved the most today?"
+
+**Portfolio**
+- "Show me my open positions"
+- "Which positions should I exit?"
+- "What's my total P&L?"
+
+**Actions**
+- "Set an alert when Bitcoin ETF approval hits 80%"
+- "Set a stop-loss at 30% on my largest position"
+- "Take me to the order terminal"
+
+## AI-triggered actions
+
+The AI can directly control the UI. When you ask it to set an alert, create a guard, or navigate to a page — it does it automatically. You'll see a toast notification confirming the action.
+
+## Trade cards
+
+When the AI recommends a trade, it renders an interactive trade card inline:
+
+```
+KUROKO          [PAPER TRADE]
+TRADE RECORD
+
+| Will the Fed cut rates in June?
+
+SIDE          SHARES
+YES           90
+
+ENTRY PRICE   COST
+44¢           $39.60
+
+IF CORRECT    RETURN
+$90.00        +127%
+```
+
+Click **Execute Trade** to confirm, or **Review** to see more details.
+
+## Slash commands
+
+Type `/` to open the command palette. Select a command to pre-fill the input — you can edit before sending.
+
+## Voice input
+
+Click the microphone icon. Speak your query. The transcript appears in the input and sends automatically on final result.
