@@ -2,7 +2,7 @@
 
 import { PropsWithChildren, useEffect, useState, type FC } from "react";
 import Image from "next/image";
-import { XIcon, PlusIcon, FileText } from "lucide-react";
+import { Icon } from "@iconify/react";
 import {
   AttachmentPrimitive,
   ComposerPrimitive,
@@ -123,7 +123,7 @@ const AttachmentThumb: FC = () => {
         className="aui-attachment-tile-image object-cover"
       />
       <AvatarFallback delayMs={isImage ? 200 : 0}>
-        <FileText className="aui-attachment-tile-fallback-icon text-muted-foreground size-8" />
+        <Icon icon="solar:file-text-linear" className="aui-attachment-tile-fallback-icon text-muted-foreground size-8" />
       </AvatarFallback>
     </Avatar>
   );
@@ -192,7 +192,7 @@ const AttachmentRemove: FC = () => {
         className="aui-attachment-tile-remove text-muted-foreground hover:[&_svg]:text-destructive absolute right-1.5 top-1.5 size-3.5 rounded-full bg-white opacity-100 shadow-sm hover:!bg-white [&_svg]:text-black"
         side="top"
       >
-        <XIcon className="aui-attachment-remove-icon size-3 dark:stroke-[2.5px]" />
+        <Icon icon="solar:close-circle-linear" className="aui-attachment-remove-icon size-3 dark:stroke-[2.5px]" />
       </TooltipIconButton>
     </AttachmentPrimitive.Remove>
   );
@@ -227,7 +227,7 @@ export const ComposerAddAttachment: FC = () => {
         className="aui-composer-add-attachment hover:bg-muted-foreground/15 dark:border-muted-foreground/15 dark:hover:bg-muted-foreground/30 size-[34px] rounded-full p-1 text-xs font-semibold"
         aria-label="Add Attachment"
       >
-        <PlusIcon className="aui-attachment-add-icon size-5 stroke-[1.5px]" />
+        <Icon icon="solar:add-circle-linear" className="aui-attachment-add-icon size-5 stroke-[1.5px]" />
       </TooltipIconButton>
     </ComposerPrimitive.AddAttachment>
   );
