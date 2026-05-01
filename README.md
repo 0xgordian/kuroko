@@ -1,9 +1,15 @@
 # Kuroko
 
-> An AI trading companion for Polymarket — built on `aomi-widget`, `aomi-sdk`, and Para SDK. The AI watches your positions while you sleep.
+> An AI trading companion for Polymarket — built on `@aomi-labs/client`, `@aomi-labs/widget-lib`, and Para SDK. The AI watches your positions while you sleep.
+
+**Live demo:** [kuroko.vercel.app](https://kuroko.vercel.app) · **Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
+
 ![Kuroko — AI Market Intelligence](public/hero.png)
+
+---
+
 ## What This Is
 
 Polymarket traders miss moves because they can't watch 1,000 markets simultaneously. Kuroko fixes that.
@@ -13,7 +19,8 @@ It's a full-stack AI-native trading terminal: live market data injected into eve
 The AI has live market data on every message — current probabilities, 24h/7d/30d price changes, volume, liquidity, and your open positions. It surfaces opportunities, explains the thesis, and routes a trade to your wallet without leaving the chat.
 
 **The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
-**Started working:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
+
+> Paper trade mode works fully out of the box — no API keys, no wallet required. Markets load live from Polymarket's public API.
 
 ---
 
@@ -41,8 +48,6 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
-The app runs fully in paper trade mode without any API keys. Markets load live from Polymarket's public API.
-
 ### Enable AI + Wallet
 
 ```env
@@ -61,11 +66,45 @@ Get an aomi key at [aomi.dev](https://aomi.dev). The app works without it using 
 
 ## How aomi Powers This
 
-**`aomi-widget` / `AomiFrame`** — The entire AI chat interface. Embedded with a custom Thread component, custom markdown rendering, and a `trade_card` JSON → interactive UI bridge.
+Kuroko is built on three aomi primitives:
 
-**`aomi-sdk` (Session)** — Live trade intent routing. When a user confirms a trade, `sendLiveOrder` builds an EIP-712 Polymarket order and routes it through an aomi Session to the connected wallet for signing.
+### `@aomi-labs/widget-lib` — `<AomiFrame />`
 
-**System prompt injection** — Every chat message is enriched server-side with live Polymarket market data (top 10 by volume, 24h/7d/30d changes, biggest movers) and the user's open positions before hitting the AI.
+The entire AI chat interface. Drop-in React component with wallet awareness built in. Kuroko wraps it with a custom `Thread` component, custom markdown rendering, and a `trade_card` JSON → interactive UI bridge.
+
+```tsx
+// Zero-config embed
+<AomiFrame backendUrl="/api/aomi" walletAddress={address} />
+```
+
+### `@aomi-labs/client` — `Session`
+
+The TypeScript SDK for programmatic trade intent routing. When a user confirms a trade, `sendLiveOrder` builds an EIP-712 Polymarket order and routes it through an aomi `Session` to the connected wallet for signing.
+
+```typescript
+const session = new Session(
+  { baseUrl: AOMI_BASE_URL, apiKey: AOMI_API_KEY },
+  { app: AOMI_APP_ID, publicKey: walletAddress, userState: { chainId: 137 } }
+);
+
+// Handle on-chain transaction requests
+session.on("wallet_tx_request", async (req) => {
+  const txHash = await walletClient.sendTransaction(req.payload);
+  await session.resolve(req.id, { txHash });
+});
+
+// Handle EIP-712 payloads (Polymarket CLOB orders)
+session.on("wallet_eip712_request", async (req) => {
+  const signature = await wallet.signTypedData(req.payload);
+  await session.resolve(req.id, { signature });
+});
+
+const result = await session.send(fullMessage); // natural-language trade intent
+```
+
+### System Prompt Injection
+
+Every chat message is enriched server-side with live Polymarket market data (top 10 by volume, 24h/7d/30d changes, biggest movers) and the user's open positions before hitting the AI. The agent reasons with real numbers, not stale context.
 
 ### Trade Card Flow
 
@@ -84,15 +123,13 @@ The AI returns structured JSON at the end of a trade recommendation:
 
 `parseTradeCard()` in `thread.tsx` detects this, renders a `TradeCard` component inline in the chat, and the user confirms — triggering `addTradeRecord` + `sendLiveOrder` (if wallet connected). The result is shared back to the thread via `shareToChat`.
 
-### Live Execution
+### Para SDK
 
-```typescript
-const session = new Session(
-  { baseUrl: AOMI_BASE_URL, apiKey: AOMI_API_KEY },
-  { app: AOMI_APP_ID, publicKey: walletAddress, userState: { chainId: 137 } }
-);
-const result = await session.send(fullMessage); // EIP-712 payload included
-```
+Social login (Google, Twitter, Discord, email) → non-custodial wallet on Polygon. No seed phrase. No private key management. Para handles all signing — Kuroko never touches a private key.
+
+### Supported Chains
+
+Kuroko runs on **Polygon (137)** for Polymarket. The aomi backend supports Ethereum (1), Arbitrum (42161), Base (8453), Optimism (10), and Polygon (137) — the same chain set is available for future integrations.
 
 ---
 
@@ -122,15 +159,15 @@ components/
   MobileBottomNav.tsx         # Mobile navigation (5 tabs)
 
 lib/
-  services/edgeEngine.ts          # Deterministic scoring (volume/liquidity/uncertainty/movement)
-  services/signalEngine.ts        # Honest market signals from order book data
-  services/tradeIntentService.ts  # aomi Session → EIP-712 → wallet signing
-  services/orderFillService.ts    # CLOB fill polling (3s interval, 60s max)
+  services/edgeEngine.ts           # Deterministic scoring (volume/liquidity/uncertainty/movement)
+  services/signalEngine.ts         # Honest market signals from order book data
+  services/tradeIntentService.ts   # aomi Session → EIP-712 → wallet signing
+  services/orderFillService.ts     # CLOB fill polling (3s interval, 60s max)
   services/positionGuardService.ts # Stop-loss / take-profit automation
   services/tradeHistoryService.ts  # localStorage + outcome resolution
-  services/alertService.ts        # Price alerts + browser notifications
-  services/bankrollService.ts     # Bankroll tracking + sizing context
-  stores/appStore.ts              # Zustand — shareToChat, dispatchTool, simulation state
+  services/alertService.ts         # Price alerts + browser notifications
+  services/bankrollService.ts      # Bankroll tracking + sizing context
+  stores/appStore.ts               # Zustand — shareToChat, dispatchTool, simulation state
 ```
 
 ---
@@ -202,15 +239,33 @@ npm run test:coverage # Coverage report
 
 ## What's Next
 
-**WebSocket price feed** — Replace polling with Polymarket's live price stream for real-time execution timing.
+These are the three verticals aomi is actively building toward. Kuroko is the proof-of-concept for the prediction market use case — here's how the same architecture extends to each.
 
-**Vercel KV for shared market cache** — `KV_REST_API_URL` and `KV_REST_API_TOKEN` are set. Wire `app/api/markets/route.ts` to use `kv.get/set` instead of the in-memory `serverCache` so all Vercel instances share one cache.
+### Prediction Markets — Autonomous Proposal Queue
 
-**Server-side edge scoring** — Move scoring server-side with CLOB depth, recent fill data, and whale activity signals.
+The agent runs every 60s, scores all markets for correlated mispricings, and queues trade proposals with reasoning. You wake up to "3 proposals pending" — approve, dismiss, or set auto-execute rules. This is the bridge from AI-assisted to AI-native trading.
 
-**Kalshi integration** — Same aomi agent layer on top of Kalshi markets. Cross-platform arbitrage detection.
+### Kalshi Integration
 
-**Desktop app** — Tauri-based native app (~10MB binary) with system tray, native notifications, and offline-capable cached market data.
+aomi has a native Kalshi plugin in its SDK. Same agent layer, cross-platform. When the same event is priced differently on Polymarket and Kalshi, surface the gap and route the arbitrage. The `Session` pattern is identical — swap the app ID, the execution layer handles the rest.
+
+### Wallet AI Assistant
+
+The demo that closes aomi's wallet client pipeline: a clean reference showing how a wallet (MetaMask, Rainbow, any Para-integrated wallet) embeds `<AomiFrame />` to give users an AI that explains transactions before signing. User types "what does this contract do?" — the agent simulates the transaction, shows exact token changes and gas costs, and lets the user sign or reject with full context. No more blind signing.
+
+### GameFi
+
+In-game asset trading, tournament prize pool distribution, NFT marketplace execution — all via natural language through `<AomiFrame />`. A GameFi studio drops the widget into their game client. Players type "sell my sword for the best price" — the agent routes through the right marketplace, simulates the transaction, and executes on confirmation. The aomi plugin architecture (12 reference apps: DeFi, Delta, Kalshi, Para, Polymarket, Social, and more) means each new marketplace is a plugin, not a rewrite.
+
+### DeFi Momentum Bot
+
+The `aomi-client-example` pattern — momentum rotation between risk and stable assets using moving-average signals — extended with Kuroko's edge scoring. Server-side scoring with CLOB depth, recent fill data, and whale activity signals feeding the allocation model. The bot runs locally, delegates execution to aomi, signs with viem. No custody, no API-key juggling.
+
+---
+
+## Distribution
+
+X thread: [`docs/thread.md`](docs/thread.md)
 
 ---
 
@@ -225,7 +280,6 @@ MIT
 | File | Contents |
 |---|---|
 | [`docs/product-review.md`](docs/product-review.md) | Full A-Z product review — pages, services, PMF |
-| [`docs/codebase-review.md`](docs/codebase-review.md) | Architecture decisions, current state, known gaps |
 | [`docs/ui-ux-design-system.md`](docs/ui-ux-design-system.md) | Design system — colors, typography, layout rules |
 | [`docs/fixes-summary.md`](docs/fixes-summary.md) | Complete log of all bugs fixed |
 | [`TODO.md`](TODO.md) | Task tracker — completed and open items |
