@@ -1,14 +1,20 @@
 # Kuroko
 
-> AI-powered prediction market intelligence and trading terminal — built on aomi-sdk, aomi-widget, and Para SDK.
+> An AI trading companion for Polymarket — built on `aomi-widget`, `aomi-sdk`, and Para SDK. The AI watches your positions while you sleep.
+
+**Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
 
 ## What This Is
 
-Kuroko is a full-stack trading terminal for active Polymarket traders. It combines live market data, an AI assistant with real-time context injection, edge detection, order execution, and automated risk management — all in a single brutalist terminal interface.
+Polymarket traders miss moves because they can't watch 1,000 markets simultaneously. Kuroko fixes that.
 
-The AI has live market data injected on every message: current probabilities, 24h/7d/30d price changes, volume, liquidity, and your open positions. It can surface opportunities, explain the thesis, and route a trade to your wallet without leaving the chat.
+It's a full-stack AI-native trading terminal: live market data injected into every AI message, edge scoring across all active markets, and position guards that auto-execute stop-loss and take-profit rules through your wallet while you're offline.
+
+The AI has live market data on every message — current probabilities, 24h/7d/30d price changes, volume, liquidity, and your open positions. It surfaces opportunities, explains the thesis, and routes a trade to your wallet without leaving the chat.
+
+**The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
 
 ---
 
@@ -27,9 +33,9 @@ The AI has live market data injected on every message: current probabilities, 24
 ## Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/kuroko
+git clone https://github.com/0xgordian/kuroko
 cd kuroko
-npm install
+npm install --legacy-peer-deps
 cp .env.example .env.local
 npm run dev
 ```
