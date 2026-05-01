@@ -122,7 +122,7 @@ export function useAomiAuthAdapter() {
 
   const isLoading = account?.isLoading ?? false;
 
-  const currentChainId = account?.chainId ?? 137;
+  const currentChainId = 137;
 
   const identity: AomiAuthIdentity & {
     isConnected: boolean;
