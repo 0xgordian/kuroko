@@ -489,7 +489,7 @@ const Composer: FC = () => {
 
   return (
     <div
-      className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col px-4 pb-4 pt-2"
+      className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col px-4 pb-20 sm:pb-4 pt-2"
       style={{ backgroundColor: '#0d0d0d' }}
     >
       <ThreadScrollToBottom />

@@ -152,7 +152,7 @@ function ChatContent() {
   })();
 
   return (
-    <div className="h-screen sm:h-screen flex flex-col overflow-hidden pt-12" style={{ backgroundColor: '#0d0d0d', height: 'calc(100vh - 48px)' }}>
+    <div className="flex flex-col overflow-hidden pt-12" style={{ backgroundColor: '#0d0d0d', height: 'calc(100vh - 48px)' }}>
       <TopNav
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
