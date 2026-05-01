@@ -1,0 +1,90 @@
+{
+  "name": "Kuroko",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#ff4500",
+    "light": "#ff6a33",
+    "dark": "#cc3700",
+    "background": {
+      "dark": "#0d0d0d"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "GitHub",
+      "url": "https://github.com/0xgordian/kuroko"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Launch App",
+    "url": "https://kuroko.vercel.app"
+  },
+  "tabs": [
+    {
+      "name": "User Guide",
+      "url": "user-guide"
+    },
+    {
+      "name": "Technical Docs",
+      "url": "technical"
+    },
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "user-guide/introduction",
+        "user-guide/quickstart",
+        "user-guide/connect-wallet"
+      ]
+    },
+    {
+      "group": "Features",
+      "pages": [
+        "user-guide/ai-chat",
+        "user-guide/markets",
+        "user-guide/trading",
+        "user-guide/portfolio",
+        "user-guide/alerts-guards",
+        "user-guide/execute"
+      ]
+    },
+    {
+      "group": "Architecture",
+      "pages": [
+        "technical/overview",
+        "technical/stack",
+        "technical/services",
+        "technical/ai-proxy"
+      ]
+    },
+    {
+      "group": "API Routes",
+      "pages": [
+        "api-reference/markets",
+        "api-reference/positions",
+        "api-reference/aomi-proxy",
+        "api-reference/clob-proxy"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "pages": [
+        "technical/environment-variables",
+        "technical/deployment"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/0xgordian/kuroko",
+    "twitter": "https://twitter.com/0xgordian"
+  }
+}
