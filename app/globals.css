@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0d0d0d;
+  --foreground: #ededed;
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), 'JetBrains Mono', 'Fira Code', monospace;
+  --orange: #ff4500;
+  --orange-dim: rgba(255, 69, 0, 0.15);
+  --border: #1a1a1a;
+  --panel: #0f0f0f;
+  --text-primary: #ededed;
+  --text-secondary: #999999;
+  --text-tertiary: #666666;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-terminal {
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.panel-bracket {
+  position: relative;
+  background-color: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 0;
+}
+
+.panel-bracket::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-bracket::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-bracket .corner-tr {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-bracket .corner-bl {
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.panel-bracket:hover::before,
+.panel-bracket:hover::after,
+.panel-bracket:hover .corner-tr,
+.panel-bracket:hover .corner-bl {
+  border-color: var(--orange);
+}
+
+.panel-bracket:hover::before,
+.panel-bracket:hover::after,
+.panel-bracket-left:hover::before,
+.panel-bracket-left:hover::after {
+  border-color: var(--orange);
+}
+
+/* Text utility classes using CSS variables */
+.text-text-primary {
+  color: var(--text-primary);
+}
+
+.text-text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-text-tertiary {
+  color: var(--text-tertiary);
+}
+
+/* Accessibility — keyboard focus ring */
+:focus-visible {
+  outline: 2px solid #ff4500 !important;
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Tailwind utility overrides for brutalist design */
+.t-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.t-label-accent {
+  color: var(--orange);
+}
+
+.orange-glow {
+  color: var(--orange);
+  text-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+}
+
+/* ── STRONG edge card glow ──────────────────────────────────────────────── */
+.panel-strong {
+  border-left-color: #ff4500 !important;
+  box-shadow: inset 2px 0 12px rgba(255, 69, 0, 0.08);
+}
+
+/* ── Dim orange pulse on STRONG cards ──────────────────────────────────── */
+@keyframes pulse-orange {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.panel-strong-pulse {
+  animation: pulse-orange 2.5s ease-in-out infinite;
+}
+
+/* ── Para Wallet Modal Fix ──────────────────────────────────────────────── */
+/* Dark blurred overlay */
+[class*="para-modal-overlay"],
+[class*="ParaModal-overlay"],
+[class*="para-overlay"] {
+  background: rgba(0, 0, 0, 0.9) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Match modal content to your terminal design */
+[class*="para-modal-content"],
+[class*="ParaModal-content"],
+[class*="para-content"] {
+  background: #111 !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0 !important;
+  color: #f0f0f0 !important;
+}
+
+/* Force ALL text inside Para modal to be light */
+.para-sdk span,
+.para-sdk p,
+.para-sdk div,
+.para-sdk button,
+.para-sdk a,
+.para-sdk svg,
+.para-sdk path,
+.para-sdk img,
+[id*="para-"] span,
+[id*="para-"] p,
+[id*="para-"] div,
+[id*="para-"] button,
+[id*="para-"] a,
+[id*="para-"] svg,
+[id*="para-"] path,
+[data-para-modal] span,
+[data-para-modal] p,
+[data-para-modal] div,
+[data-para-modal] button,
+[data-para-modal] a,
+[data-para-modal] svg,
+[data-para-modal] path,
+div[class*="psdk"] span,
+div[class*="psdk"] p,
+div[class*="psdk"] div,
+div[class*="psdk"] button,
+div[class*="psdk"] a,
+div[class*="psdk"] svg,
+div[class*="psdk"] path {
+  color: #f0f0f0 !important;
+  fill: #f0f0f0 !important;
+  stroke: #f0f0f0 !important;
+  text-shadow: none !important;
+}

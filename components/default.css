@@ -1,0 +1,68 @@
+/* ============================================
+   Kuroko — shadcn/aomi token overrides
+   All design tokens are defined in globals.css.
+   This file only maps them for shadcn component compatibility.
+   ============================================ */
+
+:root {
+  color-scheme: dark;
+
+  /* Radius — zero everywhere per design system */
+  --radius: 0rem;
+
+  /* Core */
+  --background: #0d0d0d;
+  --foreground: #f0f0f0;
+
+  /* Card / Popover */
+  --card: #111111;
+  --card-foreground: #f0f0f0;
+  --popover: #111111;
+  --popover-foreground: #f0f0f0;
+
+  /* Primary = orange brand */
+  --primary: #ff4500;
+  --primary-foreground: #000000;
+
+  /* Secondary */
+  --secondary: #161616;
+  --secondary-foreground: #f0f0f0;
+
+  /* Muted */
+  --muted: #161616;
+  --muted-foreground: #555555;
+
+  /* Accent */
+  --accent: #161616;
+  --accent-foreground: #f0f0f0;
+
+  /* Destructive */
+  --destructive: #f87171;
+
+  /* Border / Input / Ring */
+  --border: rgba(255, 255, 255, 0.08);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: rgba(255, 69, 0, 0.5);
+
+  /* Sidebar */
+  --sidebar: #0d0d0d;
+  --sidebar-foreground: #a0a0a0;
+  --sidebar-primary: #ff4500;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #161616;
+  --sidebar-accent-foreground: #f0f0f0;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-ring: rgba(255, 69, 0, 0.5);
+}
+
+@layer base {
+  * {
+    border-color: rgba(255, 255, 255, 0.08);
+    outline-color: rgba(255, 69, 0, 0.3);
+  }
+
+  body {
+    background-color: #0d0d0d;
+    color: #f0f0f0;
+  }
+}

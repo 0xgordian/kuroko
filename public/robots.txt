@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Disallow API routes
+Disallow: /api/
+Disallow: /_next/
+
+# Sitemap
+Sitemap: https://kuroko.ai/sitemap.xml

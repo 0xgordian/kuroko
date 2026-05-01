@@ -1,0 +1,92 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - paragraph [ref=e7]: Powered by aomi
+          - heading "POLYMARKET EDGE" [level=1] [ref=e8]
+        - generic [ref=e9]:
+          - generic [ref=e10]: Loading...
+          - generic [ref=e12]: ·
+          - generic [ref=e13]: Paper Execution
+          - generic [ref=e14]: ·
+          - generic [ref=e15]: No Real Funds
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - 'textbox "Ask the agent: \"find me the best value bet on election markets\"" [ref=e18]'
+          - button "Execute" [disabled] [ref=e19]:
+            - img [ref=e20]
+            - text: Execute
+        - generic [ref=e22]:
+          - button "Find me the best value bet on election markets" [ref=e23] [cursor=pointer]
+          - button "Show biggest moves in crypto markets today" [ref=e24] [cursor=pointer]
+          - button "Best opportunities near 50% probability" [ref=e25] [cursor=pointer]
+          - button "High volume markets with recent movement" [ref=e26] [cursor=pointer]
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e32]:
+          - generic [ref=e33]:
+            - generic [ref=e34]: Live Markets // Polymarket
+            - generic [ref=e35]:
+              - generic [ref=e36]: Live
+              - generic [ref=e38]: Loading live markets...
+          - button "Refresh" [disabled] [ref=e39]:
+            - img [ref=e40]
+            - text: Refresh
+        - generic [ref=e48]:
+          - generic [ref=e50]: Edge Analysis // AI Ranked
+          - generic [ref=e52]:
+            - img [ref=e54]
+            - generic [ref=e56]:
+              - paragraph [ref=e57]: Awaiting query
+              - paragraph [ref=e58]: Type a query above or pick a suggestion
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - banner [ref=e65]:
+            - generic [ref=e67]:
+              - combobox [disabled]:
+                - generic: Loading...
+                - img
+              - combobox [ref=e68] [cursor=pointer]:
+                - generic [ref=e69]: default
+                - img
+              - button "Connect account" [ref=e70] [cursor=pointer]:
+                - generic [ref=e71]: Connect Account
+              - button "Add secrets" [ref=e72] [cursor=pointer]:
+                - img
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - generic [ref=e78]:
+                - generic [ref=e79]: Hello there!
+                - generic [ref=e80]: Ask me about any market.
+              - generic [ref=e82]:
+                - button "Find me the best value bet on election markets right now" [ref=e84] [cursor=pointer]:
+                  - generic [ref=e85]: Find the best value bet
+                  - generic [ref=e86]: on election markets
+                - button "Analyze my open Polymarket positions and suggest which ones to exit" [ref=e88] [cursor=pointer]:
+                  - generic [ref=e89]: Analyze my open positions
+                  - generic [ref=e90]: and suggest exits
+                - button "Show me Polymarket opportunities near 50% probability with high edge" [ref=e92] [cursor=pointer]:
+                  - generic [ref=e93]: Show high-edge opportunities
+                  - generic [ref=e94]: near 50% probability
+                - button "What Polymarket markets have moved the most in the last 24 hours?" [ref=e96] [cursor=pointer]:
+                  - generic [ref=e97]: What markets are moving
+                  - generic [ref=e98]: in the last 24 hours
+            - generic [ref=e100]:
+              - textbox "Message input" [active] [ref=e101]:
+                - /placeholder: Send a message...
+              - generic [ref=e102]:
+                - button "Send message" [disabled]:
+                  - img
+                  - generic: Send message
+        - region "Notifications alt+T"
+    - contentinfo [ref=e104]:
+      - generic [ref=e105]:
+        - generic [ref=e106]: Polymarket Edge · AI-powered edge detection for prediction market traders
+        - generic [ref=e107]:
+          - link "GitHub" [ref=e108] [cursor=pointer]:
+            - /url: https://github.com
+            - img [ref=e109]
+            - text: GitHub
+          - generic [ref=e111]: Built with aomi
+  - alert [ref=e112]
