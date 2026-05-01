@@ -6,6 +6,7 @@
  *   import { captureError } from '@/lib/errorTracking';
  *   captureError(new Error('Something broke'), { context: 'user_action' });
  */
+import { useEffect } from 'react';
 import { SENTRY_DSN } from '@/lib/config';
 
 type ErrorContext = {

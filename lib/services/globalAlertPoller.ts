@@ -5,7 +5,7 @@
  */
 import { checkAlerts, fireNotification, getAlerts } from './alertService';
 import { fetchActiveMarkets } from './marketService';
-import { checkGuards, deactivateGuard, getGuards } from './positionGuardService';
+import { checkGuards, toggleGuard, getGuards } from './positionGuardService';
 import { sendLiveOrder } from './tradeIntentService';
 import { addTradeRecord } from './tradeHistoryService';
 
@@ -49,12 +49,13 @@ export function startGlobalAlertPoller() {
       // ── Guard auto-execution ──────────────────────────────────────────────
       if (guards.length) {
         const triggeredGuards = checkGuards(probs);
-        for (const guard of triggeredGuards) {
+        for (const guardAnalysis of triggeredGuards) {
+          const guard = guardAnalysis.guard;
           const market = markets.find((m) => m.id === guard.marketId);
           if (!market) continue;
 
           // Deactivate immediately to prevent re-triggering every 60s
-          deactivateGuard(guard.id);
+          toggleGuard(guard.id);
 
           if (pollerWalletAddress && market.clobTokenId) {
             // Wallet connected — attempt live exit order
@@ -71,7 +72,7 @@ export function startGlobalAlertPoller() {
               addTradeRecord({
                 marketQuestion: market.question,
                 marketId: market.id,
-                side: guard.side === 'YES' ? 'YES' : 'NO',
+                side: 'YES', // Guards monitor YES positions
                 shares: guard.shares ?? 100,
                 pricePerShare: probs[guard.marketId] ?? 50,
                 totalCost: ((guard.shares ?? 100) * (probs[guard.marketId] ?? 50)) / 100,
@@ -87,7 +88,7 @@ export function startGlobalAlertPoller() {
             addTradeRecord({
               marketQuestion: market.question,
               marketId: market.id,
-              side: guard.side === 'YES' ? 'YES' : 'NO',
+              side: 'YES', // Guards monitor YES positions
               shares: guard.shares ?? 100,
               pricePerShare: probs[guard.marketId] ?? 50,
               totalCost: ((guard.shares ?? 100) * (probs[guard.marketId] ?? 50)) / 100,
@@ -97,7 +98,7 @@ export function startGlobalAlertPoller() {
 
             if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
               new Notification('Kuroko — Guard Triggered', {
-                body: `${guard.name ?? 'Position guard'} triggered on "${market.question}"`,
+                body: `Position guard triggered on "${market.question}"`,
                 icon: '/icon.png',
               });
             }

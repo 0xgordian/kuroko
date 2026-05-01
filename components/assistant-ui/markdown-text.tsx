@@ -8,7 +8,7 @@ import {
 } from "@assistant-ui/react-markdown";
 import remarkGfm from "remark-gfm";
 import { type FC, memo, useState } from "react";
-import { Icon } from "@iconify/react";
+import { Icon } from '@iconify/react';
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +45,7 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
         {language ?? 'code'}
       </span>
       <TooltipIconButton tooltip="Copy" onClick={() => code && copyToClipboard(code)}>
-        {isCopied ? <CheckIcon className="size-3" /> : <CopyIcon className="size-3" />}
+        {isCopied ? <Icon icon="solar:check-circle-linear" className="size-3" /> : <Icon icon="solar:copy-linear" className="size-3" />}
       </TooltipIconButton>
     </div>
   );

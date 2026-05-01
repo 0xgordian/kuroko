@@ -348,7 +348,7 @@ function ExecuteContent() {
     } finally {
       setSubmitting(false);
     }
-  }, [selectedMarket, sharesNum, priceNum, totalCost, side, submitting, isWalletConnected, walletAddress]);
+  }, [selectedMarket, sharesNum, priceNum, totalCost, side, submitting, isWalletConnected, walletAddress, authAdapter]);
 
   // ── Save bankroll ─────────────────────────────────────────────────────────
   const handleSaveBankroll = () => {

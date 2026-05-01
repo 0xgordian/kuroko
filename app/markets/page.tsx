@@ -180,7 +180,7 @@ function MarketsContent() {
     });
 
     return result;
-  }, [markets, search, minProb, maxProb, volumeFilter, sortKey]);
+  }, [markets, search, minProb, maxProb, volumeFilter, sortKey, activeCategory]);
 
   const resetFilters = () => {
     setActiveCategory('all');
