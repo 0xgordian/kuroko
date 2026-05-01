@@ -1,0 +1,36 @@
+---
+title: "ALL /api/clob/[...path]"
+description: "Proxy to Polymarket CLOB API"
+---
+
+## Overview
+
+CORS-safe proxy to Polymarket's CLOB API (`https://clob.polymarket.com`). Used for order books, price history, and order submission.
+
+## Supported methods
+
+`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
+
+## Common endpoints
+
+| Path | Description |
+|------|-------------|
+| `/order-book?token_id=...` | Live order book for a market |
+| `/prices-history?market=...&interval=1d` | Price history |
+| `/order` | Submit a limit order (POST) |
+
+## Rate limiting
+
+60 requests/minute per IP.
+
+## Body size limit
+
+20,000 characters max on POST requests. Returns `413` if exceeded.
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `413` | Request body too large |
+| `429` | Rate limit exceeded |
+| `502` | CLOB API unavailable |

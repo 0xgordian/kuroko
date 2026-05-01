@@ -1,0 +1,49 @@
+---
+title: "GET /api/positions"
+description: "Fetch open Polymarket positions for a wallet address"
+---
+
+## Overview
+
+CORS-safe proxy for Polymarket's Gamma API positions endpoint.
+
+## Request
+
+```
+GET /api/positions?wallet=0x...
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `wallet` | string | Ethereum wallet address (required) |
+
+## Validation
+
+The wallet address is validated against `ETH_ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/`. Invalid addresses return `400`.
+
+## Response
+
+```json
+[
+  {
+    "market": "Will the Fed cut rates in June 2025?",
+    "outcome": "YES",
+    "size": 90,
+    "avgPrice": 0.44,
+    "currentPrice": 0.52,
+    "unrealizedPnl": 7.20
+  }
+]
+```
+
+## Rate limiting
+
+60 requests/minute per IP. Returns `429` when exceeded.
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `400` | Missing or invalid wallet address |
+| `429` | Rate limit exceeded |
+| `502` | Gamma API unavailable |

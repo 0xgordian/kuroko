@@ -1,0 +1,54 @@
+---
+title: "ALL /api/aomi/[...path]"
+description: "Proxy to aomi backend with system prompt injection"
+---
+
+## Overview
+
+Proxies all requests to the aomi backend (`https://api.aomi.dev`). On chat message requests, injects a system prompt with live market data and user positions.
+
+## Supported methods
+
+`GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `OPTIONS`
+
+## Context injection
+
+On `POST` requests to paths containing `messages`, `chat`, or `threads`:
+
+1. Fetches live market data (5-min cache)
+2. Fetches user positions if `?wallet=` or `x-wallet-address` header provided
+3. Injects combined system prompt into request body
+
+## Passing wallet address
+
+```
+POST /api/aomi/api/chat?wallet=0x1234...
+```
+
+Or via header:
+```
+x-wallet-address: 0x1234...
+```
+
+The wallet address is validated with `ETH_ADDRESS_RE` before use.
+
+## Rate limiting
+
+30 requests/minute per IP via Upstash Redis (falls back to in-memory).
+
+## Security
+
+| Protection | Detail |
+|-----------|--------|
+| SSRF | Upstream URL validated against `['api.aomi.dev', 'aomi.dev']` |
+| Prompt injection | Wallet address validated with ETH regex |
+| Body size | Max 20,000 characters |
+| 502 errors | Internal upstream URL never exposed |
+
+## Error responses
+
+| Status | Meaning |
+|--------|---------|
+| `413` | Request body too large (>20k chars) |
+| `429` | Rate limit exceeded |
+| `502` | aomi backend unavailable |

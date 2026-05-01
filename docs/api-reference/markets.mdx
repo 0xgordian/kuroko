@@ -1,0 +1,58 @@
+---
+title: "GET /api/markets"
+description: "Fetch all active Polymarket markets with enriched data"
+---
+
+## Overview
+
+Proxies Polymarket's Gamma API with server-side caching and CLOB price history enrichment.
+
+## Request
+
+```
+GET /api/markets
+```
+
+No parameters required.
+
+## Response
+
+```json
+[
+  {
+    "id": "0x...",
+    "question": "Will the Fed cut rates in June 2025?",
+    "slug": "fed-rate-cut-june-2025",
+    "currentProbability": 44,
+    "volume": 1250000,
+    "liquidity": 85000,
+    "oneDayPriceChange": 0.08,
+    "sevenDayPriceChange": -0.12,
+    "endDate": "2025-06-30T00:00:00Z",
+    "clobTokenId": "0x..."
+  }
+]
+```
+
+## Caching
+
+- Server-side cache: 2 minutes
+- Cache header: `X-Cache: HIT | MISS`
+- Client-side polling: 15s active, 60s idle
+
+## Rate limiting
+
+60 requests/minute per IP. Returns `429` when exceeded.
+
+## Search
+
+```
+GET /api/markets/search?q=bitcoin&limit=20
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `q` | string | Search query (min 2 chars, max 200 chars) |
+| `limit` | number | Max results (default 20, max 50) |
+
+Query is sanitized — `&=?#%` characters stripped.
