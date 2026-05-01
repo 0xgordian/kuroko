@@ -4,6 +4,7 @@
 
 - **[Live Website](https://kurokodev.vercel.app)**
 - **[Read Documentation](https://0x-250ca30e.mintlify.app/introduction)**
+- **[Building an AI-Native Agent for Prediction Markets Using Aomi's SDK and Widget](https://www.notion.so/gordian-etim/Building-an-AI-Native-Agent-for-Prediction-Markets-Using-Aomi-s-SDK-and-Widget-74b6ec38e17e403cb71c894b629df2c0)**
 - **Started:** Monday, April 28 · **Submitted:** Friday, May 1 (Day 4)
 
 ---
