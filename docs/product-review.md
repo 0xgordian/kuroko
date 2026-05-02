@@ -434,6 +434,54 @@ The position guard fires an alert but does not auto-execute yet. That is the nex
 
 ---
 
+## Future Roadmap — Expanding the Product Surface
+
+### DeFi Layer (unlocks DeFi category)
+
+Build a momentum rotation agent directly into Kuroko using the `aomi-client-example` pattern. The architecture already exists — aomi Session, EIP-712 signing, viem. The addition:
+
+- A DeFi tab where the agent manages a risk/stable allocation on Uniswap or Curve
+- User sets a rule: "rotate to stable if ETH drops 10% in 24h"
+- The agent evaluates the signal every 60s using the same position guard loop already in `globalAlertPoller.ts`
+- On trigger, routes the swap through aomi's DeFi plugin (Delta, Khalani, Molinar apps already in the SDK)
+- User signs locally via Para — no custody, no API-key juggling
+
+This is a 2-week build on top of existing infrastructure. The position guard service, the aomi Session pattern, and the polling loop are all already written. The only new work is the DeFi strategy logic and the UI tab.
+
+**Why it matters:** Prediction market traders already think in probabilities and expected value. Extending that same mental model to DeFi yield and rotation strategies is a natural product expansion. The same user who sets a stop-loss on a Polymarket position would set a rotation rule on their ETH/USDC allocation.
+
+---
+
+### Social Trade Feed (unlocks Social category)
+
+Add a public trade feed — when a user confirms a trade card, they can optionally broadcast it to a shared Kuroko feed.
+
+- `shareToChat` already exists in `appStore.ts` — extend it to an optional public broadcast
+- Each shared trade shows: market question, side, price, timestamp, wallet address (truncated)
+- Other users see a live feed: "0x1a2b just bought YES on Fed rate cut at 44¢"
+- Trades can be one-click copied into your own simulation modal
+- Filter by category, side, or probability range
+
+**Why it matters:** Every shared trade is a distribution moment. Prediction market traders follow each other's positions — this is how Polymarket's own leaderboard drives engagement. A social feed turns Kuroko from a solo tool into a community layer on top of Polymarket. It also creates a natural viral loop: traders share their wins, others discover the product.
+
+**Implementation path:** Minimal backend required. A lightweight Vercel KV store (already configured in the environment) can hold the last 500 public trades. The feed polls every 30s. No authentication required to view — wallet connection required to post.
+
+---
+
+### Wallet Risk Layer — DD.xyz Integration (extends Security category)
+
+Integrate Webacy's DD.xyz APIs to add a due diligence layer at key interaction points:
+
+- **On wallet connect:** Call the Exposure Risk API, display a safety score in TopNav alongside the wallet address (LOW / MEDIUM / SAFE / SAFEST)
+- **Before order execution:** Run the Transaction Risk API on the counterparty addresses in the order book before submitting to CLOB
+- **On market load:** Flag markets whose underlying contracts have risk signals via the Contract Risk API
+
+This directly addresses the gap between AI-assisted trading and safe trading. A user executing through an AI agent currently has zero visibility into the risk profile of the addresses they're interacting with. The DD.xyz layer closes that gap.
+
+**Implementation:** 2-hour integration for the wallet connect flow. The Exposure Risk API call fires after Para SDK confirms connection, result stored in component state, displayed as a badge in TopNav. No new architecture required.
+
+---
+
 ## Code Quality
 
 ### Strengths
