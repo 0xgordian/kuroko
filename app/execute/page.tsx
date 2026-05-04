@@ -27,7 +27,7 @@ function SignalBadge({ signal }: { signal: MarketSignal }) {
     <span
       title={signal.detail}
       className="font-terminal text-[10px] tracking-widest uppercase px-2 py-0.5 border cursor-help"
-      style={{ color: c.color, backgroundColor: c.bg, borderColor: c.border, borderRadius: 0 }}
+      style={{ color: c.color, backgroundColor: c.bg, borderColor: c.border, borderRadius: 12 }}
     >
       {signal.label}
     </span>
@@ -41,7 +41,7 @@ function OrderBookPanel({ book, isLoading }: { book: OrderBook | null; isLoading
     return (
       <div className="space-y-1">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="h-5 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 0 }} />
+          <div key={i} className="h-5 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 8 }} />
         ))}
       </div>
     );
@@ -100,7 +100,7 @@ function OrderBookPanel({ book, isLoading }: { book: OrderBook | null; isLoading
 
 const STATUS_CONFIG: Record<OrderStatus, { color: string; label: string; pulse: boolean }> = {
   PENDING:   { color: '#f59e0b', label: 'Pending',   pulse: true  },
-  OPEN:      { color: '#ff4500', label: 'In Book',   pulse: true  },
+  OPEN:      { color: '#7c3aed', label: 'In Book',   pulse: true  },
   MATCHED:   { color: '#4ade80', label: 'Matched',   pulse: true  },
   FILLED:    { color: '#4ade80', label: 'Filled',    pulse: false },
   CANCELLED: { color: '#a0a0a0', label: 'Cancelled', pulse: false },
@@ -114,7 +114,7 @@ function FillStatusPanel({ fill }: { fill: OrderFillResult | null }) {
   const pct = Math.round(fill.fillFraction * 100);
 
   return (
-    <div className="border panel-bracket p-4 space-y-3" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+    <div className="border panel-bracket p-4 space-y-3" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
       <div className="flex items-center justify-between">
         <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>Order Status</span>
         <div className="flex items-center gap-2">
@@ -127,8 +127,8 @@ function FillStatusPanel({ fill }: { fill: OrderFillResult | null }) {
           <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>Fill</span>
           <span className="font-terminal text-[11px]" style={{ color: '#f0f0f0' }}>{pct}%</span>
         </div>
-        <div className="h-1.5 w-full" style={{ backgroundColor: '#1a1a1a', borderRadius: 0 }}>
-          <div className="h-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: cfg.color, borderRadius: 0 }} />
+        <div className="h-1.5 w-full" style={{ backgroundColor: '#1a1a1a', borderRadius: 4 }}>
+          <div className="h-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: cfg.color, borderRadius: 4 }} />
         </div>
       </div>
       {fill.avgFillPrice !== null && (
@@ -180,7 +180,6 @@ function ExecuteContent() {
   // Bankroll
   const [bankroll, setBankrollState] = useState<number | null>(null);
   const [bankrollInput, setBankrollInput] = useState('');
-  const [bankrollError, setBankrollError] = useState<string | null>(null);
 
   const pollRef = useRef<AbortController | null>(null);
 
@@ -286,7 +285,7 @@ function ExecuteContent() {
         status: 'confirmed',
       });
       toast.success('Paper trade recorded', {
-        style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 0 },
+        style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12 },
         iconTheme: { primary: '#4ade80', secondary: '#111' },
       });
       setSubmitting(false);
@@ -298,7 +297,7 @@ function ExecuteContent() {
       const result = await sendLiveOrder({
         walletAddress,
         tokenId,
-        side: 'BUY',
+        side: side === 'YES' ? 'BUY' : 'SELL',
         price: priceNum / 100,
         shares: sharesNum,
         marketQuestion: selectedMarket.question,
@@ -319,7 +318,7 @@ function ExecuteContent() {
 
       if (result.mode === 'PAPER_TRADE') {
         toast.success('Paper trade recorded', {
-          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 0 },
+          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12 },
           iconTheme: { primary: '#4ade80', secondary: '#111' },
         });
       } else if (result.orderId) {
@@ -332,12 +331,12 @@ function ExecuteContent() {
         toast('Open your wallet to review and sign the order', {
           icon: (
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }}>
-              <rect x="1" y="4" width="14" height="10" rx="0" stroke="#ff4500" strokeWidth="1.5"/>
-              <path d="M4 4V3a4 4 0 0 1 8 0v1" stroke="#ff4500" strokeWidth="1.5"/>
-              <circle cx="8" cy="9" r="1.5" fill="#ff4500"/>
+              <rect x="1" y="4" width="14" height="10" rx="3" stroke="#7c3aed" strokeWidth="1.5"/>
+              <path d="M4 4V3a4 4 0 0 1 8 0v1" stroke="#7c3aed" strokeWidth="1.5"/>
+              <circle cx="8" cy="9" r="1.5" fill="#7c3aed"/>
             </svg>
           ),
-          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,69,0,0.4)', borderRadius: 0 },
+          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(124,58,237,0.4)', borderRadius: 12 },
           duration: 6000,
         });
       } else {
@@ -361,7 +360,7 @@ function ExecuteContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#0d0d0d' }}>
+    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b' }}>
       <TopNav
         isFallback={isFallback}
         isLoadingMarkets={loadingMarkets}
@@ -390,12 +389,12 @@ function ExecuteContent() {
               onKeyDown={(e) => e.key === 'Enter' && handleSaveBankroll()}
               placeholder="1000"
               className="font-terminal text-xs w-24 px-2 py-1 border bg-transparent outline-none"
-              style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
+              style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 8 }}
             />
             <button
               onClick={handleSaveBankroll}
               className="font-terminal text-[10px] tracking-widest uppercase px-2 py-1 border"
-              style={{ borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', borderRadius: 0 }}
+              style={{ borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', borderRadius: 8 }}
             >
               Set
             </button>
@@ -411,7 +410,7 @@ function ExecuteContent() {
 
           {/* ── LEFT: Market picker ── */}
           <div className="lg:col-span-4 space-y-3">
-            <div className="border panel-bracket" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="border panel-bracket" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <div className="px-4 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                 <p className="t-label mb-2">Select Market</p>
                 <input
@@ -420,8 +419,8 @@ function ExecuteContent() {
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search markets…"
                   className="w-full font-terminal text-xs px-3 py-2 border bg-transparent outline-none"
-                  style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
-                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,69,0,0.5)'; }}
+                  style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 8 }}
+                  onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.5)'; }}
                   onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
                 />
               </div>
@@ -430,7 +429,7 @@ function ExecuteContent() {
                 {loadingMarkets ? (
                   <div className="space-y-1 p-3">
                     {Array.from({ length: 8 }).map((_, i) => (
-                      <div key={i} className="h-10 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 0 }} />
+                      <div key={i} className="h-10 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 8 }} />
                     ))}
                   </div>
                 ) : filtered.length === 0 ? (
@@ -445,8 +444,8 @@ function ExecuteContent() {
                         className="w-full text-left px-4 py-3 border-b transition-all"
                         style={{
                           borderColor: 'rgba(255,255,255,0.04)',
-                          backgroundColor: active ? 'rgba(255,69,0,0.08)' : 'transparent',
-                          borderLeft: active ? '3px solid #ff4500' : '3px solid transparent',
+                          backgroundColor: active ? 'rgba(124,58,237,0.08)' : 'transparent',
+                          borderLeft: active ? '3px solid #7c3aed' : '3px solid transparent',
                         }}
                         onMouseEnter={(e) => { if (!active) e.currentTarget.style.backgroundColor = '#161616'; }}
                         onMouseLeave={(e) => { if (!active) e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -479,7 +478,7 @@ function ExecuteContent() {
           <div className="lg:col-span-5 space-y-4">
 
             {!selectedMarket ? (
-              <div className="border panel-bracket flex items-center justify-center" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0, minHeight: 320 }}>
+              <div className="border panel-bracket flex items-center justify-center" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden', minHeight: 320 }}>
                 <div className="text-center">
                   <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#333' }}>← Select a market</p>
                   <p className="text-xs" style={{ color: '#444' }}>Pick a market from the list to start building an order</p>
@@ -488,7 +487,7 @@ function ExecuteContent() {
             ) : (
               <>
                 {/* Market header */}
-                <div className="border panel-bracket p-4" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                <div className="border panel-bracket p-4" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                   <p className="text-sm leading-snug mb-3" style={{ color: '#f0f0f0' }}>{selectedMarket.question}</p>
                   <div className="flex items-center gap-4 flex-wrap">
                     <div>
@@ -522,7 +521,7 @@ function ExecuteContent() {
                 </div>
 
                 {/* Order form */}
-                <div className="border panel-bracket p-4 space-y-4" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                <div className="border panel-bracket p-4 space-y-4" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                   <p className="t-label t-label-accent">Build Order</p>
 
                   {/* Side toggle */}
@@ -544,7 +543,7 @@ function ExecuteContent() {
                             color: side === s
                               ? s === 'YES' ? '#4ade80' : '#f87171'
                               : '#555',
-                            borderRadius: 0,
+                            borderRadius: 8,
                           }}
                         >
                           {s}
@@ -563,8 +562,8 @@ function ExecuteContent() {
                         onChange={(e) => setShares(e.target.value)}
                         min="1"
                         className="w-full font-terminal text-sm px-3 py-2 border bg-transparent outline-none"
-                        style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
-                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,69,0,0.5)'; }}
+                        style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 8 }}
+                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.5)'; }}
                         onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
                       />
                     </div>
@@ -577,22 +576,22 @@ function ExecuteContent() {
                         min="1"
                         max="99"
                         className="w-full font-terminal text-sm px-3 py-2 border bg-transparent outline-none"
-                        style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
-                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(255,69,0,0.5)'; }}
+                        style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 8 }}
+                        onFocus={(e) => { e.currentTarget.style.borderColor = 'rgba(124,58,237,0.5)'; }}
                         onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
                       />
                     </div>
                   </div>
 
                   {/* Order summary */}
-                  <div className="border p-3 space-y-2" style={{ borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                  <div className="border p-3 space-y-2" style={{ borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
                     <div className="flex justify-between">
                       <span className="t-label">Cost</span>
                       <span className="font-terminal text-xs font-bold" style={{ color: '#f0f0f0' }}>${totalCost.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="t-label">Payout if correct</span>
-                      <span className="font-terminal text-xs font-bold" style={{ color: '#ff4500' }}>${payout.toFixed(2)}</span>
+                      <span className="font-terminal text-xs font-bold" style={{ color: '#7c3aed' }}>${payout.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="t-label">Return</span>
@@ -618,9 +617,9 @@ function ExecuteContent() {
                   {/* Wallet status / connect prompt */}
                   {!isWalletConnected && (
                     <div className="border p-3 flex items-center justify-between gap-3"
-                      style={{ borderColor: 'rgba(255,69,0,0.25)', backgroundColor: 'rgba(255,69,0,0.05)', borderRadius: 0 }}>
+                      style={{ borderColor: 'rgba(124,58,237,0.25)', backgroundColor: 'rgba(124,58,237,0.05)', borderRadius: 12 }}>
                       <div>
-                        <p className="font-terminal text-[10px] tracking-widest uppercase mb-0.5" style={{ color: '#ff4500' }}>
+                        <p className="font-terminal text-[10px] tracking-widest uppercase mb-0.5" style={{ color: '#7c3aed' }}>
                           Paper Mode
                         </p>
                         <p className="text-xs" style={{ color: '#555' }}>
@@ -630,8 +629,8 @@ function ExecuteContent() {
                       <button
                         onClick={() => authAdapter.connect()}
                         className="shrink-0 font-terminal text-[10px] tracking-widest uppercase px-3 py-1.5 border transition-all"
-                        style={{ borderColor: '#ff4500', color: '#ff4500', backgroundColor: 'transparent', borderRadius: 0 }}
-                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255,69,0,0.15)'; }}
+                        style={{ borderColor: '#7c3aed', color: '#7c3aed', backgroundColor: 'transparent', borderRadius: 12 }}
+                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(124,58,237,0.15)'; }}
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                       >
                         Connect
@@ -658,9 +657,9 @@ function ExecuteContent() {
                     disabled={submitting || sharesNum <= 0}
                     className="w-full py-3 font-terminal text-xs font-bold tracking-widest uppercase transition-all"
                     style={{
-                      backgroundColor: submitting ? '#333' : '#ff4500',
-                      color: submitting ? '#666' : '#000',
-                      borderRadius: 0,
+                      backgroundColor: submitting ? '#333' : '#7c3aed',
+                      color: submitting ? '#666' : '#fff',
+                      borderRadius: 12,
                       cursor: submitting ? 'not-allowed' : 'pointer',
                     }}
                   >
@@ -680,7 +679,7 @@ function ExecuteContent() {
 
           {/* ── RIGHT: Order book ── */}
           <div className="lg:col-span-3 space-y-4">
-            <div className="border panel-bracket" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="border panel-bracket" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <div className="px-4 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
                 <p className="t-label">Order Book</p>
                 {book && (
@@ -696,7 +695,7 @@ function ExecuteContent() {
 
             {/* Execution scores */}
             {analysis && (
-              <div className="border panel-bracket p-4 space-y-3" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              <div className="border panel-bracket p-4 space-y-3" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                 <p className="t-label t-label-accent">Execution Quality</p>
                 <div className="space-y-2">
                   {[
@@ -708,8 +707,8 @@ function ExecuteContent() {
                         <span className="t-label">{label}</span>
                         <span className="font-terminal text-[10px]" style={{ color }}>{value}</span>
                       </div>
-                      <div className="h-1" style={{ backgroundColor: '#1a1a1a', borderRadius: 0 }}>
-                        <div className="h-full transition-all" style={{ width: `${value}%`, backgroundColor: color, borderRadius: 0 }} />
+                      <div className="h-1" style={{ backgroundColor: '#1a1a1a', borderRadius: 4 }}>
+                        <div className="h-full transition-all" style={{ width: `${value}%`, backgroundColor: color, borderRadius: 4 }} />
                       </div>
                     </div>
                   ))}
@@ -739,8 +738,8 @@ function ExecuteContent() {
 export default function ExecutePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0d0d0d' }}>
-        <div className="w-6 h-6 border-2 border-[#ff4500]/30 border-t-[#ff4500] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#09090b' }}>
+        <div className="w-6 h-6 border-2 border-[#7c3aed]/30 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     }>
       <ExecuteContent />
