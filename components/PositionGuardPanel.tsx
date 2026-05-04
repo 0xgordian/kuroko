@@ -101,13 +101,13 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
   const triggeredCount = Object.values(analyses).filter((a) => a.action !== 'HOLD').length;
 
   return (
-    <div style={{ backgroundColor: '#111', borderRadius: 0 }}>
+    <div style={{ backgroundColor: '#111', borderRadius: 12 }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
         <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>
           Position Guard{' '}
-          <span style={{ color: '#ff4500' }}>{'// Auto Rules'}</span>
+          <span style={{ color: '#7c3aed' }}>{'// Auto Rules'}</span>
           {triggeredCount > 0 && (
             <span className="ml-2 px-1.5 py-0.5 font-terminal text-[9px]"
               style={{ backgroundColor: 'rgba(248,113,113,0.15)', color: '#f87171' }}>
@@ -119,10 +119,10 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
           onClick={() => { setShowForm((v) => !v); setValidationError(''); }}
           className="font-terminal text-[10px] tracking-widest uppercase px-2 py-1 border transition-colors"
           style={{
-            borderColor: showForm ? '#ff4500' : 'rgba(255,255,255,0.12)',
-            color: showForm ? '#ff4500' : '#555',
+            borderColor: showForm ? '#7c3aed' : 'rgba(255,255,255,0.12)',
+            color: showForm ? '#7c3aed' : '#555',
             backgroundColor: 'transparent',
-            borderRadius: 0,
+            borderRadius: 12,
           }}
         >
           {showForm ? '✕ Cancel' : '+ Add Guard'}
@@ -133,7 +133,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
         {/* Add guard form */}
         {showForm && (
           <div className="border p-3 space-y-3"
-            style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 0 }}>
+            style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 12 }}>
             <p className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>
               New Guard
             </p>
@@ -146,7 +146,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setSelectedMarket(null); }}
                 className="w-full px-3 py-2 text-xs border outline-none"
-                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
+                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 12 }}
               />
               {search && !selectedMarket && filteredMarkets.length > 0 && (
                 <div className="border border-t-0 max-h-40 overflow-y-auto"
@@ -160,7 +160,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#161616')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
-                      <span className="font-terminal text-[10px] mr-2" style={{ color: '#ff4500' }}>
+                      <span className="font-terminal text-[10px] mr-2" style={{ color: '#7c3aed' }}>
                         {m.currentProbability}%
                       </span>
                       {m.question.slice(0, 70)}
@@ -187,7 +187,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                     value={value}
                     onChange={(e) => { set(e.target.value); setValidationError(''); }}
                     className="w-full px-2 py-1.5 text-xs border outline-none font-terminal"
-                    style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 0 }}
+                    style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', color: '#f0f0f0', borderRadius: 12 }}
                   />
                 </div>
               ))}
@@ -202,9 +202,9 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
               disabled={!selectedMarket}
               className="w-full py-2 text-xs font-bold transition-all font-terminal tracking-widest uppercase"
               style={{
-                backgroundColor: selectedMarket ? '#ff4500' : '#1a1a1a',
-                color: selectedMarket ? '#000' : '#555',
-                borderRadius: 0,
+                backgroundColor: selectedMarket ? '#7c3aed' : '#1a1a1a',
+                color: selectedMarket ? '#fff' : '#555',
+                borderRadius: 12,
               }}
             >
               Save Guard
@@ -230,7 +230,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                   style={{
                     borderColor: analysis?.action !== 'HOLD' ? actionCfg.border : 'rgba(255,255,255,0.08)',
                     backgroundColor: analysis?.action !== 'HOLD' ? actionCfg.bg : '#0d0d0d',
-                    borderRadius: 0,
+                    borderRadius: 12,
                     opacity: guard.active ? 1 : 0.5,
                   }}>
                   <div className="flex items-start justify-between gap-2">
@@ -240,7 +240,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                     <div className="flex items-center gap-1.5 shrink-0">
                       {analysis && (
                         <span className="font-terminal text-[9px] tracking-widest uppercase px-1.5 py-0.5 border"
-                          style={{ color: actionCfg.color, borderColor: actionCfg.border, backgroundColor: actionCfg.bg, borderRadius: 0 }}>
+                          style={{ color: actionCfg.color, borderColor: actionCfg.border, backgroundColor: actionCfg.bg, borderRadius: 12 }}>
                           {analysis.action}
                         </span>
                       )}
@@ -251,7 +251,7 @@ export default function PositionGuardPanel({ markets }: PositionGuardPanelProps)
                           borderColor: guard.active ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)',
                           color: guard.active ? '#4ade80' : '#555',
                           backgroundColor: 'transparent',
-                          borderRadius: 0,
+                          borderRadius: 12,
                         }}
                       >
                         {guard.active ? 'On' : 'Off'}
