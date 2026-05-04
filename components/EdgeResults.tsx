@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import type { EdgeQueryResult, EdgeOpportunity } from '@/types';
+import { LazyMotion, MotionConfig, domAnimation } from 'motion/react';
+import * as m from 'motion/react-m';
 
 interface EdgeResultsProps {
   result: EdgeQueryResult | null;
@@ -15,18 +17,18 @@ interface EdgeResultsProps {
 }
 
 function formatVolume(v: number): string {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`;
-  return `$${v}`;
+  if (v >= 1_000_000) return `${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `${(v / 1_000).toFixed(0)}K`;
+  return `${v}`;
 }
 
-// Strength config — orange only for STRONG, neutral for others
+// Strength config — purple only for STRONG, neutral for others
 const strengthConfig = {
   STRONG: {
-    borderColor: 'rgba(255,69,0,0.6)',
-    badgeColor: '#ff4500',
-    badgeBg: 'rgba(255,69,0,0.15)',
-    priceColor: '#ff4500',
+    borderColor: 'rgba(124,58,237,0.6)',
+    badgeColor: '#7c3aed',
+    badgeBg: 'rgba(124,58,237,0.15)',
+    priceColor: '#7c3aed',
     priceGlow: true,
     icon: '▲',
   },
@@ -64,13 +66,13 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
     const change = opp.market.probabilityChange24h;
     const changeStr = change !== null && change !== undefined
       ? ` 24h change: ${change > 0 ? '+' : ''}${change.toFixed(1)}%.` : '';
-    const msg = `Analyze this Polymarket opportunity: "${opp.market.question}" — currently at ${opp.market.currentProbability}% YES.${changeStr} Volume: $${(opp.market.volume / 1000).toFixed(0)}K. Edge score: ${opp.edgeScore}/100 (${opp.edgeStrength}) on the ${opp.side} side. Should I trade this? What's the risk/reward?`;
+    const msg = `Analyze this Polymarket opportunity: "${opp.market.question}" — currently at ${opp.market.currentProbability}% YES.${changeStr} Volume: ${(opp.market.volume / 1000).toFixed(0)}K. Edge score: ${opp.edgeScore}/100 (${opp.edgeStrength}) on the ${opp.side} side. Should I trade this? What's the risk/reward?`;
     router.push(`/?q=${encodeURIComponent(msg)}`);
   };
 
   return (
     <div className={`border panel-bracket p-4 space-y-4${opp.edgeStrength === 'STRONG' ? ' panel-strong' : ''}`}
-      style={{ backgroundColor: '#111', borderColor: cfg.borderColor, borderRadius: 0 }}>
+      style={{ backgroundColor: '#111', borderColor: cfg.borderColor, borderRadius: 12 }}>
 
       {/* Header row */}
       <div className="flex items-start justify-between gap-4">
@@ -82,7 +84,7 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
                 color: cfg.badgeColor,
                 backgroundColor: cfg.badgeBg,
                 borderColor: cfg.borderColor,
-                borderRadius: 0,
+                borderRadius: 12,
               }}>
               {cfg.icon} {opp.edgeStrength}
             </span>
@@ -100,7 +102,7 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
         <div className="text-right shrink-0">
           <p className="text-2xl font-terminal font-bold"
             style={cfg.priceGlow
-              ? { color: '#ff4500', textShadow: '0 0 16px rgba(255,69,0,0.35)' }
+              ? { color: '#7c3aed', textShadow: '0 0 16px rgba(124,58,237,0.35)' }
               : { color: cfg.priceColor }}>
             {opp.referencePrice}¢
           </p>
@@ -132,14 +134,16 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
 
       {/* Action buttons — clear hierarchy */}
       <div className="flex gap-2 pt-1">
-        {/* Primary: Simulate — full orange fill */}
+        {/* Primary: Simulate — full purple fill */}
         <button
           onClick={onPropose}
           disabled={isFetchingBet}
           className="flex-1 py-2.5 text-xs font-bold tracking-wide transition-all flex items-center justify-center gap-2"
-          style={{ backgroundColor: isFetchingBet ? '#1a1a1a' : '#ff4500', color: isFetchingBet ? '#555' : '#000', borderRadius: 0 }}
-          onMouseEnter={(e) => { if (!isFetchingBet) e.currentTarget.style.backgroundColor = '#ff6b35'; }}
-          onMouseLeave={(e) => { if (!isFetchingBet) e.currentTarget.style.backgroundColor = '#ff4500'; }}
+          style={{ backgroundColor: isFetchingBet ? '#1a1a1a' : '#7c3aed', color: isFetchingBet ? '#555' : '#fff', borderRadius: 12, transition: 'all 0.15s ease' }}
+          onMouseEnter={(e) => { if (!isFetchingBet) e.currentTarget.style.backgroundColor = '#8b5cf6'; }}
+          onMouseLeave={(e) => { if (!isFetchingBet) e.currentTarget.style.backgroundColor = '#7c3aed'; }}
+          onMouseDown={(e) => { if (!isFetchingBet) e.currentTarget.style.transform = 'scale(0.98)'; }}
+          onMouseUp={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
         >
           {isFetchingBet ? (
             <>
@@ -169,7 +173,8 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
               backgroundColor: 'transparent',
               borderColor: 'rgba(255,255,255,0.15)',
               color: '#a0a0a0',
-              borderRadius: 0,
+              borderRadius: 12,
+              transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(255,255,255,0.30)';
@@ -198,7 +203,8 @@ function OpportunityCard({ opp, onPropose, onAskAomi, onSetAlert, isFetchingBet 
               backgroundColor: 'transparent',
               borderColor: 'rgba(255,255,255,0.15)',
               color: '#a0a0a0',
-              borderRadius: 0,
+              borderRadius: 12,
+              transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(255,255,255,0.30)';
@@ -229,7 +235,7 @@ export default function EdgeResults({ result, isLoading, isQuerying, onProposeBe
         <div className="h-3 w-40 animate-pulse" style={{ backgroundColor: '#161616' }} />
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="h-40 animate-pulse border panel-bracket"
-            style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.06)', borderRadius: 0 }} />
+            style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.06)', borderRadius: 12 }} />
         ))}
       </div>
     );
@@ -252,7 +258,7 @@ export default function EdgeResults({ result, isLoading, isQuerying, onProposeBe
     <div className="space-y-4">
       {/* Summary card */}
       <div className="border panel-bracket p-3 space-y-1"
-        style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+        style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
         <p className="font-terminal text-[10px] tracking-wider" style={{ color: '#555' }}>
           QUERY: <span style={{ color: '#a0a0a0' }}>{result.query}</span>
         </p>
@@ -264,16 +270,26 @@ export default function EdgeResults({ result, isLoading, isQuerying, onProposeBe
           No opportunities found — try a different query
         </p>
       ) : (
-        result.opportunities.map((opp, i) => (
-          <OpportunityCard
-            key={`${opp.market.id}-${i}`}
-            opp={opp}
-            onPropose={onProposeBet ? () => onProposeBet(opp) : undefined}
-            onAskAomi={onAskAomi ? () => onAskAomi(opp) : undefined}
-            onSetAlert={onSetAlert ? () => onSetAlert(opp) : undefined}
-            isFetchingBet={fetchingBetId === opp.market.id}
-          />
-        ))
+        <LazyMotion features={domAnimation}>
+          <MotionConfig reducedMotion="user">
+            {result.opportunities.map((opp, i) => (
+              <m.div
+                key={`${opp.market.id}-${i}`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(i, 9) * 0.04, duration: 0.2, ease: 'easeOut' }}
+              >
+                <OpportunityCard
+                  opp={opp}
+                  onPropose={onProposeBet ? () => onProposeBet(opp) : undefined}
+                  onAskAomi={onAskAomi ? () => onAskAomi(opp) : undefined}
+                  onSetAlert={onSetAlert ? () => onSetAlert(opp) : undefined}
+                  isFetchingBet={fetchingBetId === opp.market.id}
+                />
+              </m.div>
+            ))}
+          </MotionConfig>
+        </LazyMotion>
       )}
 
       <p className="font-terminal text-[10px] text-right" style={{ color: '#555' }}>
