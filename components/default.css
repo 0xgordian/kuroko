@@ -7,11 +7,11 @@
 :root {
   color-scheme: dark;
 
-  /* Radius — zero everywhere per design system */
-  --radius: 0rem;
+  /* Radius — 12px everywhere per design system */
+  --radius: 0.75rem;
 
   /* Core */
-  --background: #0d0d0d;
+  --background: #000000;
   --foreground: #f0f0f0;
 
   /* Card / Popover */
@@ -20,9 +20,9 @@
   --popover: #111111;
   --popover-foreground: #f0f0f0;
 
-  /* Primary = orange brand */
-  --primary: #ff4500;
-  --primary-foreground: #000000;
+  /* Primary = purple brand */
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
 
   /* Secondary */
   --secondary: #161616;
@@ -42,27 +42,27 @@
   /* Border / Input / Ring */
   --border: rgba(255, 255, 255, 0.08);
   --input: rgba(255, 255, 255, 0.08);
-  --ring: rgba(255, 69, 0, 0.5);
+  --ring: rgba(124, 58, 237, 0.5);
 
   /* Sidebar */
-  --sidebar: #0d0d0d;
+  --sidebar: #0a0a0a;
   --sidebar-foreground: #a0a0a0;
-  --sidebar-primary: #ff4500;
-  --sidebar-primary-foreground: #000000;
+  --sidebar-primary: #7c3aed;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #161616;
   --sidebar-accent-foreground: #f0f0f0;
   --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: rgba(255, 69, 0, 0.5);
+  --sidebar-ring: rgba(124, 58, 237, 0.5);
 }
 
 @layer base {
   * {
     border-color: rgba(255, 255, 255, 0.08);
-    outline-color: rgba(255, 69, 0, 0.3);
+    outline-color: rgba(124, 58, 237, 0.3);
   }
 
   body {
-    background-color: #0d0d0d;
+    background-color: #09090b;
     color: #f0f0f0;
   }
 }
