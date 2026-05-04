@@ -75,15 +75,15 @@ function EmptyStateIcon({ variant }: { variant: EmptyStateVariant }) {
   const icons: Record<EmptyStateVariant, React.ReactNode> = {
     wallet: (
       <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-        <rect x="2" y="6" width="28" height="20" rx="0" stroke="#2a2a2a" strokeWidth="1" />
-        <rect x="4" y="8" width="24" height="16" rx="0" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="2" y="6" width="28" height="20" rx="3" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="4" y="8" width="24" height="16" rx="3" stroke="#2a2a2a" strokeWidth="1" />
         <circle cx="22" cy="16" r="4" stroke="#2a2a2a" strokeWidth="1" />
         <path d="M2 12 L30 12" stroke="#2a2a2a" strokeWidth="1" />
       </svg>
     ),
     positions: (
       <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-        <rect x="2" y="2" width="28" height="28" rx="0" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="2" y="2" width="28" height="28" rx="3" stroke="#2a2a2a" strokeWidth="1" />
         <path d="M8 10 L14 16 L20 8" stroke="#2a2a2a" strokeWidth="1" strokeLinecap="round" />
         <path d="M8 18 L14 24 L20 16" stroke="#2a2a2a" strokeWidth="1" strokeLinecap="round" />
         <line x1="22" y1="10" x2="28" y2="10" stroke="#2a2a2a" strokeWidth="1" />
@@ -109,14 +109,14 @@ function EmptyStateIcon({ variant }: { variant: EmptyStateVariant }) {
     ),
     markets: (
       <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-        <rect x="4" y="4" width="24" height="6" rx="0" stroke="#2a2a2a" strokeWidth="1" />
-        <rect x="4" y="12" width="24" height="6" rx="0" stroke="#2a2a2a" strokeWidth="1" />
-        <rect x="4" y="20" width="24" height="6" rx="0" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="4" y="4" width="24" height="6" rx="3" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="4" y="12" width="24" height="6" rx="3" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="4" y="20" width="24" height="6" rx="3" stroke="#2a2a2a" strokeWidth="1" />
       </svg>
     ),
     orderbook: (
       <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
-        <rect x="2" y="4" width="28" height="24" rx="0" stroke="#2a2a2a" strokeWidth="1" />
+        <rect x="2" y="4" width="28" height="24" rx="3" stroke="#2a2a2a" strokeWidth="1" />
         <path d="M4 12 L16 12 L28 12" stroke="#2a2a2a" strokeWidth="1" />
         <path d="M4 16 L16 16 L28 16" stroke="#2a2a2a" strokeWidth="1" />
         <path d="M4 20 L16 20 L28 20" stroke="#2a2a2a" strokeWidth="1" />
@@ -137,15 +137,15 @@ export function WalletConnectPrompt({ className }: WalletConnectPromptProps) {
   return (
     <div
       className={cn('flex flex-col items-center justify-center py-10 px-6 text-center gap-4 border', className)}
-      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.06)', borderRadius: 0 }}
+      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.06)', borderRadius: 12 }}
     >
       <svg className="w-10 h-10" viewBox="0 0 40 40" fill="none">
-        <rect x="2" y="8" width="36" height="24" rx="0" stroke="#2a2a2a" strokeWidth="1.5" />
-        <rect x="4" y="10" width="32" height="20" rx="0" stroke="#2a2a2a" strokeWidth="1" />
-        <circle cx="28" cy="20" r="5" stroke="#ff4500" strokeWidth="1.5" strokeOpacity="0.4" />
-        <circle cx="28" cy="20" r="2" fill="#ff4500" fillOpacity="0.2" />
+        <rect x="2" y="8" width="36" height="24" rx="3" stroke="#2a2a2a" strokeWidth="1.5" />
+        <rect x="4" y="10" width="32" height="20" rx="3" stroke="#2a2a2a" strokeWidth="1" />
+        <circle cx="28" cy="20" r="5" stroke="#7c3aed" strokeWidth="1.5" strokeOpacity="0.4" />
+        <circle cx="28" cy="20" r="2" fill="#7c3aed" fillOpacity="0.2" />
         <path d="M2 16 L38 16" stroke="#2a2a2a" strokeWidth="1" />
-        <rect x="8" y="12" width="10" height="4" rx="0" fill="#ff4500" fillOpacity="0.1" />
+        <rect x="8" y="12" width="10" height="4" rx="3" fill="#7c3aed" fillOpacity="0.1" />
       </svg>
 
       <div className="space-y-2">
