@@ -89,12 +89,13 @@ export default function CategoryFilter({ value, onChange, markets = [], showCoun
           <button
             key={cat.value}
             onClick={() => onChange(cat.value)}
-            className="flex-none flex items-center gap-1.5 px-3 py-1.5 border font-terminal text-[10px] tracking-widest uppercase transition-all whitespace-nowrap"
+            className="flex-none flex items-center gap-1.5 px-3 py-1.5 border font-terminal text-[10px] tracking-widest uppercase whitespace-nowrap"
             style={{
-              backgroundColor: isActive ? 'rgba(255,69,0,0.12)' : 'transparent',
-              borderColor: isActive ? '#ff4500' : 'rgba(255,255,255,0.10)',
-              color: isActive ? '#ff4500' : '#555',
-              borderRadius: 0,
+              backgroundColor: isActive ? 'rgba(124,58,237,0.12)' : 'transparent',
+              borderColor: isActive ? '#7c3aed' : 'rgba(255,255,255,0.10)',
+              color: isActive ? '#7c3aed' : '#555',
+              borderRadius: 9999,
+              transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
               if (!isActive) {
@@ -113,7 +114,7 @@ export default function CategoryFilter({ value, onChange, markets = [], showCoun
             {count !== null && count > 0 && (
               <span
                 className="font-terminal text-[9px]"
-                style={{ color: isActive ? '#ff4500' : '#444' }}
+                style={{ color: isActive ? '#7c3aed' : '#444' }}
               >
                 {count}
               </span>
