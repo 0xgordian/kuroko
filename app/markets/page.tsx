@@ -56,7 +56,7 @@ function FilterSelect<T extends string>({
       <PopoverTrigger asChild>
         <button
           className="w-full flex items-center justify-between gap-2 h-7 px-2.5 text-xs border transition-colors hover:border-white/20 hover:text-[#f0f0f0]"
-          style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 0, fontFamily: MONO_FONT }}
+          style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 12, fontFamily: MONO_FONT }}
         >
           <span className="truncate">{current?.label ?? value}</span>
           <Icon icon="solar:alt-arrow-down-linear" className="w-3 h-3 shrink-0 opacity-50" />
@@ -66,7 +66,7 @@ function FilterSelect<T extends string>({
         align="start"
         sideOffset={4}
         className="w-[160px] p-1 border z-[9999]"
-        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}
+        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
       >
         {options.map((opt) => (
           <button
@@ -76,12 +76,12 @@ function FilterSelect<T extends string>({
             style={{
               color: value === opt.value ? '#f0f0f0' : '#a0a0a0',
               backgroundColor: value === opt.value ? '#161616' : 'transparent',
-              borderRadius: 0,
+              borderRadius: 12,
               fontFamily: MONO_FONT,
             }}
           >
             <span>{opt.label}</span>
-            {value === opt.value && <Icon icon="solar:check-circle-linear" className="w-3 h-3 shrink-0" style={{ color: '#ff4500' }} />}
+            {value === opt.value && <Icon icon="solar:check-circle-linear" className="w-3 h-3 shrink-0" style={{ color: '#7c3aed' }} />}
           </button>
         ))}
       </PopoverContent>
@@ -99,7 +99,7 @@ function SkeletonCard() {
   return (
     <div
       className="border p-4 space-y-3 animate-pulse"
-      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}
+      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}
     >
       <div className="h-3 w-3/4" style={{ backgroundColor: '#161616' }} />
       <div className="h-3 w-1/2" style={{ backgroundColor: '#161616' }} />
@@ -200,8 +200,8 @@ function MarketsContent() {
       threshold: market.currentProbability,
     });
     toast.success(`Alert set: ${market.question.slice(0, 50)}…`, {
-      style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 0 },
-      iconTheme: { primary: '#ff4500', secondary: '#000' },
+      style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12 },
+      iconTheme: { primary: '#4ade80', secondary: '#111' },
     });
   }, []);
 
@@ -234,10 +234,10 @@ function MarketsContent() {
               onClick={() => setActiveCategory(cat as MarketCategory)}
               className="text-left px-2 py-1.5 border font-terminal text-[10px] tracking-widest uppercase transition-all"
               style={{
-                backgroundColor: activeCategory === cat ? 'rgba(255,69,0,0.12)' : 'transparent',
-                borderColor: activeCategory === cat ? '#ff4500' : 'rgba(255,255,255,0.08)',
-                color: activeCategory === cat ? '#ff4500' : '#555',
-                borderRadius: 0,
+                backgroundColor: activeCategory === cat ? 'rgba(124,58,237,0.12)' : 'transparent',
+                borderColor: activeCategory === cat ? '#7c3aed' : 'rgba(255,255,255,0.08)',
+                color: activeCategory === cat ? '#a78bfa' : '#555',
+                borderRadius: 8,
               }}
             >
               {cat}
@@ -261,7 +261,7 @@ function MarketsContent() {
             backgroundColor: '#0d0d0d',
             borderColor: 'rgba(255,255,255,0.12)',
             color: '#f0f0f0',
-            borderRadius: 0,
+            borderRadius: 8,
           }}
         />
       </div>
@@ -283,7 +283,7 @@ function MarketsContent() {
               backgroundColor: '#0d0d0d',
               borderColor: 'rgba(255,255,255,0.12)',
               color: '#f0f0f0',
-              borderRadius: 0,
+              borderRadius: 8,
             }}
             placeholder="Min %"
           />
@@ -299,7 +299,7 @@ function MarketsContent() {
               backgroundColor: '#0d0d0d',
               borderColor: 'rgba(255,255,255,0.12)',
               color: '#f0f0f0',
-              borderRadius: 0,
+              borderRadius: 8,
             }}
             placeholder="Max %"
           />
@@ -338,7 +338,7 @@ function MarketsContent() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#0d0d0d' }}>
+    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b' }}>
       <TopNav
         isFallback={isFallback}
         isLoadingMarkets={isLoading}
@@ -361,7 +361,7 @@ function MarketsContent() {
               backgroundColor: 'transparent',
               borderColor: 'rgba(255,255,255,0.15)',
               color: '#a0a0a0',
-              borderRadius: 0,
+              borderRadius: 12,
             }}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -375,7 +375,7 @@ function MarketsContent() {
           </button>
           {filtersOpen && (
             <div className="border panel-bracket p-4 mt-2"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               {filterSidebar}
             </div>
           )}
@@ -387,7 +387,7 @@ function MarketsContent() {
           {/* Filter sidebar */}
           <div className="lg:col-span-3 lg:sticky lg:top-4">
             <div className="border panel-bracket p-4"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               {filterSidebar}
             </div>
           </div>
@@ -479,7 +479,7 @@ function MarketGrid({
           <button
             onClick={() => setVisibleCount((c) => c + 48)}
             className="font-terminal text-[10px] tracking-widest uppercase px-6 py-2.5 border transition-colors"
-            style={{ borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', backgroundColor: 'transparent', borderRadius: 0 }}
+            style={{ borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', backgroundColor: 'transparent', borderRadius: 12 }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = '#f0f0f0'; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.color = '#a0a0a0'; }}
           >
@@ -500,7 +500,7 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
   const change7d = market.probabilityChange7d;
   const change30d = market.probabilityChange30d;
   const hasChange = change !== null && change !== undefined;
-  const probColor = prob >= 65 ? '#ff4500' : prob >= 40 ? '#f0f0f0' : '#a0a0a0';
+  const probColor = prob >= 65 ? '#7c3aed' : prob >= 40 ? '#f0f0f0' : '#a0a0a0';
   const endDate = new Date(market.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
   const fmtChange = (v: number | null | undefined, label: string) => {
@@ -509,7 +509,7 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
     const bg = v > 0 ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)';
     return (
       <span key={label} className="font-terminal text-[10px] font-bold px-1.5 py-0.5"
-        style={{ color, backgroundColor: bg, borderRadius: 0 }}>
+        style={{ color, backgroundColor: bg, borderRadius: 8 }}>
         {label} {v > 0 ? '+' : ''}{v.toFixed(1)}%
       </span>
     );
@@ -518,7 +518,7 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
   return (
     <div
       className="border p-4 space-y-3 transition-all"
-      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}
+      style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = '#161616';
         e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)';
@@ -538,7 +538,7 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
         <p
           className="text-2xl font-terminal font-bold"
           style={prob >= 65
-            ? { color: '#ff4500', textShadow: '0 0 12px rgba(255,69,0,0.35)' }
+            ? { color: '#7c3aed', textShadow: '0 0 12px rgba(124,58,237,0.35)' }
             : { color: probColor }}
         >
           {prob}%
@@ -560,9 +560,9 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
         <Link
           href={`/trade?q=${encodeURIComponent(market.question)}`}
           className="flex-1 py-2 text-xs font-bold text-center transition-all"
-          style={{ backgroundColor: '#ff4500', color: '#000', borderRadius: 0 }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#ff6b35')}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ff4500')}
+          style={{ backgroundColor: '#7c3aed', color: '#fff', borderRadius: 12 }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#8b5cf6')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#7c3aed')}
         >
           Analyze
         </Link>
@@ -574,7 +574,7 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
             backgroundColor: 'transparent',
             borderColor: 'rgba(255,255,255,0.15)',
             color: '#a0a0a0',
-            borderRadius: 0,
+            borderRadius: 12,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = 'rgba(255,255,255,0.30)';
@@ -598,8 +598,8 @@ function MarketCard({ market, onSetAlert }: { market: Market; onSetAlert: (m: Ma
 export default function MarketsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0d0d0d' }}>
-        <div className="w-6 h-6 border-2 border-[#ff4500]/30 border-t-[#ff4500] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#09090b' }}>
+        <div className="w-6 h-6 border-2 border-[#7c3aed]/30 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     }>
       <MarketsContent />
