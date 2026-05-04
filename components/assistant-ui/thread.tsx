@@ -66,7 +66,7 @@ const SlashCommandPalette: FC<{
   return (
     <div
       className="absolute bottom-full left-0 right-0 mb-1 border overflow-y-auto"
-      style={{ backgroundColor: '#111', borderColor: 'rgba(255,69,0,0.4)', borderRadius: 0, zIndex: 50, maxHeight: '280px' }}
+      style={{ backgroundColor: '#111', borderColor: 'rgba(124,58,237,0.4)', borderRadius: 12, zIndex: 50, maxHeight: '280px' }}
       role="listbox"
       aria-label="Slash commands"
     >
@@ -78,11 +78,11 @@ const SlashCommandPalette: FC<{
           onMouseDown={(e) => { e.preventDefault(); onSelect(cmd); }}
           className="w-full flex items-center gap-3 px-3 py-2 text-left transition-colors"
           style={{
-            backgroundColor: i === selectedIndex ? 'rgba(255,69,0,0.12)' : 'transparent',
+            backgroundColor: i === selectedIndex ? 'rgba(124,58,237,0.12)' : 'transparent',
             borderBottom: i < filtered.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none',
           }}
         >
-          <span className="font-terminal text-[11px] tracking-wider shrink-0" style={{ color: '#ff4500', minWidth: 80 }}>
+          <span className="font-terminal text-[11px] tracking-wider shrink-0" style={{ color: '#7c3aed', minWidth: 80 }}>
             {cmd.cmd}
           </span>
           <span className="text-xs" style={{ color: '#a0a0a0' }}>{cmd.label}</span>
@@ -112,10 +112,10 @@ export const Thread: FC = () => {
           className="aui-root aui-thread-root @container flex h-full flex-col"
           style={{
             ["--thread-max-width" as string]: "52rem",
-            backgroundColor: '#0d0d0d',
+            backgroundColor: '#09090b',
           }}
         >
-          <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll" style={{ backgroundColor: '#0d0d0d' }}>
+          <ThreadPrimitive.Viewport className="aui-thread-viewport relative flex flex-1 flex-col overflow-x-auto overflow-y-scroll" style={{ backgroundColor: '#09090b' }}>
             <ThreadPrimitive.If empty>
               <ThreadWelcome />
             </ThreadPrimitive.If>
@@ -171,7 +171,7 @@ const ThreadWelcome: FC = () => {
       <div className="aui-thread-welcome-center flex w-full flex-col px-4 pb-8">
         {/* Brand label */}
         <m.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="mb-3">
-          <span className="font-terminal text-[10px] tracking-[0.2em] uppercase" style={{ color: '#ff4500' }}>
+          <span className="font-terminal text-[10px] tracking-[0.2em] uppercase" style={{ color: '#7c3aed' }}>
             Kuroko
           </span>
         </m.div>
@@ -194,8 +194,8 @@ const ThreadWelcome: FC = () => {
           transition={{ delay: 0.08 }}
           className="flex items-center gap-2 mb-3"
         >
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#ff4500', boxShadow: '0 0 4px rgba(255,69,0,0.6)' }} />
-          <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#ff4500' }}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#7c3aed', boxShadow: '0 0 4px rgba(124,58,237,0.6)' }} />
+          <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#7c3aed' }}>
             {markets.length > 0 ? `${markets.length} live markets` : 'Connecting...'}
           </span>
           {topMover && (
@@ -334,9 +334,9 @@ const ThreadSuggestions: FC = () => {
             <button
               onClick={() => handleSuggestionClick(s.action)}
               className="panel-bracket w-full text-left border p-3 transition-all"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255,69,0,0.35)';
+                e.currentTarget.style.borderColor = 'rgba(124,58,237,0.35)';
                 e.currentTarget.style.backgroundColor = '#161616';
               }}
               onMouseLeave={(e) => {
@@ -346,7 +346,7 @@ const ThreadSuggestions: FC = () => {
               aria-label={s.action}
             >
               {/* Category label */}
-              <span className="block font-terminal text-[9px] tracking-[0.15em] uppercase mb-1" style={{ color: '#ff4500' }}>
+              <span className="block font-terminal text-[9px] tracking-[0.15em] uppercase mb-1" style={{ color: '#7c3aed' }}>
                 {s.category}
               </span>
               {/* Title */}
@@ -479,15 +479,15 @@ const Composer: FC = () => {
   return (
     <div
       className="aui-composer-wrapper sticky bottom-0 mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col px-4 pb-16 sm:pb-4 pt-2"
-      style={{ backgroundColor: '#0d0d0d' }}
+      style={{ backgroundColor: '#09090b' }}
     >
       <ThreadScrollToBottom />
       <ComposerPrimitive.Root
-        className="aui-composer-root relative flex w-full flex-col gap-2 border px-3 py-2.5 transition-colors focus-within:border-[rgba(255,69,0,0.5)]"
+        className="aui-composer-root relative flex w-full flex-col gap-2 border px-3 py-2.5 transition-colors focus-within:border-[rgba(124,58,237,0.5)]"
         style={{
           backgroundColor: '#111',
           borderColor: 'rgba(255,255,255,0.12)',
-          borderRadius: 0,
+          borderRadius: 12,
         }}
       >
         {/* Slash command palette */}
@@ -553,7 +553,7 @@ const Composer: FC = () => {
               backgroundColor: isListening ? '#ef4444' : 'rgba(255,255,255,0.08)',
               border: '1px solid',
               borderColor: isListening ? '#ef4444' : 'rgba(255,255,255,0.12)',
-              borderRadius: 0,
+              borderRadius: 12,
             }}
             aria-label={isListening ? "Stop recording" : "Voice input"}
           >
@@ -575,9 +575,9 @@ const Composer: FC = () => {
                   size="icon"
                   className="aui-composer-send size-8 shrink-0"
                   style={{ 
-                    backgroundColor: '#ff4500', 
-                    color: '#000', 
-                    borderRadius: 0,
+                    backgroundColor: '#7c3aed', 
+                    color: '#fff', 
+                    borderRadius: 12,
                   }}
                   aria-label="Send message"
                 >
@@ -591,7 +591,7 @@ const Composer: FC = () => {
                   type="button"
                   size="icon"
                   className="aui-composer-cancel size-8 border shrink-0"
-                  style={{ borderRadius: 0, borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'transparent', color: '#f0f0f0' }}
+                  style={{ borderRadius: 12, borderColor: 'rgba(255,255,255,0.2)', backgroundColor: 'transparent', color: '#f0f0f0' }}
                   aria-label="Stop generating"
                 >
                   <Icon icon="solar:stop-linear" className="size-3" />
@@ -623,7 +623,7 @@ const QuickActionButton: FC<{
         backgroundColor: isHovered ? 'rgba(255,255,255,0.08)' : 'transparent',
         border: '1px solid',
         borderColor: isHovered ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)',
-        borderRadius: 0,
+        borderRadius: 8,
         color: '#888',
       }}
     >
@@ -658,9 +658,9 @@ const TypingIndicator: FC = () => {
     <ThreadPrimitive.If running>
       <div className="aui-typing-indicator mx-auto flex w-full max-w-[var(--thread-max-width)] items-center gap-2 px-4 py-2">
         <div className="flex items-center gap-1">
-          <span className="size-1.5 animate-bounce rounded-full [animation-delay:0ms]" style={{ backgroundColor: '#ff4500' }} />
-          <span className="size-1.5 animate-bounce rounded-full [animation-delay:150ms]" style={{ backgroundColor: '#ff4500' }} />
-          <span className="size-1.5 animate-bounce rounded-full [animation-delay:300ms]" style={{ backgroundColor: '#ff4500' }} />
+          <span className="size-1.5 animate-bounce rounded-full [animation-delay:0ms]" style={{ backgroundColor: '#7c3aed' }} />
+          <span className="size-1.5 animate-bounce rounded-full [animation-delay:150ms]" style={{ backgroundColor: '#7c3aed' }} />
+          <span className="size-1.5 animate-bounce rounded-full [animation-delay:300ms]" style={{ backgroundColor: '#7c3aed' }} />
         </div>
         <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>Thinking</span>
       </div>
@@ -672,7 +672,7 @@ const MessageError: FC = () => {
   return (
     <MessagePrimitive.Error>
       <ErrorPrimitive.Root className="aui-message-error-root mt-2 border p-3 text-sm"
-        style={{ borderColor: 'rgba(255,0,0,0.3)', backgroundColor: 'rgba(255,0,0,0.05)', color: '#f87171', borderRadius: 0 }}>
+        style={{ borderColor: 'rgba(255,0,0,0.3)', backgroundColor: 'rgba(255,0,0,0.05)', color: '#f87171', borderRadius: 12 }}>
         <ErrorPrimitive.Message className="aui-message-error-message line-clamp-2" />
       </ErrorPrimitive.Root>
     </MessagePrimitive.Error>
@@ -693,15 +693,15 @@ const AssistantMessage: FC = () => {
       >
         <div
           className="panel-bracket border"
-          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}
+          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}
         >
           {/* Header label */}
           <div
             className="flex items-center gap-2 px-4 py-2 border-b"
             style={{ borderColor: 'rgba(255,255,255,0.06)' }}
           >
-            <span className="w-1.5 h-1.5" style={{ backgroundColor: '#ff4500', boxShadow: '0 0 4px rgba(255,69,0,0.6)', flexShrink: 0 }} />
-            <span className="font-terminal text-[9px] tracking-[0.2em] uppercase" style={{ color: '#ff4500' }}>
+            <span className="w-1.5 h-1.5" style={{ backgroundColor: '#7c3aed', boxShadow: '0 0 4px rgba(124,58,237,0.6)', flexShrink: 0 }} />
+            <span className="font-terminal text-[9px] tracking-[0.2em] uppercase" style={{ color: '#7c3aed' }}>
               kuroko AI
             </span>
           </div>
@@ -792,7 +792,7 @@ const UserMessage: FC = () => {
             style={{
               backgroundColor: '#161616',
               borderColor: 'rgba(255,255,255,0.1)',
-              borderRadius: 0,
+              borderRadius: 12,
               color: '#f0f0f0',
             }}
           >
@@ -829,7 +829,7 @@ const EditComposer: FC = () => {
   return (
     <div className="aui-edit-composer-wrapper mx-auto flex w-full max-w-[var(--thread-max-width)] flex-col gap-4 px-4 first:mt-4">
       <ComposerPrimitive.Root className="aui-edit-composer-root ml-auto flex w-full max-w-[90%] sm:max-w-[80%] flex-col border"
-        style={{ backgroundColor: '#161616', borderColor: 'rgba(255,255,255,0.1)', borderRadius: 0 }}>
+        style={{ backgroundColor: '#161616', borderColor: 'rgba(255,255,255,0.1)', borderRadius: 12 }}>
         <ComposerPrimitive.Input
           className="aui-edit-composer-input flex min-h-[60px] w-full resize-none bg-transparent p-4 text-sm outline-none"
           style={{ color: '#f0f0f0' }}
@@ -837,13 +837,13 @@ const EditComposer: FC = () => {
         />
         <div className="aui-edit-composer-footer mx-3 mb-3 flex items-center justify-end gap-2">
           <ComposerPrimitive.Cancel asChild>
-            <Button variant="ghost" size="sm" aria-label="Cancel edit" style={{ borderRadius: 0 }}>
+            <Button variant="ghost" size="sm" aria-label="Cancel edit" style={{ borderRadius: 12 }}>
               Cancel
             </Button>
           </ComposerPrimitive.Cancel>
           <ComposerPrimitive.Send asChild>
             <Button size="sm" aria-label="Update message"
-              style={{ backgroundColor: '#ff4500', color: '#000', borderRadius: 0 }}>
+              style={{ backgroundColor: '#7c3aed', color: '#fff', borderRadius: 12 }}>
               Update
             </Button>
           </ComposerPrimitive.Send>
