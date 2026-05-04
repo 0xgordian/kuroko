@@ -12,7 +12,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 
 const MODE_COLORS: Record<TradeRecord['mode'], string> = {
   PAPER_TRADE: '#f59e0b',
-  SIGNING_REQUIRED: '#ff4500',
+  SIGNING_REQUIRED: '#7c3aed',
   EXECUTED: '#4ade80',
 };
 
@@ -57,12 +57,12 @@ export default function TradeHistory() {
     : null;
 
   return (
-    <div style={{ backgroundColor: '#111', borderRadius: 0 }}>
+    <div style={{ backgroundColor: '#111', borderRadius: 12 }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
         <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>
-          {'Trade History'} <span style={{ color: '#ff4500' }}>{'// All Trades'}</span>
+          {'Trade History'} <span style={{ color: '#7c3aed' }}>{'// All Trades'}</span>
           {records.length > 0 && (
             <span className="ml-2 font-terminal text-[9px]" style={{ color: '#444' }}>
               {records.length}
@@ -74,7 +74,7 @@ export default function TradeHistory() {
             <button
               onClick={() => exportTradeHistoryCSV(records)}
               className="font-terminal text-[10px] tracking-widest uppercase px-2 py-1 border transition-colors"
-              style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#555', backgroundColor: 'transparent', borderRadius: 0 }}
+              style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#555', backgroundColor: 'transparent', borderRadius: 12 }}
               onMouseEnter={(e) => { e.currentTarget.style.color = '#a0a0a0'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = '#555'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
             >
@@ -83,7 +83,7 @@ export default function TradeHistory() {
             <button
               onClick={handleClear}
               className="font-terminal text-[10px] tracking-widest uppercase px-2 py-1 border transition-colors"
-              style={{ borderColor: 'rgba(255,255,255,0.08)', color: '#444', backgroundColor: 'transparent', borderRadius: 0 }}
+              style={{ borderColor: 'rgba(255,255,255,0.08)', color: '#444', backgroundColor: 'transparent', borderRadius: 12 }}
               onMouseEnter={(e) => { e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(248,113,113,0.3)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.color = '#444'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; }}
             >
@@ -102,8 +102,8 @@ export default function TradeHistory() {
             <div className="flex items-center gap-0 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
               {[
                 { label: 'Trades', value: confirmed.length.toString(), color: '#f0f0f0' },
-                { label: 'Deployed', value: `$${totalDeployed.toFixed(0)}`, color: '#f0f0f0' },
-                { label: 'Realised P&L', value: resolved.length > 0 ? `${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(2)}` : '—', color: resolved.length > 0 ? (totalPnl >= 0 ? '#4ade80' : '#f87171') : '#555' },
+                { label: 'Deployed', value: `${totalDeployed.toFixed(0)}`, color: '#f0f0f0' },
+                { label: 'Realised P&L', value: resolved.length > 0 ? `${totalPnl >= 0 ? '+' : ''}${totalPnl.toFixed(2)}` : '—', color: resolved.length > 0 ? (totalPnl >= 0 ? '#4ade80' : '#f87171') : '#555' },
                 { label: 'Win Rate', value: winRate !== null ? `${winRate.toFixed(0)}%` : '—', color: winRate !== null ? (winRate >= 50 ? '#4ade80' : '#f87171') : '#555' },
                 { label: 'Avg Return', value: avgReturn !== null ? `${avgReturn >= 0 ? '+' : ''}${avgReturn.toFixed(0)}%` : '—', color: avgReturn !== null ? (avgReturn >= 0 ? '#4ade80' : '#f87171') : '#555' },
               ].map(({ label, value, color }, i) => (
@@ -151,6 +151,7 @@ export default function TradeHistory() {
                         color: r.side === 'YES' ? '#4ade80' : '#f87171',
                         borderColor: r.side === 'YES' ? 'rgba(74,222,128,0.3)' : 'rgba(248,113,113,0.3)',
                         backgroundColor: r.side === 'YES' ? 'rgba(74,222,128,0.08)' : 'rgba(248,113,113,0.08)',
+                        borderRadius: 12,
                       }}>
                       {r.side}
                     </span>
@@ -190,8 +191,8 @@ export default function TradeHistory() {
                     <button
                       onClick={() => setPnlTrade(r)}
                       className="font-terminal text-[9px] tracking-widest uppercase px-2 py-1 border transition-colors"
-                      style={{ borderColor: 'rgba(255,69,0,0.3)', color: '#ff4500', backgroundColor: 'transparent', borderRadius: 0 }}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255,69,0,0.08)'; }}
+                      style={{ borderColor: 'rgba(124,58,237,0.3)', color: '#7c3aed', backgroundColor: 'transparent', borderRadius: 8 }}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(124,58,237,0.08)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                     >
                       PnL
@@ -225,7 +226,7 @@ export default function TradeHistory() {
                   <button
                     onClick={() => setPnlTrade(r)}
                     className="font-terminal text-[9px] tracking-widest uppercase px-2 py-0.5 border"
-                    style={{ borderColor: 'rgba(255,69,0,0.3)', color: '#ff4500', backgroundColor: 'transparent', borderRadius: 0 }}
+                    style={{ borderColor: 'rgba(124,58,237,0.3)', color: '#7c3aed', backgroundColor: 'transparent', borderRadius: 8 }}
                   >
                     PnL
                   </button>
