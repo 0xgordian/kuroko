@@ -57,7 +57,7 @@ export const AppSelect: FC<AppSelectProps> = ({
             isProcessing && "cursor-not-allowed opacity-50",
             className,
           )}
-          style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+          style={{ borderRadius: 8, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
         >
           <span className="truncate">
             {selectedApp
@@ -74,7 +74,7 @@ export const AppSelect: FC<AppSelectProps> = ({
           align="start"
           sideOffset={4}
           className="w-[180px] max-h-[360px] overflow-y-auto p-1 shadow-xl border z-[9999]"
-          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}
+          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
         >
           <div className="flex flex-col gap-0.5">
             {apps.map((app: string) => (
@@ -93,7 +93,7 @@ export const AppSelect: FC<AppSelectProps> = ({
                   selectedApp === app ? "bg-[#161616] text-[#f0f0f0]" : "text-[#a0a0a0]",
                   isProcessing && "cursor-not-allowed opacity-50",
                 )}
-                style={{ borderRadius: 0 }}
+                style={{ borderRadius: 8 }}
               >
                 <span>{app === "khalani" ? "Khalani Swaps" : app}</span>
                 {selectedApp === app && <Icon icon="solar:check-circle-linear" className="h-4 w-4" />}
