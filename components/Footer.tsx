@@ -18,7 +18,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            style={{ color: '#444' }}
+            style={{ color: '#444', transition: 'color 0.15s ease' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#a0a0a0')}
             onMouseLeave={(e) => (e.currentTarget.style.color = '#444')}
           >
@@ -32,7 +32,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="X (Twitter)"
-            style={{ color: '#444' }}
+            style={{ color: '#444', transition: 'color 0.15s ease' }}
             onMouseEnter={(e) => (e.currentTarget.style.color = '#a0a0a0')}
             onMouseLeave={(e) => (e.currentTarget.style.color = '#444')}
           >
