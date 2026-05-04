@@ -139,7 +139,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}>
       <div className="w-full max-w-md border panel-bracket max-h-[90vh] overflow-y-auto"
-        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}>
+        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b"
@@ -153,7 +153,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
                 color: isLive ? '#4ade80' : '#f59e0b',
                 borderColor: isLive ? 'rgba(74,222,128,0.3)' : 'rgba(245,158,11,0.3)',
                 backgroundColor: isLive ? 'rgba(74,222,128,0.08)' : 'rgba(245,158,11,0.08)',
-                borderRadius: 0,
+                borderRadius: 12,
               }}>
               {modeLabel}
             </span>
@@ -163,33 +163,33 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
 
         <div className="p-5 space-y-4">
           {/* Market */}
-          <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+          <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
             <p className="font-terminal text-[10px] tracking-widest uppercase mb-1.5" style={{ color: '#555' }}>Market</p>
             <p className="text-sm leading-snug" style={{ color: '#f0f0f0' }}>{market.question}</p>
           </div>
 
           {/* Trade grid */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Action</p>
-              <p className="text-sm font-bold font-terminal" style={{ color: '#ff4500' }}>BUY {side}</p>
+              <p className="text-sm font-bold font-terminal" style={{ color: '#7c3aed' }}>BUY {side}</p>
             </div>
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Shares</p>
               <p className="text-sm font-bold font-terminal" style={{ color: '#f0f0f0' }}>{shares}</p>
             </div>
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Price / Share</p>
               <p className="text-sm font-bold font-terminal" style={{ color: '#f0f0f0' }}>{pricePerShare}¢</p>
             </div>
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Total Cost</p>
               <p className="text-sm font-bold font-terminal" style={{ color: '#f0f0f0' }}>${totalCost.toFixed(2)}</p>
             </div>
           </div>
 
           {/* Dollar sizing input */}
-          <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+          <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
             <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#555' }}>
               Position Size <span style={{ color: '#333' }}>{'// $ → shares'}</span>
             </p>
@@ -206,12 +206,12 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
                 className="flex-1 text-sm px-3 py-2 border outline-none font-terminal"
                 style={{
                   backgroundColor: '#111',
-                  borderColor: dollarAmount ? 'rgba(255,69,0,0.4)' : 'rgba(255,255,255,0.12)',
+                  borderColor: dollarAmount ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.12)',
                   color: '#f0f0f0',
-                  borderRadius: 0,
+                  borderRadius: 12,
                 }}
-                onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(255,69,0,0.5)')}
-                onBlur={(e) => (e.currentTarget.style.borderColor = dollarAmount ? 'rgba(255,69,0,0.4)' : 'rgba(255,255,255,0.12)')}
+                onFocus={(e) => (e.currentTarget.style.borderColor = 'rgba(124,58,237,0.5)')}
+                onBlur={(e) => (e.currentTarget.style.borderColor = dollarAmount ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.12)')}
               />
               <span className="font-terminal text-[10px] tracking-widest uppercase shrink-0" style={{ color: '#555' }}>
                 = {shares} shares
@@ -224,10 +224,10 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
                   onClick={() => setDollarAmount(String(amt))}
                   className="px-2 py-1 border font-terminal text-[10px] tracking-widest uppercase transition-colors"
                   style={{
-                    borderColor: dollarAmount === String(amt) ? '#ff4500' : 'rgba(255,255,255,0.08)',
-                    color: dollarAmount === String(amt) ? '#ff4500' : '#555',
-                    backgroundColor: dollarAmount === String(amt) ? 'rgba(255,69,0,0.08)' : 'transparent',
-                    borderRadius: 0,
+                    borderColor: dollarAmount === String(amt) ? '#7c3aed' : 'rgba(255,255,255,0.08)',
+                    color: dollarAmount === String(amt) ? '#7c3aed' : '#555',
+                    backgroundColor: dollarAmount === String(amt) ? 'rgba(124,58,237,0.08)' : 'transparent',
+                    borderRadius: 8,
                   }}
                 >
                   ${amt}
@@ -237,7 +237,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
           </div>
 
           {slippageBps != null && (
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Slippage Est.</p>
               <p className="text-sm font-bold font-terminal"
                 style={{ color: slippageBps <= 20 ? '#4ade80' : slippageBps <= 50 ? '#f59e0b' : '#f87171' }}>
@@ -248,18 +248,18 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
 
           {/* Payout */}
           <div className="p-4 border panel-bracket"
-            style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,69,0,0.2)', borderRadius: 0 }}>
+            style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(124,58,237,0.2)', borderRadius: 12 }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>If Correct</p>
                 <p className="text-3xl font-terminal font-bold"
-                  style={{ color: '#ff4500', textShadow: '0 0 16px rgba(255,69,0,0.35)' }}>
+                  style={{ color: '#7c3aed', textShadow: '0 0 16px rgba(124,58,237,0.35)' }}>
                   ${estimatedPayout.toFixed(2)}
                 </p>
               </div>
               <div className="text-right">
                 <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Return</p>
-                <p className="text-3xl font-terminal font-bold" style={{ color: '#ff4500' }}>
+                <p className="text-3xl font-terminal font-bold" style={{ color: '#7c3aed' }}>
                   +{estimatedReturn.toFixed(0)}%
                 </p>
               </div>
@@ -268,7 +268,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
 
           {/* Workflow handoff */}
           <div className="p-3 border panel-bracket"
-            style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
             <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#555' }}>
               Workflow Handoff
             </p>
@@ -289,9 +289,9 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
                   className="px-2 py-1 border font-terminal text-[10px] tracking-widest uppercase"
                   style={{
                     borderColor: 'rgba(255,255,255,0.08)',
-                    color: index === steps.length - 1 && mode === 'SIGNING_REQUIRED' ? '#ff4500' : '#666',
+                    color: index === steps.length - 1 && mode === 'SIGNING_REQUIRED' ? '#7c3aed' : '#666',
                     backgroundColor: 'rgba(255,255,255,0.02)',
-                    borderRadius: 0,
+                    borderRadius: 12,
                   }}
                 >
                   {step}
@@ -302,7 +302,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
 
           {/* Execution error */}
           {executionError && (
-            <div className="p-3 border" style={{ backgroundColor: 'rgba(248,113,113,0.05)', borderColor: 'rgba(248,113,113,0.3)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: 'rgba(248,113,113,0.05)', borderColor: 'rgba(248,113,113,0.3)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#f87171' }}>
                 Execution Failed
               </p>
@@ -312,7 +312,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
 
           {/* Confirmed state */}
           {confirmed && (
-            <div className="p-3 border" style={{ backgroundColor: 'rgba(74,222,128,0.05)', borderColor: 'rgba(74,222,128,0.2)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: 'rgba(74,222,128,0.05)', borderColor: 'rgba(74,222,128,0.2)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#4ade80' }}>
                 ✓ Trade Recorded
               </p>
@@ -323,7 +323,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
           )}
 
           {backendResponse && !backendResponse.includes('Paper trade simulation') && (
-            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+            <div className="p-3 border" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
               <p className="font-terminal text-[10px] tracking-widest uppercase mb-1.5" style={{ color: '#555' }}>Agent Response</p>
               <p className="text-sm leading-relaxed" style={{ color: '#a0a0a0' }}>{backendResponse}</p>
             </div>
@@ -344,7 +344,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
           <button
             onClick={onDismiss}
             className="flex-1 py-3 text-sm font-medium border transition-all"
-            style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 0 }}
+            style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 12, transition: 'all 0.15s ease' }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; e.currentTarget.style.color = '#f0f0f0'; }}
             onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = '#a0a0a0'; }}
           >
@@ -355,7 +355,7 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
             <button
               onClick={() => setShowPnl(true)}
               className="flex-1 py-3 text-sm font-bold transition-all flex items-center justify-center gap-2"
-              style={{ backgroundColor: '#161616', color: '#ff4500', borderRadius: 0, border: '1px solid rgba(255,69,0,0.3)' }}
+              style={{ backgroundColor: '#161616', color: '#7c3aed', borderRadius: 12, border: '1px solid rgba(124,58,237,0.3)' }}
             >
               View PnL Card
             </button>
@@ -364,7 +364,11 @@ export default function BetSimulation({ proposal, isSubmitting: externalSubmitti
               onClick={() => { void handleConfirm(); }}
               disabled={isSubmitting}
               className="flex-1 py-3 text-sm font-bold transition-all flex items-center justify-center gap-2"
-              style={{ backgroundColor: isSubmitting ? '#1a1a1a' : '#ff4500', color: isSubmitting ? '#555' : '#000', borderRadius: 0 }}
+              style={{ backgroundColor: isSubmitting ? '#1a1a1a' : '#7c3aed', color: isSubmitting ? '#555' : '#fff', borderRadius: 12, transition: 'all 0.15s ease' }}
+              onMouseEnter={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = '#8b5cf6'; }}
+              onMouseLeave={(e) => { if (!isSubmitting) e.currentTarget.style.backgroundColor = '#7c3aed'; }}
+              onMouseDown={(e) => { if (!isSubmitting) e.currentTarget.style.transform = 'scale(0.98)'; }}
+              onMouseUp={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             >
               {isSubmitting ? (
                 <>
