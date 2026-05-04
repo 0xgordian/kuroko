@@ -107,8 +107,8 @@ export const SecretInput: FC<SecretInputProps> = ({
           className={cn("relative rounded-full", className)}
           aria-label={hasSecrets ? "Secrets configured" : "Add secrets"}
         >
-          <Icon icon="solar:shield-linear"
-            className={cn("h-4 w-4", hasSecrets && "text-green-500")}
+          <Icon icon="solar:key-linear"
+            className={cn("h-4 w-4", hasSecrets && "text-[#a78bfa]")}
           />
         </Button>
       </DialogTrigger>
@@ -120,7 +120,7 @@ export const SecretInput: FC<SecretInputProps> = ({
         <div className="grid gap-3 py-4">
           {hasSecrets && (
             <div className="text-muted-foreground text-xs">
-              <Icon icon="solar:check-circle-linear" className="mr-1 inline h-3 w-3 text-green-500" />
+              <Icon icon="solar:check-circle-linear" className="mr-1 inline h-3 w-3" style={{ color: '#4ade80' }} />
               {savedNames.length} secret{savedNames.length > 1 ? "s" : ""}{" "}
               configured: {savedNames.join(", ")}
             </div>
