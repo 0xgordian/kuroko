@@ -3,162 +3,160 @@
 @tailwind utilities;
 
 :root {
-  --background: #0d0d0d;
-  --foreground: #ededed;
-  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --background: #09090b;
+  --surface-1: #0f0f11;
+  --surface-2: #111111;
+  --surface-3: #1a1a1a;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+  --border-active: rgba(255, 255, 255, 0.18);
+  --brand: #7c3aed;
+  --brand-hover: #8b5cf6;
+  --brand-light: #a78bfa;
+  --brand-dim: rgba(124, 58, 237, 0.12);
+  --brand-glow: rgba(124, 58, 237, 0.5);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-tertiary: rgba(255, 255, 255, 0.3);
+  --text-muted: rgba(255, 255, 255, 0.15);
+  --positive: #4ade80;
+  --negative: #f87171;
+  --warning: #f59e0b;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), 'JetBrains Mono', 'Fira Code', monospace;
-  --orange: #ff4500;
-  --orange-dim: rgba(255, 69, 0, 0.15);
-  --border: #1a1a1a;
-  --panel: #0f0f0f;
-  --text-primary: #ededed;
-  --text-secondary: #999999;
-  --text-tertiary: #666666;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 9999px;
+  /* Legacy aliases for components still using these */
+  --foreground: #ffffff;
+  --orange: #7c3aed;
+  --orange-dim: rgba(124, 58, 237, 0.12);
+  --panel: #111111;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  background: var(--background);
+  color-scheme: dark;
+}
+
 body {
   background: var(--background);
-  color: var(--foreground);
+  color: var(--text-primary);
   font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); }
+h3 { font-size: 1.25rem; font-weight: 700; }
+
+p { color: var(--text-secondary); line-height: 1.7; }
+
+a {
+  color: var(--brand-light);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover { color: var(--text-primary); }
+
+/* ── Panel system ─────────────────────────────────────────────────────────── */
+.panel-bracket {
+  background-color: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.panel-bracket:hover {
+  border-color: var(--border-hover);
+  background-color: var(--surface-3);
+}
+
+/* ── Strong panel ─────────────────────────────────────────────────────────── */
+.panel-strong {
+  border-color: rgba(124, 58, 237, 0.35) !important;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+}
+
+@keyframes pulse-brand {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.panel-strong-pulse {
+  animation: pulse-brand 2.5s ease-in-out infinite;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--brand);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+.btn-primary:hover { background: var(--brand-hover); transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ── Typography utilities ─────────────────────────────────────────────────── */
 .font-terminal {
   font-family: var(--font-mono);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.panel-bracket {
-  position: relative;
-  background-color: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 0;
-}
-
-.panel-bracket::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 8px;
-  height: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.panel-bracket::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 8px;
-  height: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  border-right: 1px solid rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.panel-bracket .corner-tr {
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  width: 8px;
-  height: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
-  border-right: 1px solid rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.panel-bracket .corner-bl {
-  position: absolute;
-  bottom: -1px;
-  left: -1px;
-  width: 8px;
-  height: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  pointer-events: none;
-  z-index: 1;
-}
-
-.panel-bracket:hover::before,
-.panel-bracket:hover::after,
-.panel-bracket:hover .corner-tr,
-.panel-bracket:hover .corner-bl {
-  border-color: var(--orange);
-}
-
-.panel-bracket:hover::before,
-.panel-bracket:hover::after,
-.panel-bracket-left:hover::before,
-.panel-bracket-left:hover::after {
-  border-color: var(--orange);
-}
-
-/* Text utility classes using CSS variables */
-.text-text-primary {
-  color: var(--text-primary);
-}
-
-.text-text-secondary {
-  color: var(--text-secondary);
-}
-
-.text-text-tertiary {
-  color: var(--text-tertiary);
-}
-
-/* Accessibility — keyboard focus ring */
-:focus-visible {
-  outline: 2px solid #ff4500 !important;
-  outline-offset: 2px;
-}
-
-:focus:not(:focus-visible) {
-  outline: none;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Animations */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Tailwind utility overrides for brutalist design */
 .t-label {
   font-family: var(--font-mono);
   font-size: 10px;
@@ -168,32 +166,86 @@ body {
 }
 
 .t-label-accent {
-  color: var(--orange);
+  color: var(--brand-light);
 }
 
 .orange-glow {
-  color: var(--orange);
-  text-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+  color: var(--brand-light);
+  text-shadow: 0 0 16px var(--brand-glow);
 }
 
-/* ── STRONG edge card glow ──────────────────────────────────────────────── */
-.panel-strong {
-  border-left-color: #ff4500 !important;
-  box-shadow: inset 2px 0 12px rgba(255, 69, 0, 0.08);
+/* ── Text utility classes ─────────────────────────────────────────────────── */
+.text-text-primary { color: var(--text-primary); }
+.text-text-secondary { color: var(--text-secondary); }
+.text-text-tertiary { color: var(--text-tertiary); }
+
+/* ── Badge ────────────────────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
 }
 
-/* ── Dim orange pulse on STRONG cards ──────────────────────────────────── */
-@keyframes pulse-orange {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+.badge-brand {
+  background: var(--brand-dim);
+  border-color: rgba(124, 58, 237, 0.25);
+  color: var(--brand-light);
 }
 
-.panel-strong-pulse {
-  animation: pulse-orange 2.5s ease-in-out infinite;
+/* ── Focus ────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
 }
 
-/* ── Para Wallet Modal Fix ──────────────────────────────────────────────── */
-/* Dark blurred overlay */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.15); }
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1s linear infinite; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in { animation: fade-in 0.2s ease forwards; }
+
+/* ── Inputs ───────────────────────────────────────────────────────────────── */
+input[type="text"], input[type="number"], input[type="email"], textarea {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: border-color 0.15s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  border-color: rgba(124, 58, 237, 0.5);
+  outline: none;
+}
+
+/* ── Para Wallet Modal ────────────────────────────────────────────────────── */
 [class*="para-modal-overlay"],
 [class*="ParaModal-overlay"],
 [class*="para-overlay"] {
@@ -202,45 +254,24 @@ body {
   -webkit-backdrop-filter: blur(8px) !important;
 }
 
-/* Match modal content to your terminal design */
 [class*="para-modal-content"],
 [class*="ParaModal-content"],
 [class*="para-content"] {
   background: #111 !important;
   border: 1px solid var(--border) !important;
-  border-radius: 0 !important;
+  border-radius: 12px !important;
   color: #f0f0f0 !important;
 }
 
-/* Force ALL text inside Para modal to be light */
-.para-sdk span,
-.para-sdk p,
-.para-sdk div,
-.para-sdk button,
-.para-sdk a,
-.para-sdk svg,
-.para-sdk path,
-.para-sdk img,
-[id*="para-"] span,
-[id*="para-"] p,
-[id*="para-"] div,
-[id*="para-"] button,
-[id*="para-"] a,
-[id*="para-"] svg,
-[id*="para-"] path,
-[data-para-modal] span,
-[data-para-modal] p,
-[data-para-modal] div,
-[data-para-modal] button,
-[data-para-modal] a,
-[data-para-modal] svg,
+.para-sdk span, .para-sdk p, .para-sdk div, .para-sdk button, .para-sdk a,
+.para-sdk svg, .para-sdk path, .para-sdk img,
+[id*="para-"] span, [id*="para-"] p, [id*="para-"] div, [id*="para-"] button,
+[id*="para-"] a, [id*="para-"] svg, [id*="para-"] path,
+[data-para-modal] span, [data-para-modal] p, [data-para-modal] div,
+[data-para-modal] button, [data-para-modal] a, [data-para-modal] svg,
 [data-para-modal] path,
-div[class*="psdk"] span,
-div[class*="psdk"] p,
-div[class*="psdk"] div,
-div[class*="psdk"] button,
-div[class*="psdk"] a,
-div[class*="psdk"] svg,
+div[class*="psdk"] span, div[class*="psdk"] p, div[class*="psdk"] div,
+div[class*="psdk"] button, div[class*="psdk"] a, div[class*="psdk"] svg,
 div[class*="psdk"] path {
   color: #f0f0f0 !important;
   fill: #f0f0f0 !important;
