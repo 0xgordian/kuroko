@@ -202,13 +202,13 @@ function HomeContent() {
       threshold: opp.market.currentProbability,
     });
     toast.success(`Alert set: ${opp.market.question.slice(0, 50)}…`, {
-      style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 0 },
-      iconTheme: { primary: '#ff4500', secondary: '#000' },
+      style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12 },
+      iconTheme: { primary: '#4ade80', secondary: '#111' },
     });
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#0d0d0d' }}>
+    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b' }}>
       <TopNav
         isFallback={isFallback}
         isLoadingMarkets={isLoadingMarkets}
@@ -237,7 +237,7 @@ function HomeContent() {
 
             {queryResult && (
               <div className="border panel-bracket"
-                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                 <EdgeResults
                   result={queryResult}
                   isQuerying={isQuerying}
@@ -250,7 +250,7 @@ function HomeContent() {
             )}
 
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <MarketFeed
                 markets={categoryFilteredMarkets}
                 isLoading={isLoadingMarkets}
@@ -261,7 +261,7 @@ function HomeContent() {
             </div>
 
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <TrendingMarkets markets={visibleMarkets} isLoading={isLoadingMarkets} />
             </div>
           </div>
@@ -270,12 +270,12 @@ function HomeContent() {
           {aiPanelOpen && (
           <div className="col-span-5 space-y-5 sticky top-12">
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <AomiWidget height="400px" />
             </div>
 
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <PositionPanel walletAddress={authAdapter.identity.address} isConnected={isWalletConnected} />
             </div>
           </div>
@@ -292,8 +292,8 @@ function HomeContent() {
                   onClick={() => setMobileTab(tab)}
                   className="flex-1 flex items-center justify-center py-3 font-terminal text-[11px] font-bold tracking-widest uppercase transition-colors"
                   style={{
-                    color: mobileTab === tab ? '#ff4500' : '#555',
-                    borderBottom: mobileTab === tab ? '2px solid #ff4500' : '2px solid transparent',
+                    color: mobileTab === tab ? '#a78bfa' : '#555',
+                    borderBottom: mobileTab === tab ? '2px solid #7c3aed' : '2px solid transparent',
                     backgroundColor: 'transparent',
                   }}
                 >
@@ -313,7 +313,7 @@ function HomeContent() {
               />
               <QueryBar onQuery={handleQuery} isQuerying={isQuerying} />
               <div className="border panel-bracket"
-                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                 <MarketFeed
                   markets={categoryFilteredMarkets}
                   isLoading={isLoadingMarkets}
@@ -327,7 +327,7 @@ function HomeContent() {
 
           {mobileTab === 'trending' && (
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <TrendingMarkets markets={visibleMarkets} isLoading={isLoadingMarkets} />
             </div>
           )}
@@ -335,7 +335,7 @@ function HomeContent() {
           {mobileTab === 'analysis' && (
             <div className="space-y-4">
               <div className="border panel-bracket"
-                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+                style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
                 <EdgeResults
                   result={queryResult}
                   isQuerying={isQuerying}
@@ -350,7 +350,7 @@ function HomeContent() {
 
           {mobileTab === 'ai' && (
             <div className="border panel-bracket"
-              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+              style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <AomiWidget height="60vh" />
             </div>
           )}
@@ -376,8 +376,8 @@ function HomeContent() {
 export default function TradePage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0d0d0d' }}>
-        <div className="w-6 h-6 border-2 border-[#ff4500]/30 border-t-[#ff4500] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#09090b' }}>
+        <div className="w-6 h-6 border-2 border-[#7c3aed]/30 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     }>
       <HomeContent />
