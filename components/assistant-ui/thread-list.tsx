@@ -28,7 +28,7 @@ const ThreadListNew: FC = () => {
       <Button
         className="aui-thread-list-new flex items-center justify-start gap-2 px-4 py-2 text-start w-full transition-colors"
         variant="ghost"
-        style={{ borderRadius: 0, color: '#ff4500', fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700 }}
+        style={{ borderRadius: 12, color: '#a78bfa', fontSize: '11px', fontFamily: 'monospace', letterSpacing: '0.1em', textTransform: 'uppercase', fontWeight: 700 }}
       >
         <Icon icon="solar:add-circle-linear" className="size-3.5" />
         New Chat
@@ -67,7 +67,7 @@ const ThreadListSkeleton: FC = () => {
 
 const ThreadListItem: FC = () => {
   return (
-    <ThreadListItemPrimitive.Root className="aui-thread-list-item data-active:bg-[#161616] flex items-center gap-2 pl-4 transition-all focus-visible:outline-none border-b" style={{ borderRadius: 0, borderColor: 'rgba(255,255,255,0.04)' }}
+    <ThreadListItemPrimitive.Root className="aui-thread-list-item data-active:bg-[#161616] flex items-center gap-2 pl-4 transition-all focus-visible:outline-none border-b" style={{ borderRadius: 8, borderColor: 'rgba(255,255,255,0.04)' }}
       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = '#161616'; }}
       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = ''; }}
     >
