@@ -96,16 +96,16 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
   const triggeredAlerts = alerts.filter((a) => !a.active && a.triggeredAt);
 
   return (
-    <div style={{ backgroundColor: '#111', borderRadius: 0 }}>
+    <div style={{ backgroundColor: '#111', borderRadius: 12 }}>
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
         <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>
           {'Alerts'}{' '}
-          <span style={{ color: '#ff4500' }}>{'// Active'}</span>
+          <span style={{ color: '#7c3aed' }}>{'// Active'}</span>
           {activeAlerts.length > 0 && (
             <span className="ml-2 px-1.5 py-0.5 font-terminal text-[9px]"
-              style={{ backgroundColor: 'rgba(255,69,0,0.15)', color: '#ff4500' }}>
+              style={{ backgroundColor: 'rgba(124,58,237,0.15)', color: '#7c3aed' }}>
               {activeAlerts.length}
             </span>
           )}
@@ -118,7 +118,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
             className="flex items-center gap-1.5 px-2 py-1 border transition-colors"
             style={{
               borderColor: notifEnabled ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.1)',
-              borderRadius: 0,
+              borderRadius: 12,
               backgroundColor: notifEnabled ? 'rgba(74,222,128,0.08)' : 'transparent',
             }}
             title={notifEnabled ? 'Notifications on' : 'Notifications off'}
@@ -131,13 +131,13 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
               style={{
                 borderColor: notifEnabled ? 'rgba(74,222,128,0.4)' : 'rgba(255,255,255,0.15)',
                 backgroundColor: notifEnabled ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
-                borderRadius: 0,
+                borderRadius: 12,
               }}>
               <div className="w-2.5 h-2 absolute top-0.25 transition-transform"
                 style={{
                   backgroundColor: notifEnabled ? '#4ade80' : '#555',
                   left: notifEnabled ? '14px' : '1px',
-                  borderRadius: 0,
+                  borderRadius: 12,
                 }} />
             </div>
           </button>
@@ -146,10 +146,10 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
             onClick={() => setShowForm((v) => !v)}
             className="font-terminal text-[10px] tracking-widest uppercase px-2 py-1 border transition-colors"
             style={{
-              borderColor: showForm ? '#ff4500' : 'rgba(255,255,255,0.12)',
-              color: showForm ? '#ff4500' : '#555',
+              borderColor: showForm ? '#7c3aed' : 'rgba(255,255,255,0.12)',
+              color: showForm ? '#7c3aed' : '#555',
               backgroundColor: 'transparent',
-              borderRadius: 0,
+              borderRadius: 12,
             }}
           >
             {showForm ? '✕ Cancel' : '+ Add Alert'}
@@ -158,12 +158,10 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
       </div>
 
       <div className="p-4 space-y-3">
-        {/* Notification permission request */}
-
         {/* Add alert form */}
         {showForm && (
           <div className="border p-3 space-y-3"
-            style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 0 }}>
+            style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 12 }}>
             <p className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>
               New Alert
             </p>
@@ -180,7 +178,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
                   backgroundColor: '#111',
                   borderColor: 'rgba(255,255,255,0.12)',
                   color: '#f0f0f0',
-                  borderRadius: 0,
+                  borderRadius: 12,
                 }}
               />
               {search && !selectedMarket && filteredMarkets.length > 0 && (
@@ -199,7 +197,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
                       onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#161616')}
                       onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
                     >
-                      <span className="font-terminal text-[10px] mr-2" style={{ color: '#ff4500' }}>
+                      <span className="font-terminal text-[10px] mr-2" style={{ color: '#7c3aed' }}>
                         {m.currentProbability}%
                       </span>
                       {m.question.slice(0, 70)}
@@ -219,7 +217,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
                   backgroundColor: '#111',
                   borderColor: 'rgba(255,255,255,0.12)',
                   color: '#a0a0a0',
-                  borderRadius: 0,
+                  borderRadius: 12,
                   fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
                   height: '32px',
                 }}
@@ -239,7 +237,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
                   backgroundColor: '#111',
                   borderColor: 'rgba(255,255,255,0.12)',
                   color: '#f0f0f0',
-                  borderRadius: 0,
+                  borderRadius: 12,
                 }}
               />
             </div>
@@ -249,9 +247,9 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
               disabled={!selectedMarket || !threshold}
               className="w-full py-2 text-xs font-bold transition-all"
               style={{
-                backgroundColor: selectedMarket && threshold ? '#ff4500' : '#1a1a1a',
-                color: selectedMarket && threshold ? '#000' : '#555',
-                borderRadius: 0,
+                backgroundColor: selectedMarket && threshold ? '#7c3aed' : '#1a1a1a',
+                color: selectedMarket && threshold ? '#fff' : '#555',
+                borderRadius: 12,
               }}
             >
               Save Alert
@@ -266,7 +264,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
           <div className="space-y-2">
             {activeAlerts.map((alert) => (
               <div key={alert.id} className="flex items-start justify-between gap-2 border p-2.5"
-                style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 0 }}>
+                style={{ borderColor: 'rgba(255,255,255,0.08)', backgroundColor: '#0d0d0d', borderRadius: 12 }}>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs line-clamp-1 mb-1" style={{ color: '#a0a0a0' }}>
                     {alert.marketQuestion}
@@ -305,7 +303,7 @@ export default function AlertsPanel({ markets }: AlertsPanelProps) {
             <div className="space-y-1.5">
               {triggeredAlerts.slice(0, 3).map((alert) => (
                 <div key={alert.id} className="flex items-center gap-2 px-2.5 py-2 border"
-                  style={{ borderColor: 'rgba(255,255,255,0.05)', backgroundColor: '#0d0d0d', borderRadius: 0 }}>
+                  style={{ borderColor: 'rgba(255,255,255,0.05)', backgroundColor: '#0d0d0d', borderRadius: 12 }}>
                   <span className="font-terminal text-[10px]" style={{ color: '#444' }}>✓</span>
                   <p className="text-xs line-clamp-1 flex-1" style={{ color: '#555' }}>
                     {alert.marketQuestion.slice(0, 50)}
