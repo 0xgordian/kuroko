@@ -86,10 +86,10 @@ export const ConnectButton: FC<ConnectButtonProps> = ({
         isUnavailable && "cursor-not-allowed opacity-60",
         identity.isConnected
           ? "bg-transparent border-[#4ade80]/40 text-[#4ade80] hover:border-[#4ade80]/70 hover:bg-[#4ade80]/5"
-          : "bg-transparent border-[#ff4500]/60 text-[#ff4500] hover:border-[#ff4500] hover:bg-[#ff4500]/5",
+          : "bg-transparent border-[#7c3aed]/60 text-[#7c3aed] hover:border-[#7c3aed] hover:bg-[#7c3aed]/5",
         className,
       )}
-      style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+      style={{ borderRadius: 8, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
       aria-label={ariaLabel}
     >
       <span className="max-w-[140px] truncate">{primaryLabel}</span>
