@@ -78,30 +78,32 @@ export default function QueryBar({ onQuery, isLoading, isQuerying, compact }: Qu
 
   return (
     <div className="px-4 pb-4 w-full">
-      <form onSubmit={handleSubmit} className="relative w-full">
+      <form onSubmit={handleSubmit} className="relative w-full flex">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Search markets or ask a question..."
-          className="w-full text-sm border px-3 py-3 pr-20 transition-colors focus:outline-none"
+          className="flex-1 text-sm border px-3 py-3 transition-colors focus:outline-none"
           style={{
             backgroundColor: '#0d0d0d',
             borderColor: 'rgba(255,255,255,0.12)',
             color: '#f0f0f0',
-            borderRadius: 0,
+            borderRadius: 12,
+            borderTopRightRadius: 0,
+            borderBottomRightRadius: 0,
           }}
-          onFocus={(e) => (e.target.style.borderColor = 'rgba(255,69,0,0.5)')}
+          onFocus={(e) => (e.target.style.borderColor = 'rgba(124,58,237,0.5)')}
           onBlur={(e) => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
         />
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="absolute right-0 top-0 bottom-0 px-4 text-xs font-terminal font-bold tracking-widest uppercase transition-all flex items-center gap-2"
+          className="px-4 text-xs font-terminal font-bold tracking-widest uppercase transition-all flex items-center gap-2"
           style={{
-            backgroundColor: loading || !input.trim() ? '#1a1a1a' : '#ff4500',
-            color: loading || !input.trim() ? '#555' : '#000',
-            borderRadius: 0,
+            backgroundColor: loading || !input.trim() ? '#1a1a1a' : '#7c3aed',
+            color: loading || !input.trim() ? '#555' : '#fff',
+            borderRadius: '0 12px 12px 0',
           }}
         >
           {loading ? (
@@ -126,7 +128,7 @@ export default function QueryBar({ onQuery, isLoading, isQuerying, compact }: Qu
               backgroundColor: 'transparent',
               borderColor: 'rgba(255,255,255,0.10)',
               color: '#a0a0a0',
-              borderRadius: 0,
+              borderRadius: 9999,
             }}
             onMouseEnter={(e) => {
               (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.25)';
