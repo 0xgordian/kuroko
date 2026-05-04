@@ -47,7 +47,7 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
             (isPending || !switchChain) && "cursor-not-allowed opacity-60",
             className,
           )}
-          style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+          style={{ borderRadius: 8, fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
         >
           <span className="truncate">{displayName}</span>
           <Icon icon="solar:alt-arrow-down-linear" className="ml-2 h-3.5 w-3.5 shrink-0 opacity-50" />
@@ -57,7 +57,7 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
         align="start"
         sideOffset={4}
         className="w-[180px] max-h-[360px] overflow-y-auto p-1 shadow-xl border z-[9999]"
-        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}
+        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
       >
         <div className="flex flex-col gap-0.5">
           {chains.map((chain) => (
@@ -75,10 +75,10 @@ export const NetworkSelect: FC<NetworkSelectProps> = ({
                 chainId === chain.id ? "bg-[#161616] text-[#f0f0f0]" : "text-[#a0a0a0]",
                 (isPending || !switchChain) && "cursor-not-allowed opacity-50",
               )}
-              style={{ borderRadius: 0, fontFamily: "var(--font-geist-mono), monospace" }}
+              style={{ borderRadius: 8, fontFamily: "var(--font-geist-mono), monospace" }}
             >
               <span>{chain.name}</span>
-              {chainId === chain.id && <Icon icon="solar:check-circle-linear" className="h-3.5 w-3.5" style={{ color: '#ff4500' }} />}
+              {chainId === chain.id && <Icon icon="solar:check-circle-linear" className="h-3.5 w-3.5" style={{ color: '#7c3aed' }} />}
             </button>
           ))}
         </div>
