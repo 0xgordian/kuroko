@@ -41,7 +41,7 @@ function MarketSelect({
             backgroundColor: 'transparent',
             borderColor: 'rgba(255,255,255,0.12)',
             color: value ? '#f0f0f0' : '#555',
-            borderRadius: 0,
+            borderRadius: 12,
             fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
           }}
         >
@@ -53,12 +53,12 @@ function MarketSelect({
         align="start"
         sideOffset={4}
         className="w-[min(420px,calc(100vw-32px))] max-h-[320px] overflow-y-auto p-1 border z-[9999]"
-        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}
+        style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
       >
         <button
           onClick={() => { onChange(null); setOpen(false); }}
           className="flex w-full items-center gap-2 px-3 py-2 text-xs hover:bg-[#161616] transition-colors"
-          style={{ color: '#555', borderRadius: 0, fontFamily: "var(--font-geist-mono), monospace" }}
+          style={{ color: '#555', borderRadius: 8, fontFamily: "var(--font-geist-mono), monospace" }}
         >
           Clear selection
         </button>
@@ -70,13 +70,13 @@ function MarketSelect({
             style={{
               color: value?.id === m.id ? '#f0f0f0' : '#a0a0a0',
               backgroundColor: value?.id === m.id ? '#161616' : 'transparent',
-              borderRadius: 0,
+              borderRadius: 12,
               fontFamily: "var(--font-geist-mono), monospace",
             }}
           >
             <span className="truncate text-left flex-1">{m.question.slice(0, 60)}{m.question.length > 60 ? '…' : ''}</span>
-            <span className="shrink-0 font-bold" style={{ color: '#ff4500' }}>{m.currentProbability}%</span>
-            {value?.id === m.id && <Icon icon="solar:check-circle-linear" className="w-3.5 h-3.5 shrink-0" style={{ color: '#ff4500' }} />}
+            <span className="shrink-0 font-bold" style={{ color: '#7c3aed' }}>{m.currentProbability}%</span>
+            {value?.id === m.id && <Icon icon="solar:check-circle-linear" className="w-3.5 h-3.5 shrink-0" style={{ color: '#7c3aed' }} />}
           </button>
         ))}
       </PopoverContent>
@@ -169,10 +169,10 @@ function PortfolioContent() {
     onChange: (tab) => setMobileTab(tab as PortfolioTab),
   });
 
-  const panel = { backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 };
+  const panel = { backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 };
 
   return (
-    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#0d0d0d' }}>
+    <div className="min-h-screen flex flex-col pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b' }}>
       <TopNav
         isFallback={isFallback}
         isLoadingMarkets={isLoadingMarkets}
@@ -197,8 +197,8 @@ function PortfolioContent() {
               onClick={() => setMobileTab(tab.id)}
               className="flex-1 flex items-center justify-center py-3 font-terminal text-[11px] font-bold tracking-widest uppercase transition-colors"
               style={{
-                color: mobileTab === tab.id ? '#ff4500' : '#555',
-                borderBottom: mobileTab === tab.id ? '2px solid #ff4500' : '2px solid transparent',
+                color: mobileTab === tab.id ? '#a78bfa' : '#555',
+                borderBottom: mobileTab === tab.id ? '2px solid #7c3aed' : '2px solid transparent',
                 backgroundColor: 'transparent',
               }}
             >
@@ -225,7 +225,7 @@ function PortfolioContent() {
                 ) : isLoadingPositions ? (
                   <div className="space-y-2">
                     {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-8 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 0 }} />
+                      <div key={i} className="h-8 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 8 }} />
                     ))}
                   </div>
                 ) : (
@@ -357,8 +357,8 @@ function PortfolioContent() {
 export default function PortfolioPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0d0d0d' }}>
-        <div className="w-6 h-6 border-2 border-[#ff4500]/30 border-t-[#ff4500] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#09090b' }}>
+        <div className="w-6 h-6 border-2 border-[#7c3aed]/30 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     }>
       <PortfolioContent />
