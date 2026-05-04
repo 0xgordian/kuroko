@@ -6,9 +6,9 @@ export default function ExecutionBadge({ mode }: ExecutionBadgeProps) {
   const palette =
     mode === 'EXECUTED'
       ? {
-          borderColor: 'rgba(255,69,0,0.4)',
-          color: '#ff4500',
-          dot: '#ff4500',
+          borderColor: 'rgba(124,58,237,0.4)',
+          color: '#a78bfa',
+          dot: '#7c3aed',
           label: 'Executed',
         }
       : mode === 'SIGNING_REQUIRED'
@@ -29,7 +29,7 @@ export default function ExecutionBadge({ mode }: ExecutionBadgeProps) {
       style={{
         borderColor: palette.borderColor,
         color: palette.color,
-        borderRadius: 0,
+        borderRadius: 8,
       }}>
       <span className="w-1.5 h-1.5 rounded-full"
         style={{ backgroundColor: palette.dot }} />
