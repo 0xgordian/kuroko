@@ -18,7 +18,7 @@ export default function PnlCard({ trade: record, onClose }: PnlCardProps) {
   const isProfit = estimatedReturn > 0;
 
   const modeLabel = record.mode === 'EXECUTED' ? 'LIVE TRADE' : record.mode === 'SIGNING_REQUIRED' ? 'SIGNED' : 'PAPER TRADE';
-  const modeColor = record.mode === 'EXECUTED' ? '#4ade80' : record.mode === 'SIGNING_REQUIRED' ? '#ff4500' : '#f59e0b';
+  const modeColor = record.mode === 'EXECUTED' ? '#4ade80' : record.mode === 'SIGNING_REQUIRED' ? '#7c3aed' : '#f59e0b';
 
   const handleDownload = useCallback(async () => {
     if (!cardRef.current) return;
@@ -51,12 +51,12 @@ export default function PnlCard({ trade: record, onClose }: PnlCardProps) {
         <div
           ref={cardRef}
           className="border panel-bracket p-6 space-y-5"
-          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 0 }}
+          style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.12)', borderRadius: 12 }}
         >
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#ff4500' }}>
+              <p className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#7c3aed' }}>
                 KUROKO
               </p>
               <p className="font-terminal text-[10px] tracking-widest uppercase mt-0.5" style={{ color: '#444' }}>
@@ -65,14 +65,14 @@ export default function PnlCard({ trade: record, onClose }: PnlCardProps) {
             </div>
             <span
               className="font-terminal text-[10px] font-bold tracking-widest uppercase px-2 py-1 border"
-              style={{ color: modeColor, borderColor: modeColor, backgroundColor: `${modeColor}15`, borderRadius: 0 }}
+              style={{ color: modeColor, borderColor: modeColor, backgroundColor: `${modeColor}15`, borderRadius: 12 }}
             >
               {modeLabel}
             </span>
           </div>
 
           {/* Market */}
-          <div className="border-l-2 pl-3" style={{ borderColor: 'rgba(255,69,0,0.4)' }}>
+          <div className="border-l-2 pl-3" style={{ borderColor: 'rgba(124,58,237,0.4)' }}>
             <p className="text-sm leading-snug" style={{ color: '#f0f0f0' }}>
               {record.marketQuestion}
             </p>
@@ -109,14 +109,14 @@ export default function PnlCard({ trade: record, onClose }: PnlCardProps) {
 
           {/* P&L highlight */}
           <div className="border p-4"
-            style={{ backgroundColor: '#0d0d0d', borderColor: isProfit ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)', borderRadius: 0 }}>
+            style={{ backgroundColor: '#0d0d0d', borderColor: isProfit ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)', borderRadius: 12 }}>
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>
                   If Correct
                 </p>
                 <p className="text-3xl font-terminal font-bold"
-                  style={{ color: '#ff4500', textShadow: '0 0 16px rgba(255,69,0,0.35)' }}>
+                  style={{ color: '#7c3aed', textShadow: '0 0 16px rgba(124,58,237,0.35)' }}>
                   ${estimatedPayout.toFixed(2)}
                 </p>
               </div>
@@ -151,16 +151,18 @@ export default function PnlCard({ trade: record, onClose }: PnlCardProps) {
           <button
             onClick={handleDownload}
             className="flex-1 py-2.5 text-xs font-terminal font-bold tracking-widest uppercase transition-all"
-            style={{ backgroundColor: '#ff4500', color: '#000', borderRadius: 0 }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#ff6b35')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#ff4500')}
+            style={{ backgroundColor: '#7c3aed', color: '#fff', borderRadius: 12, transition: 'all 0.15s ease' }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#8b5cf6')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#7c3aed')}
+            onMouseDown={(e) => { e.currentTarget.style.transform = 'scale(0.98)'; }}
+            onMouseUp={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
           >
             ↓ Save Image
           </button>
           <button
             onClick={onClose}
             className="flex-1 py-2.5 text-xs font-terminal font-medium border transition-all"
-            style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 0 }}
+            style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.12)', color: '#a0a0a0', borderRadius: 12, transition: 'all 0.15s ease' }}
             onMouseEnter={(e) => { e.currentTarget.style.color = '#f0f0f0'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.color = '#a0a0a0'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}
           >
