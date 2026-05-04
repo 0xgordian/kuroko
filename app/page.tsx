@@ -151,7 +151,7 @@ function ChatContent() {
   })();
 
   return (
-    <div className="flex flex-col overflow-hidden pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#0d0d0d', height: 'calc(100vh - 48px)' }}>
+    <div className="flex flex-col overflow-hidden pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b', height: 'calc(100vh - 48px)' }}>
       <TopNav
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
@@ -198,8 +198,8 @@ function ChatContent() {
 export default function ChatPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0d0d0d' }}>
-        <div className="w-6 h-6 border-2 border-[#ff4500]/30 border-t-[#ff4500] rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#09090b' }}>
+        <div className="w-6 h-6 border-2 border-[#7c3aed]/30 border-t-[#7c3aed] rounded-full animate-spin" />
       </div>
     }>
       <ChatContent />
