@@ -41,7 +41,7 @@ const CodeHeader: FC<CodeHeaderProps> = ({ language, code }) => {
       className="flex items-center justify-between px-3 py-1.5 border-b"
       style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.08)' }}
     >
-      <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#ff4500' }}>
+      <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#a78bfa' }}>
         {language ?? 'code'}
       </span>
       <TooltipIconButton tooltip="Copy" onClick={() => code && copyToClipboard(code)}>
@@ -55,7 +55,7 @@ const defaultComponents = memoizeMarkdownComponents({
   h1: ({ className, ...props }) => (
     <h1
       className={cn("mt-4 mb-2 first:mt-0 font-terminal font-bold text-base tracking-tight", className)}
-      style={{ color: '#f0f0f0', borderBottom: '1px solid rgba(255,69,0,0.3)', paddingBottom: '4px' }}
+      style={{ color: '#f0f0f0', borderBottom: '1px solid rgba(124,58,237,0.3)', paddingBottom: '4px' }}
       {...props}
     />
   ),
@@ -69,7 +69,7 @@ const defaultComponents = memoizeMarkdownComponents({
   h3: ({ className, ...props }) => (
     <h3
       className={cn("mt-3 mb-1 first:mt-0 font-terminal font-semibold text-sm", className)}
-      style={{ color: '#ff4500' }}
+      style={{ color: '#a78bfa' }}
       {...props}
     />
   ),
@@ -104,7 +104,7 @@ const defaultComponents = memoizeMarkdownComponents({
   a: ({ className, ...props }) => (
     <a
       className={cn("underline underline-offset-2 hover:opacity-80 transition-opacity", className)}
-      style={{ color: '#ff4500' }}
+      style={{ color: '#a78bfa' }}
       {...props}
     />
   ),
@@ -112,9 +112,9 @@ const defaultComponents = memoizeMarkdownComponents({
     <blockquote
       className={cn("my-2 border-l-2 pl-3 italic text-sm", className)}
       style={{
-        borderColor: 'rgba(255,69,0,0.5)',
+        borderColor: 'rgba(124,58,237,0.5)',
         color: '#a0a0a0',
-        backgroundColor: 'rgba(255,69,0,0.04)',
+        backgroundColor: 'rgba(124,58,237,0.04)',
         padding: '8px 12px',
       }}
       {...props}
@@ -140,7 +140,7 @@ const defaultComponents = memoizeMarkdownComponents({
       style={{ color: '#e0e0e0' }}
       {...props}
     >
-      <span style={{ color: '#ff4500', flexShrink: 0, marginTop: '2px', fontFamily: 'monospace' }}>›</span>
+      <span style={{ color: '#a78bfa', flexShrink: 0, marginTop: '2px', fontFamily: 'monospace' }}>›</span>
       <span>{children}</span>
     </li>
   ),
@@ -155,7 +155,7 @@ const defaultComponents = memoizeMarkdownComponents({
   table: ({ className, ...props }) => (
     <div
       className="my-3 overflow-x-auto border"
-      style={{ borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}
+      style={{ borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}
     >
       <table
         className={cn("w-full text-xs border-collapse", className)}
@@ -215,7 +215,7 @@ const defaultComponents = memoizeMarkdownComponents({
       style={{
         backgroundColor: '#0d0d0d',
         borderColor: 'rgba(255,255,255,0.08)',
-        borderRadius: 0,
+        borderRadius: 8,
         color: '#a0a0a0',
         fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
         padding: 0,
@@ -240,8 +240,8 @@ const defaultComponents = memoizeMarkdownComponents({
         className={cn("px-1.5 py-0.5 text-[0.85em]", className)}
         style={{
           backgroundColor: '#161616',
-          color: '#ff4500',
-          borderRadius: 0,
+          color: '#a78bfa',
+          borderRadius: 6,
           border: '1px solid rgba(255,255,255,0.08)',
           fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
         }}
