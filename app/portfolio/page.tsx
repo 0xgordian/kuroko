@@ -7,6 +7,8 @@ import { fetchActiveMarkets } from '@/lib/services/marketService';
 import { fetchUserPositions, type UserPosition } from '@/lib/services/clobService';
 import { checkTradeOutcomes } from '@/lib/services/tradeHistoryService';
 import { useAomiAuthAdapter } from '@/lib/aomi-auth-adapter';
+import { ARC_MARKET_CONTRACT, getOnChainMarket, getUserShares } from '@/lib/services/arcContractService';
+import { ARC_DEMO_MARKETS } from '@/lib/data/arcMarkets';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import TopNav from '@/components/TopNav';
 import PriceChart from '@/components/PriceChart';
@@ -92,24 +94,42 @@ function PortfolioContent() {
   const [isLoadingMarkets, setIsLoadingMarkets] = useState(true);
   const [positions, setPositions] = useState<UserPosition[]>([]);
   const [isLoadingPositions, setIsLoadingPositions] = useState(false);
+  const [arcPositions, setArcPositions] = useState<Array<{ marketId: number; question: string; side: 'YES' | 'NO'; shares: number; resolved: boolean; outcome: boolean }>>([]);
+  const [loadingArcPositions, setLoadingArcPositions] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [mobileTab, setMobileTab] = useState<PortfolioTab>('portfolio');
 
   const authAdapter = useAomiAuthAdapter();
   const isWalletConnected = authAdapter.identity.isConnected;
   const walletAddress = authAdapter.identity.address ?? null;
+  const isArc = authAdapter.identity.chainId === 5042002;
   const hasLiveIntentPath = Boolean(process.env.NEXT_PUBLIC_AOMI_API_KEY);
-  const liveModeLabel = hasLiveIntentPath
-    ? isWalletConnected ? 'Signing Ready' : 'Connect Wallet'
-    : 'Paper Mode';
+  const liveModeLabel = isArc
+    ? 'Arc Demo'
+    : hasLiveIntentPath
+      ? isWalletConnected ? 'Signing Ready' : 'Connect Wallet'
+      : 'Paper Mode';
 
   const loadMarkets = useCallback(async () => {
     setIsLoadingMarkets(true);
+    if (isArc) {
+      try {
+        const res = await fetch('/api/arc-markets');
+        const data = await res.json();
+        setMarkets(Array.isArray(data) ? data as Market[] : []);
+        setIsFallback(false);
+      } catch {
+        setMarkets([]);
+        setIsFallback(true);
+      }
+      setIsLoadingMarkets(false);
+      return;
+    }
     const { markets: loaded, isFallback: fb } = await fetchActiveMarkets();
     setMarkets(loaded);
     setIsFallback(fb);
     setIsLoadingMarkets(false);
-  }, []);
+  }, [isArc]);
 
   const loadPositions = useCallback(async () => {
     if (!walletAddress) { setPositions([]); return; }
@@ -122,19 +142,48 @@ function PortfolioContent() {
   useEffect(() => { void loadMarkets(); }, [loadMarkets]);
   useEffect(() => { void loadPositions(); }, [loadPositions]);
 
-  // Default chart to highest-value position once markets load
+  const loadArcPositions = useCallback(async () => {
+    if (!isArc || !walletAddress || !ARC_MARKET_CONTRACT) {
+      setArcPositions([]);
+      setLoadingArcPositions(false);
+      return;
+    }
+
+    setLoadingArcPositions(true);
+    try {
+      const results: Array<{ marketId: number; question: string; side: 'YES' | 'NO'; shares: number; resolved: boolean; outcome: boolean }> = [];
+      for (const definition of ARC_DEMO_MARKETS) {
+        const [shares, market] = await Promise.all([
+          getUserShares(definition.contractMarketId, walletAddress),
+          getOnChainMarket(definition.contractMarketId),
+        ]);
+        if (!market || market.id === 0 || market.question !== definition.question) continue;
+        if (shares.yes > 0) results.push({ marketId: definition.contractMarketId, question: market.question, side: 'YES', shares: shares.yes, resolved: market.resolved, outcome: market.outcome });
+        if (shares.no > 0) results.push({ marketId: definition.contractMarketId, question: market.question, side: 'NO', shares: shares.no, resolved: market.resolved, outcome: market.outcome });
+      }
+      setArcPositions(results);
+    } catch {
+      setArcPositions([]);
+    } finally {
+      setLoadingArcPositions(false);
+    }
+  }, [isArc, walletAddress]);
+
+  // ── Load Arc on-chain positions ─────────────────────────────────────────
+  useEffect(() => { void loadArcPositions(); }, [loadArcPositions]);
+
   useEffect(() => {
-    if (!markets.length || selectedMarket) return;
-    if (!positions.length) return;
-    // Find the market matching the highest-value position
-    const topPosition = [...positions].sort((a, b) => (b.size * b.current_price) - (a.size * a.current_price))[0];
-    if (!topPosition) return;
-    const match = markets.find(
-      (m) => m.id === topPosition.market_id ||
-        m.question.toLowerCase().includes(topPosition.question.toLowerCase().slice(0, 30))
-    );
-    if (match) setSelectedMarket(match);
-  }, [markets, positions, selectedMarket]);
+    if (!isArc) return;
+    const refresh = () => { void loadArcPositions(); };
+    window.addEventListener('focus', refresh);
+    window.addEventListener('kuroko:arc-trade-confirmed', refresh);
+    window.addEventListener('storage', refresh);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      window.removeEventListener('kuroko:arc-trade-confirmed', refresh);
+      window.removeEventListener('storage', refresh);
+    };
+  }, [isArc, loadArcPositions]);
 
   // Check paper trade outcomes on load — throttled to once per hour
   useEffect(() => {
@@ -179,6 +228,7 @@ function PortfolioContent() {
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
         walletAddress={walletAddress}
+        chainId={authAdapter.identity.chainId}
         onConnectWallet={!isWalletConnected ? () => authAdapter.connect() : undefined}
         onManageWallet={isWalletConnected ? () => authAdapter.manageAccount() : undefined}
       />
@@ -220,7 +270,48 @@ function PortfolioContent() {
                 <p className="t-label mb-3">
                   Portfolio <span className="t-label-accent">{'// Summary'}</span>
                 </p>
-                {!isWalletConnected ? (
+                {isArc ? (
+                  <div className="space-y-3">
+                    <div>
+                      <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Network</p>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
+                        <p className="font-terminal text-sm font-bold" style={{ color: '#3b82f6' }}>Arc Testnet</p>
+                      </div>
+                    </div>
+                    {isWalletConnected && walletAddress && (
+                      <div>
+                        <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#555' }}>Address</p>
+                        <p className="font-terminal text-xs" style={{ color: '#f0f0f0' }}>{walletAddress.slice(0, 10)}…{walletAddress.slice(-6)}</p>
+                      </div>
+                    )}
+                    {loadingArcPositions ? (
+                      <div className="space-y-2">
+                        {[1, 2].map((i) => (
+                          <div key={i} className="h-8 animate-pulse" style={{ backgroundColor: '#161616', borderRadius: 8 }} />
+                        ))}
+                      </div>
+                    ) : arcPositions.length > 0 ? (
+                      <div>
+                        <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#555' }}>On-Chain Positions</p>
+                        <div className="space-y-1.5">
+                          {arcPositions.map((p) => (
+                            <div key={`${p.marketId}-${p.side}`} className="flex items-center justify-between text-xs" style={{ color: '#a0a0a0' }}>
+                              <span className="truncate max-w-[180px]">{p.question.slice(0, 30)}</span>
+                              <span style={{ color: p.side === 'YES' ? '#4ade80' : '#f87171' }}>
+                                {p.side} {p.shares > 10_000_000_000_000 ? `${(p.shares / 1_000_000_000_000_000_000).toFixed(4)} USDC` : `${p.shares} shares`}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="border-t pt-3" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                        <p className="text-xs" style={{ color: '#555' }}>No on-chain positions yet. Trade from the Execute page to see them here.</p>
+                      </div>
+                    )}
+                  </div>
+                ) : !isWalletConnected ? (
                   <p className="text-xs" style={{ color: '#555' }}>Connect wallet to view portfolio</p>
                 ) : isLoadingPositions ? (
                   <div className="space-y-2">
@@ -293,7 +384,19 @@ function PortfolioContent() {
             <div className="space-y-3">
               <div className="border panel-bracket p-4" style={panel}>
                 <p className="t-label mb-3">Portfolio <span className="t-label-accent">{'// Summary'}</span></p>
-                {!isWalletConnected ? (
+                {isArc ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#3b82f6' }} />
+                      <p className="font-terminal text-sm font-bold" style={{ color: '#3b82f6' }}>Arc Testnet</p>
+                    </div>
+                    {arcPositions.length > 0 ? (
+                      <p className="text-xs" style={{ color: '#a0a0a0' }}>{arcPositions.length} on-chain position{arcPositions.length > 1 ? 's' : ''}</p>
+                    ) : (
+                      <p className="text-xs" style={{ color: '#555' }}>No on-chain positions yet</p>
+                    )}
+                  </div>
+                ) : !isWalletConnected ? (
                   <p className="text-xs" style={{ color: '#555' }}>Connect wallet to view portfolio</p>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
