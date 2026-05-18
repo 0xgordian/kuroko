@@ -345,6 +345,7 @@ function MarketsContent() {
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
         walletAddress={authAdapter.identity.address}
+        chainId={authAdapter.identity.chainId}
         rightSlot={null}
         onConnectWallet={!isWalletConnected ? () => authAdapter.connect() : undefined}
         onManageWallet={isWalletConnected ? () => authAdapter.manageAccount() : undefined}
