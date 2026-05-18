@@ -7,9 +7,12 @@ import {
   createContext,
   useContext,
   useState,
+  useMemo,
+  useEffect,
   Component,
 } from "react";
 import { AomiRuntimeProvider, cn, useAomiRuntime } from "@aomi-labs/react";
+import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
 // Error boundary that swallows aomi backend 404s (postState, etc.)
 // These happen when no API key is configured and are non-fatal
@@ -132,6 +135,37 @@ const ComposerControlContext = createContext<ComposerControlContextValue>({
 });
 
 export const useComposerControl = () => useContext(ComposerControlContext);
+
+function RuntimeUserSync() {
+  const { setUser, addExtValue } = useAomiRuntime();
+  const { identity } = useAomiAuthAdapter();
+  const address = identity.address;
+  const chainId = identity.chainId ?? 137;
+  const isConnected = Boolean(identity.isConnected && address);
+  const chain = chainId === 5042002 ? 'arc' : 'polygon';
+
+  useEffect(() => {
+    setUser({
+      is_connected: isConnected,
+      isConnected,
+      address,
+      wallet_address: address,
+      walletAddress: address,
+      chain_id: chainId,
+      chainId,
+      network: chain === 'arc' ? 'Arc Testnet' : 'Polygon',
+    });
+    addExtValue('kuroko', {
+      app: 'Kuroko',
+      chain,
+      chainId,
+      walletAddress: address ?? null,
+      isConnected,
+    });
+  }, [setUser, addExtValue, isConnected, address, chainId, chain]);
+
+  return null;
+}
 // =============================================================================
 // Types
 // =============================================================================
@@ -188,16 +222,27 @@ const Root: FC<RootProps> = ({
   showSidebar = true,
   backendUrl,
 }) => {
-const resolvedBackendUrl =
-    backendUrl ??
-    process.env.NEXT_PUBLIC_BACKEND_URL ??
-    process.env.NEXT_PUBLIC_AOMI_PROXY_BASE_URL ??
-    "/api/aomi";
+  const { identity } = useAomiAuthAdapter();
+  const chainId = identity?.chainId ?? 137;
+  const chainParam = chainId === 5042002 ? 'arc' : 'polygon';
+  const resolvedBackendUrl = useMemo(() => {
+    const base = backendUrl ??
+      process.env.NEXT_PUBLIC_BACKEND_URL ??
+      process.env.NEXT_PUBLIC_AOMI_PROXY_BASE_URL ??
+      "/api/aomi";
+    return base;
+  }, [backendUrl]);
+
+  useEffect(() => {
+    // Set chain as cookie so the aomi proxy can read it (query param breaks SDK URL construction)
+    document.cookie = `kuroko_chain=${chainParam};path=/;max-age=300`;
+  }, [chainParam]);
   const frameStyle: CSSProperties = { width, height, ...style };
 
   return (
     <AomiErrorBoundary>
       <AomiRuntimeProvider backendUrl={resolvedBackendUrl}>
+      <RuntimeUserSync />
       <RuntimeAgentBridge />
       <SidebarProvider defaultOpen={false} className="!min-h-0 h-auto" style={{ height: frameStyle.height, width: frameStyle.width }}>
         {/* Outer container — clips the overlay sidebar, scoped to chat area only */}
