@@ -21,7 +21,7 @@ const nextConfig = {
               "style-src 'self' 'unsafe-inline' https://cdn.getpara.com https://*.getpara.com",
               "img-src 'self' data: blob: https:",
               "font-src 'self' data: https://cdn.getpara.com https://*.getpara.com",
-              "connect-src 'self' https://api.aomi.dev https://aomi.dev https://*.aomi.dev https://gamma-api.polymarket.com https://clob.polymarket.com https://api.getpara.com https://*.getpara.com https://rpc.walletconnect.com https://relay.walletconnect.com wss: https:",
+              "connect-src 'self' https://api.aomi.dev https://aomi.dev https://*.aomi.dev https://gamma-api.polymarket.com https://clob.polymarket.com https://api.getpara.com https://*.getpara.com https://rpc.walletconnect.com https://relay.walletconnect.com https://rpc.testnet.arc.network wss: https:",
               "frame-src 'self' https://cdn.getpara.com https://*.getpara.com",
               "worker-src blob: 'self'",
               "child-src blob: 'self' https://*.getpara.com",
