@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/popover";
 import { useAomiAuthAdapter } from "../../lib/aomi-auth-adapter";
 
+const ARC_CHAINS = [
+  ...SUPPORTED_CHAINS,
+  { id: 5042002, name: 'Arc Testnet', ticker: 'USDC' },
+];
+
 export type NetworkSelectProps = {
   className?: string;
   /** Override the default chain list from the lib */
@@ -19,7 +24,7 @@ export type NetworkSelectProps = {
 
 export const NetworkSelect: FC<NetworkSelectProps> = ({
   className,
-  chains = SUPPORTED_CHAINS,
+  chains = ARC_CHAINS,
 }) => {
   const adapter = useAomiAuthAdapter();
   const { chainId, isConnected } = adapter.identity;
