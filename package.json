@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "seed:arc": "node scripts/seed-arc-markets.mjs"
   },
   "dependencies": {
     "@aomi-labs/client": "^0.1.27",
