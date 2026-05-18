@@ -28,7 +28,7 @@ The edge in prediction markets belongs to whoever processes signals faster. Not 
 
 **Post 3 (the product)**
 
-So I built Kuroko — an AI trading companion for Polymarket.
+So I built Kuroko — an AI trading companion for prediction markets.
 
 You type what you want. It watches the markets, finds the edge, and proposes the exact trade with full reasoning.
 
@@ -69,7 +69,17 @@ I sleep now. The system watches for me.
 
 ---
 
-**Post 6 (the aomi angle)**
+**Post 6 (the Arc angle)**
+
+For the Agora Agents Hackathon, I added Arc Testnet execution.
+
+Same Kuroko agent. Same market intelligence. But when the user switches to Arc, the app validates a seeded `ArcPredictionMarket` contract and sends a real testnet `buyShares()` transaction through Para.
+
+Polygon stays production Polymarket. Arc proves the on-chain agent flow.
+
+---
+
+**Post 7 (the aomi angle)**
 
 This is what AI x onchain actually looks like.
 
@@ -81,11 +91,11 @@ The SDK handles the hard parts: session management, trade intent routing, wallet
 
 ---
 
-**Post 7 (call to action)**
+**Post 8 (call to action)**
 
 Paper trade works out of the box. No wallet needed.
 
-Connect a wallet to go live on Polygon.
+Connect a wallet to go live on Polygon or try seeded prediction-market execution on Arc Testnet.
 
 Repo: github.com/0xgordian/kuroko
 
