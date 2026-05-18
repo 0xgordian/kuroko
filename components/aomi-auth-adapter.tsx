@@ -122,7 +122,13 @@ export function useAomiAuthAdapter() {
 
   const isLoading = account?.isLoading ?? false;
 
-  const currentChainId = 137;
+  const [currentChainId, setCurrentChainId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('kuroko_chain_id');
+      if (saved === '5042002') return 5042002;
+    }
+    return 137;
+  });
 
   const identity: AomiAuthIdentity & {
     isConnected: boolean;
@@ -148,7 +154,9 @@ export function useAomiAuthAdapter() {
         ? `${address.slice(0, 6)}...${address.slice(-4)}`
         : "Connected"
       : "Connect Wallet",
-    secondaryLabel: isConnected ? "MATIC" : undefined,
+    secondaryLabel: isConnected
+      ? currentChainId === 5042002 ? "USDC" : "MATIC"
+      : undefined,
     isLoading,
   };
 
@@ -189,9 +197,13 @@ export function useAomiAuthAdapter() {
     try {
       const { createParaEthersSigner } = await import("@getpara/ethers-v6-integration");
       const { ethers } = await import("ethers");
-      // Reuse the singleton
       const para = await getParaSingleton();
-      const provider = new ethers.JsonRpcProvider("https://polygon-rpc.com");
+
+      const chainId = identity.chainId;
+      const rpcUrl = chainId === 5042002
+        ? "https://rpc.testnet.arc.network"
+        : "https://polygon-rpc.com";
+      const provider = new ethers.JsonRpcProvider(rpcUrl);
       const signer = createParaEthersSigner({ para, provider });
 
       const txRequest = tx as Parameters<typeof signer.sendTransaction>[0];
@@ -200,12 +212,15 @@ export function useAomiAuthAdapter() {
     } catch (err) {
       throw new Error(`sendTransaction failed: ${err instanceof Error ? err.message : String(err)}`);
     }
-  }, []);
+  }, [identity.chainId]);
 
-  const switchChain = useCallback(async (_newChainId: number): Promise<void> => {
-    // Chain switching via externalWallets requires the useExternalWallets hook
-    // which is only available inside ExternalWalletProvider
-    // For now, this is a no-op - users can switch chains via Para modal
+  const switchChain = useCallback(async (newChainId: number): Promise<void> => {
+    setIsSwitchingChain(true);
+    setCurrentChainId(newChainId);
+    localStorage.setItem('kuroko_chain_id', String(newChainId));
+    // Small delay so the UI can show the switching state
+    await new Promise((r) => setTimeout(r, 300));
+    setIsSwitchingChain(false);
   }, []);
 
   return {
