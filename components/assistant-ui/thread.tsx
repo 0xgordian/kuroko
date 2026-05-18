@@ -17,7 +17,7 @@ import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import * as m from "motion/react-m";
 
 import { Button } from "@/components/ui/button";
-import { MarkdownText } from "@/components/assistant-ui/markdown-text";
+import { MarkdownText, MarkdownTextFromString } from "@/components/assistant-ui/markdown-text";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 
@@ -29,9 +29,11 @@ import { ApiKeyInput } from "@/components/control-bar/api-key-input";
 import { NetworkSelect } from "@/components/control-bar/network-select";
 import { ConnectButton } from "@/components/control-bar/connect-button";
 import { useAssistantApi, useMessage } from "@assistant-ui/react";
-import { TradeCard, parseTradeCard } from "./trade-card";
+import { TradeCard, parseTradeCard, stripTradeCardJson } from "./trade-card";
 import { PositionCard, parsePositionRequest } from "./position-card";
 import { useAppStore } from "@/lib/stores/appStore";
+import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
+import { ARC_CHAIN_ID } from "@/lib/services/arcContractService";
 
 const seenSystemMessages = new Set<string>();
 
@@ -679,11 +681,31 @@ const MessageError: FC = () => {
   );
 };
 
+const ARC_BAD_PATTERNS = [
+  { pattern: /Arc\s+(is\s+)?not\s+supported/i, hint: 'Arc IS supported in Kuroko for prediction-market execution.' },
+  { pattern: /switch\s+to\s+(polygon|base)/i, hint: 'Do not switch chains. Everything needed is on Arc.' },
+  { pattern: /cannot\s+stage\s+transaction/i, hint: 'Arc transactions are handled by Kuroko internally.' },
+  { pattern: /this\s+network\s+is\s+not\s+supported/i, hint: 'Arc is fully supported in Kuroko.' },
+  { pattern: /unsupported\s+chain/i, hint: 'Arc is a supported chain in Kuroko.' },
+  { pattern: /chain\s+not\s+supported/i, hint: 'Arc (chain ID 5042002) is supported in Kuroko.' },
+  { pattern: /(which\s+)?(market|asset|token)\s+(are\s+)?you\s+looking/i, hint: 'The user wants an Arc prediction market. Pick a seeded market from the list.' },
+  { pattern: /contract\s+address/i, hint: 'Kuroko handles the contract address. Pick a seeded market.' },
+  { pattern: /dapp|dApp|DApp/i, hint: 'Kuroko is the app. Pick a seeded Arc prediction market.' },
+];
+
 const AssistantMessage: FC = () => {
+  const authAdapter = useAomiAuthAdapter();
+  const isArc = authAdapter.identity.chainId === ARC_CHAIN_ID;
   const content = useMessage((state) => state.content) as Array<{ type: string; text?: string }>;
   const text = content.filter((p) => p.type === 'text').map((p) => p.text ?? '').join('');
   const tradeCard = parseTradeCard(text);
+  const visibleText = tradeCard ? stripTradeCardJson(text) : text;
   const showPositions = parsePositionRequest(text);
+
+  // Arc guardrail: detect bad AI responses
+  const arcGuardrailHit = isArc && !tradeCard
+    ? ARC_BAD_PATTERNS.find(({ pattern }) => pattern.test(text))
+    : null;
 
   return (
     <MessagePrimitive.Root asChild>
@@ -711,14 +733,28 @@ const AssistantMessage: FC = () => {
             className="aui-assistant-message-content px-4 py-3 break-words text-sm leading-relaxed"
             style={{ color: '#e0e0e0' }}
           >
-            <MessagePrimitive.Parts
-              components={{
-                Text: MarkdownText,
-                tools: { Fallback: ToolFallback },
-              }}
-            />
+            {tradeCard ? (
+              <MarkdownTextFromString text={visibleText} />
+            ) : (
+              <MessagePrimitive.Parts
+                components={{
+                  Text: MarkdownText,
+                  tools: { Fallback: ToolFallback },
+                }}
+              />
+            )}
             {tradeCard && <TradeCard data={tradeCard} />}
             {showPositions && <PositionCard />}
+            {arcGuardrailHit && (
+              <div className="mt-3 border p-3" style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(245,158,11,0.3)', borderRadius: 12 }}>
+                <p className="font-terminal text-[10px] tracking-widest uppercase mb-1" style={{ color: '#f59e0b' }}>
+                  Kuroko Arc Correction
+                </p>
+                <p className="text-xs leading-relaxed" style={{ color: '#a0a0a0' }}>
+                  {arcGuardrailHit.hint} The app has live Arc market data and a deployed contract. Try asking about one of the seeded markets listed above for an executable trade.
+                </p>
+              </div>
+            )}
             <MessageError />
           </div>
 
