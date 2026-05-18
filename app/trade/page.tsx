@@ -215,6 +215,7 @@ function HomeContent() {
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
         walletAddress={authAdapter.identity.address}
+        chainId={authAdapter.identity.chainId}
         onToggleAI={() => setAiPanelOpen((v) => !v)}
         aiPanelOpen={aiPanelOpen}
         onConnectWallet={!isWalletConnected ? () => authAdapter.connect() : undefined}
