@@ -1,15 +1,15 @@
 # Kuroko — UI/UX Design System
 
-**Last updated:** April 28, 2026
+**Last updated:** May 18, 2026
 
 ---
 
 ## Design Philosophy
 
-**Brutalist trading terminal.** Bloomberg Terminal meets hacker UI.
+**Arc-aware trading terminal.** Dense, high-contrast, information-first UI with enough polish for wallet-driven execution.
 
-- Zero border-radius on everything
-- No shadows except orange glow on brand accent
+- Restrained radius on cards and controls, generally `8px` or `12px`
+- No decorative gradients or background blobs
 - No gradients
 - Sharp, dense, information-first layout
 - Monospace typography for all labels, numbers, and UI chrome
@@ -20,16 +20,18 @@
 
 | Purpose | Value |
 |---|---|
-| Page background | `#0d0d0d` |
+| Page background | `#09090b` |
 | Panel background | `#111111` |
-| Panel hover | `#161616` |
+| Panel hover | `#1a1a1a` |
 | Primary text | `#f0f0f0` |
 | Secondary text | `#a0a0a0` |
 | Muted / disabled | `#555555` |
 | Tertiary / very dim | `#333333` |
-| Brand orange | `#ff4500` |
-| Orange dim bg | `rgba(255, 69, 0, 0.15)` |
-| Orange glow | `rgba(255, 69, 0, 0.5)` |
+| Brand purple | `#7c3aed` |
+| Purple hover | `#8b5cf6` |
+| Purple light | `#a78bfa` |
+| Purple dim bg | `rgba(124, 58, 237, 0.12)` |
+| Arc blue | `#3b82f6` |
 | Default border | `rgba(255, 255, 255, 0.08)` |
 | Hover border | `rgba(255, 255, 255, 0.15)` |
 | Active border | `rgba(255, 255, 255, 0.20)` |
@@ -69,12 +71,12 @@ CSS classes defined in `globals.css`:
 }
 
 .t-label-accent {
-  color: var(--orange);
+  color: var(--brand-light);
 }
 
 .orange-glow {
-  color: var(--orange);
-  text-shadow: 0 0 8px rgba(255, 69, 0, 0.5);
+  color: var(--brand-light);
+  text-shadow: 0 0 16px var(--brand-glow);
 }
 ```
 
@@ -82,28 +84,21 @@ CSS classes defined in `globals.css`:
 
 ## Panel System
 
-Every major panel uses `.panel-bracket` — a 3px orange left accent bar.
+Every major panel uses `.panel-bracket` for the standard dark surface, border, hover transition, and clipping.
 
 ```css
 .panel-bracket {
-  position: relative;
-  background-color: var(--panel);
+  background-color: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 0;
-}
-.panel-bracket::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 3px; height: 100%;
-  background: var(--orange);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 ```
 
 Usage:
 ```tsx
 <div className="border panel-bracket"
-  style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 0 }}>
+  style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12 }}>
 ```
 
 Panel hover state:
@@ -124,13 +119,13 @@ onMouseLeave={(e) => {
 
 Primary CTA:
 ```tsx
-style={{ backgroundColor: '#ff4500', color: '#000', borderRadius: 0 }}
+style={{ backgroundColor: '#7c3aed', color: '#fff', borderRadius: 12 }}
 className="font-terminal text-xs font-bold uppercase tracking-widest"
 ```
 
 Secondary / Ghost:
 ```tsx
-style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', borderRadius: 0 }}
+style={{ backgroundColor: 'transparent', borderColor: 'rgba(255,255,255,0.15)', color: '#a0a0a0', borderRadius: 12 }}
 className="border font-terminal text-xs uppercase tracking-widest"
 ```
 
@@ -139,17 +134,19 @@ className="border font-terminal text-xs uppercase tracking-widest"
 ## Navigation
 
 TopNav height: `h-12`
-Background: `#0d0d0d`
+Background: `#09090b`
 Bottom border: `rgba(255,255,255,0.08)`
 Max width: `1400px` centered
 
 Nav links: mono, 11px, tracking-widest, uppercase
 - Inactive: `#555`, hover `#a0a0a0`
-- Active: `#ff4500` with 2px solid orange bottom bar
+- Active: `#f0f0f0` on a subtle dark pill
+- Arc mode: show official Arc logo badge with blue accent when chain ID is `5042002`
 
 Right status bar:
-- Live dot: orange `#ff4500` with `box-shadow: 0 0 6px rgba(255,69,0,0.6)` when live
+- Live dot: green `#4ade80` when live
 - Wallet address: `#4ade80` green mono when connected
+- Desktop nav starts at `lg`; smaller widths use hamburger/mobile nav to avoid collisions
 
 ---
 
@@ -159,23 +156,20 @@ Right status bar:
 - Desktop grid: `grid-cols-12`, `gap-5`
 - All spacing between panels: `space-y-5` or `gap-5`
 - Page padding: `py-6`
-- Never use `border-radius` > 0 anywhere
-- Never use box shadows except `orange-glow`
+- Cards and buttons should stay at `8px` or `12px` radius
+- Never use decorative box shadows except intentional focus/glow states
 - Never use gradients
 
 ---
 
 ## What Agents Must Never Do
 
-- Add `border-radius` to any element
 - Use colors outside the palette above
 - Use `font-size` larger than `text-2xl` for UI chrome
 - Use Tailwind's default color classes (`blue-500`, `gray-300`, etc.) — always use inline styles
-- Remove the `panel-bracket` left orange bar from panels
-- Change the nav link style (font, size, color, active indicator)
+- Create nav layouts where links can collide with wallet/status controls
 - Change the TopNav height from `h-12`
-- Add rounded corners to buttons, inputs, or dropdowns
-- Change `#ff4500` to any other orange shade
+- Render raw trade-card JSON above the interactive card
 
 ---
 
@@ -183,6 +177,11 @@ Right status bar:
 
 Desktop: Multi-column grids (3–4 columns depending on page)
 Mobile: Tab-based navigation with swipe support
+
+Network behavior:
+- Polygon and Arc should be visually obvious in the nav and control bar
+- Arc execution states should distinguish `ready_on_arc` from simulation-only markets
+- Disabled real-tx states need clear text, not silent grey buttons
 
 Portfolio mobile tabs: Portfolio / Chart / Alerts / Guards / History
 Trade mobile tabs: Markets / Trending / Analysis / AI
