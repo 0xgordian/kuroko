@@ -6,7 +6,7 @@
 
 ## What This Is
 
-A full-stack AI-powered prediction market trading terminal. Not a demo. Not a prototype. A real product with 5 pages, 15+ services, and a coherent architecture that combines real-time market data, intelligent edge detection, wallet-integrated trade execution, and automated risk management — all inside a brutalist terminal UI. Built in 3 days. Production-ready.
+A full-stack AI-powered prediction market trading terminal. Not a demo. Not a prototype. A real product with 5 pages, 15+ services, and a coherent architecture that combines real-time market data, intelligent edge detection, wallet-integrated trade execution, automated risk management, and dual-chain execution across Polygon and Arc Testnet.
 
 ---
 
@@ -18,8 +18,9 @@ A full-stack AI-powered prediction market trading terminal. Not a demo. Not a pr
 | AI | aomi-widget (embedded chat) + aomi-sdk Session (trade routing) |
 | Wallet | Para SDK (Google, Twitter, Discord, email auth) |
 | Markets | Polymarket Gamma API (live data) + CLOB proxy (order books) |
+| Arc | Arc Testnet chain ID 5042002 + custom `ArcPredictionMarket` contract |
 | Storage | localStorage (trades, alerts, guards, bankroll) |
-| Styling | Tailwind CSS + inline styles (brutalist design system) |
+| Styling | Tailwind CSS + inline styles (terminal trading interface) |
 
 ---
 
@@ -27,9 +28,10 @@ A full-stack AI-powered prediction market trading terminal. Not a demo. Not a pr
 
 1. Paper-trade first — everything works without a wallet or API key
 2. Live-ready — wallet + aomi API key enables real execution on Polygon
-3. Stateless backend — proxy pattern for market data + system prompt injection
-4. Terminal aesthetic — zero border-radius, monospace typography, orange accent #ff4500
-5. Honest signals — no fabricated labels, only observable data
+3. Arc-safe — Arc testnet execution is allowed only when UI market and contract state are aligned
+4. Stateless backend — proxy pattern for market data + system prompt injection
+5. Terminal aesthetic — dense, high-contrast, monospace UI chrome
+6. Honest signals — no fabricated labels, only observable data
 
 ---
 
@@ -45,6 +47,8 @@ What it does:
 - Every message enriched server-side with top 10 markets by volume, 24h/7d/30d probability changes, biggest movers, and user open positions if wallet connected
 - ?q= URL param auto-sends a query on load — enables deep linking from other pages
 - AI can return trade_card JSON which renders as an interactive confirmation card inline in chat
+- Trade-card JSON is hidden after parsing so the user sees a real card, not a raw code block
+- Arc trade cards validate seeded contract markets before sending `buyShares`
 - shareToChat integration — trade confirmations flow back into the thread automatically
 - Wallet status shown in TopNav: Signing Ready (connected) or Paper Mode (no wallet)
 
@@ -52,7 +56,7 @@ Data flow:
 1. Markets load from /api/markets on mount
 2. User sends message — proxy enriches with live context — aomi backend processes
 3. AI responds with analysis or trade_card JSON
-4. User confirms trade — sendLiveOrder or paper trade recorded
+4. User confirms trade — Polygon routes through `sendLiveOrder`; Arc validates and builds `buyShares`; no wallet records paper trade
 5. Result shared back to chat thread via shareToChat
 
 ---
@@ -145,6 +149,7 @@ What it does:
 - Fill tracking: polls CLOB API every 3s for order status PENDING to OPEN to MATCHED to FILLED
 - Wallet connect prompt inline when not connected
 - Paper trade fallback when no wallet
+- Arc mode loads `/api/arc-markets`, shows Arc readiness badges, validates on-chain market state, submits real `buyShares` txs only for seeded markets, and links confirmed txs to the Arc explorer
 
 Order flow:
 1. User selects market — fetches order book + analyzes signals
@@ -153,6 +158,14 @@ Order flow:
 4. aomi Session routes to wallet — user signs
 5. Order submitted to CLOB — pollOrderFill() tracks status every 3s
 6. Trade recorded to history
+
+Arc order flow:
+1. User switches to Arc Testnet in the network selector
+2. `/api/arc-markets` returns live mirrored markets with Arc execution status, or seeded registry fallback
+3. User selects a market — seeded markets validate against the contract, unseeded mirror markets are simulation-only
+4. Wallet connected + validation passes — Kuroko builds `buyShares(contractMarketId, side)` with native USDC value
+5. Para signs and sends through Arc RPC
+6. Kuroko waits for confirmation, records tx hash, and Portfolio reads updated shares from the contract
 
 ---
 
@@ -192,6 +205,14 @@ Order flow:
 - sendTradeIntent(intent, options) — routes to aomi Session, paper-trade fallback if no wallet
 - sendLiveOrder(params) — builds EIP-712 Polymarket order, sends via aomi Session
 - Modes: PAPER_TRADE (no wallet), SIGNING_REQUIRED (wallet connected), EXECUTED (tx confirmed)
+
+### arcContractService.ts
+
+- `getOnChainMarket(marketId)` — reads deployed Arc market state
+- `validateArcMarketForTrade(marketId, question, contractMarketId)` — checks config, mapping, existence, question match, and unresolved state
+- `buildBuySharesTx(marketId, side, amountWei)` — builds Arc testnet transaction payload
+- `waitForArcTransaction(hash)` — waits for confirmation through Arc RPC
+- `getUserShares(marketId, address)` — reads YES/NO share balances for Portfolio
 
 ### orderFillService.ts
 
@@ -285,9 +306,20 @@ Proxy to aomi backend. On every chat POST:
 - Fetches live market context (top 10 by volume, 24h/7d/30d changes, biggest movers)
 - Injects user positions if wallet address provided
 - Injects trade history if provided by client
-- Enriches system prompt with POLYMARKET_SYSTEM_PROMPT
+- Enriches system prompt with Polygon or Arc instructions based on the `kuroko_chain` cookie
+- Injects Kuroko app session context from `user_state`
+- In Arc mode, marks markets as ready for Arc execution or simulation-only
 - Rate limited: 30 requests/min per IP
 - Market context cached server-side for 5 minutes
+
+### /api/arc-markets
+
+Arc-compatible market endpoint.
+
+- Attempts to mirror live `/api/markets` output
+- Adds `arcMirror`, `arcStatus`, and `arcContractMarketId`
+- Falls back to the five seeded shared markets from `lib/data/arcMarkets.json`
+- Keeps UI, AI context, seed script, and contract validation aligned
 
 ### /api/markets
 
@@ -370,6 +402,35 @@ Position guards evaluate every 60s
 Alerts fire on threshold cross
 ```
 
+Arc branch:
+
+```
+Arc chain selected
+    |
+    v
+/api/arc-markets
+    |-- mirrors live market data
+    |-- annotates ready_on_arc or simulation-only
+    |
+    v
+TradeCard or /execute
+    |
+    v
+validateArcMarketForTrade()
+    |
+    v
+buildBuySharesTx()
+    |
+    v
+Para sendTransaction on Arc RPC
+    |
+    v
+waitForArcTransaction()
+    |
+    v
+Portfolio reads yesShares/noShares from contract
+```
+
 ---
 
 ## PMF and Why This Matters
@@ -411,6 +472,8 @@ The position guard fires an alert but does not auto-execute yet. That is the nex
 - Market discovery with edge scoring
 - Paper trade simulation with dollar-based sizing
 - Live order execution via wallet and aomi
+- Arc testnet contract execution for seeded markets
+- Arc market mirror mode with simulation-only state for unseeded live markets
 - Position tracking and P&L
 - Price alerts with browser notifications
 - Position guards (stop-loss / take-profit rules)
@@ -422,15 +485,17 @@ The position guard fires an alert but does not auto-execute yet. That is the nex
 - Aggregate trade stats (win rate, total deployed, avg return)
 - Responsive design (desktop multi-column + mobile tabs)
 - Rate limiting, CSRF protection, security headers
+- Chat trade-card parser and raw JSON stripping
 
 ### Next Opportunities
 
-1. Auto-execute position guard exits via aomi when rules trigger
-2. WebSocket price feed — replace polling with live Polymarket stream
-3. Server-side edge scoring — incorporate CLOB depth and whale activity signals
-4. Kalshi integration — cross-platform arbitrage detection
-5. Desktop app — Tauri-based native app with system tray and push notifications
-6. Onboarding flow — welcome modal + spotlight tour for first-time users
+1. Record the Agora demo and publish the repo after checking secrets
+2. Add Arc admin UI for creating/resolving markets
+3. Add Arc native USDC balance display
+4. Auto-execute position guard exits via aomi when rules trigger
+5. WebSocket price feed — replace polling with live Polymarket stream
+6. Server-side edge scoring — incorporate CLOB depth and whale activity signals
+7. Kalshi integration — cross-platform arbitrage detection
 
 ---
 
@@ -512,4 +577,4 @@ This directly addresses the gap between AI-assisted trading and safe trading. A 
 
 ---
 
-*Last updated: April 2026*
+*Last updated: May 2026*
