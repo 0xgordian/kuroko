@@ -32,19 +32,24 @@ class ChatErrorBoundary extends Component<{ children: ReactNode }, EBState> {
 }
 
 // ── Auto-send bridge — reads ?q= param and fires it once ───────────────────
-const SYSTEM_CONTEXT = `[Session init] You are Kuroko — an AI-native market intelligence and trading assistant embedded in a Polymarket terminal. The full system prompt, trading rules, and live market data are injected server-side on every message. Your role: analyze markets, guide trades, review positions, and be direct and concise.`;
+function buildSessionContext(chainId?: number) {
+  const isArc = chainId === 5042002;
+  return isArc
+    ? `[Session init] You are Kuroko — an AI-native prediction market intelligence and trading assistant currently operating on Arc Testnet (chain ID 5042002). The full Arc system prompt, trading rules, and live Arc demo market data are injected server-side on every message through the kuroko_chain cookie. You can answer Arc questions directly, explain the Arc market flow, and help users trade the seeded Arc prediction markets. Be direct and concise.`
+    : `[Session init] You are Kuroko — an AI-native market intelligence and trading assistant embedded in a Polygon/Polymarket terminal. The full system prompt, trading rules, and live market data are injected server-side on every message. Your role: analyze markets, guide trades, review positions, and be direct and concise.`;
+}
 
 // Session-level guard — survives navigation (component unmount/remount)
 // so the system context is only injected once per browser session
-const SESSION_CONTEXT_KEY = 'pa_ctx_sent';
+const SESSION_CONTEXT_KEY_PREFIX = 'pa_ctx_sent';
 
-function AutoSendBridge({ query, onFirstSend }: { query: string | null; onFirstSend?: () => void }) {
+function AutoSendBridge({ query, chainId, onFirstSend }: { query: string | null; chainId?: number; onFirstSend?: () => void }) {
   const { sendMessage } = useAomiRuntime();
   const { setApiKey } = useControl();
   const sentRef = useRef(false);
-  const contextSentRef = useRef(
-    typeof sessionStorage !== 'undefined' && sessionStorage.getItem(SESSION_CONTEXT_KEY) === '1'
-  );
+  const chainKey = chainId === 5042002 ? 'arc' : 'polygon';
+  const sessionContextKey = `${SESSION_CONTEXT_KEY_PREFIX}_${chainKey}`;
+  const contextSentRef = useRef(false);
   const sendRef = useRef(sendMessage);
   const shareHistory = useAppStore((s) => s.shareHistory);
   const lastReadShareRef = useRef(0);
@@ -52,6 +57,11 @@ function AutoSendBridge({ query, onFirstSend }: { query: string | null; onFirstS
 
   useEffect(() => { sendRef.current = sendMessage; }, [sendMessage]);
   useEffect(() => { onFirstSendRef.current = onFirstSend; }, [onFirstSend]);
+
+  useEffect(() => {
+    contextSentRef.current =
+      typeof sessionStorage !== 'undefined' && sessionStorage.getItem(sessionContextKey) === '1';
+  }, [sessionContextKey]);
 
   useEffect(() => {
     if (shareHistory.length === 0) return;
@@ -73,24 +83,24 @@ function AutoSendBridge({ query, onFirstSend }: { query: string | null; onFirstS
       attempts++;
       try {
         contextSentRef.current = true;
-        try { sessionStorage.setItem(SESSION_CONTEXT_KEY, '1'); } catch { /* ignore */ }
-        void sendRef.current(SYSTEM_CONTEXT).then(() => {
+        try { sessionStorage.setItem(sessionContextKey, '1'); } catch { /* ignore */ }
+        void sendRef.current(buildSessionContext(chainId)).then(() => {
           // Fire onboarding after system context is accepted — first real interaction
           onFirstSendRef.current?.();
         }).catch(() => {
           contextSentRef.current = false;
-          try { sessionStorage.removeItem(SESSION_CONTEXT_KEY); } catch { /* ignore */ }
+          try { sessionStorage.removeItem(sessionContextKey); } catch { /* ignore */ }
         });
       } catch {
         contextSentRef.current = false;
-        try { sessionStorage.removeItem(SESSION_CONTEXT_KEY); } catch { /* ignore */ }
+        try { sessionStorage.removeItem(sessionContextKey); } catch { /* ignore */ }
         if (attempts < MAX_ATTEMPTS) setTimeout(trySend, 500 * attempts);
       }
     };
 
     const t = setTimeout(trySend, 1200);
     return () => clearTimeout(t);
-  }, [setApiKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [setApiKey, chainId, sessionContextKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!query || sentRef.current) return;
@@ -120,6 +130,7 @@ function ChatContent() {
   const authAdapter = useAomiAuthAdapter();
   const isWalletConnected = authAdapter.identity.isConnected;
   const walletAddress = authAdapter.identity.address;
+  const chainId = authAdapter.identity.chainId;
   const hasLiveIntentPath = Boolean(process.env.NEXT_PUBLIC_AOMI_API_KEY);
   const liveModeLabel = hasLiveIntentPath
     ? isWalletConnected ? 'Signing Ready' : 'Connect Wallet'
@@ -156,6 +167,7 @@ function ChatContent() {
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
         walletAddress={authAdapter.identity.address}
+        chainId={authAdapter.identity.chainId}
         onConnectWallet={!isWalletConnected ? () => authAdapter.connect() : undefined}
         onManageWallet={isWalletConnected ? () => authAdapter.manageAccount() : undefined}
       />
@@ -169,7 +181,7 @@ function ChatContent() {
             walletPosition={null}
             showSidebar={true}
           >
-            <AutoSendBridge query={query} onFirstSend={triggerOnboarding} />
+            <AutoSendBridge query={query} chainId={chainId} onFirstSend={triggerOnboarding} />
             <ThreadPersist />
             <AomiFrame.Header
               withControl={true}
