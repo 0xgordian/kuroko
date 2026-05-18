@@ -1,12 +1,9 @@
 # Kuroko
 
-> An AI hybrid trading platform for prediction Markets — built on `@aomi-labs/client`, `@aomi-labs/widget-lib`, and Para SDK. The AI watches your positions while you sleep.
+> An AI hybrid trading platform for prediction markets — built on `@aomi-labs/client`, `@aomi-labs/widget-lib`, and Para SDK. The AI watches your positions while you sleep.
 
 - **[Live Website](https://kurokodev.vercel.app)**
 - **[Read Documentation](https://0x-250ca30e.mintlify.app/introduction)**
-- **[Building an AI-Native Agent for Prediction Markets Using Aomi's SDK and Widget](https://www.notion.so/gordian-etim/Building-an-AI-Native-Agent-for-Prediction-Markets-Using-Aomi-s-SDK-and-Widget-74b6ec38e17e403cb71c894b629df2c0)**
-- **Started:** Monday, April 28
-- **Submitted:** Friday, May 1 (Day 4)
 
 ---
 
@@ -18,11 +15,11 @@
 
 Polymarket traders miss moves because they can't watch 1,000 markets simultaneously. Kuroko fixes that.
 
-It's a full-stack AI-native trading terminal: live market data injected into every AI message, edge scoring across all active markets, and position guards that auto-execute stop-loss and take-profit rules through your wallet while you're offline.
+It's a full-stack AI-native trading platform: live market data injected into every AI message, edge scoring across all active markets, and position guards that auto-execute stop-loss and take-profit rules through your wallet while you're offline. Supports **Polygon (Polymarket)** and **Arc Testnet** with on-chain prediction markets.
 
-The AI has live market data on every message — current probabilities, 24h/7d/30d price changes, volume, liquidity, and your open positions. It surfaces opportunities, explains the thesis, and routes a trade to your wallet without leaving the chat.
+The AI has live market data on every message — current probabilities, 24h/7d/30d price changes, volume, liquidity, Arc execution status, and your open positions. It surfaces opportunities, explains the thesis, and routes a trade to your wallet without leaving the chat.
 
-**The life-changing part:** position guards. Set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
+**Position guards:** set a stop-loss once. The system polls every 60 seconds and executes the exit order through aomi → Para signing → Polymarket CLOB when your threshold hits. No manual monitoring. No missed exits.
 
 > Paper trade mode works fully out of the box — no API keys, no wallet required. Markets load live from Polymarket's public API.
 
@@ -125,7 +122,9 @@ The AI returns structured JSON at the end of a trade recommendation:
 }
 ```
 
-`parseTradeCard()` in `thread.tsx` detects this, renders a `TradeCard` component inline in the chat, and the user confirms — triggering `addTradeRecord` + `sendLiveOrder` (if wallet connected). The result is shared back to the thread via `shareToChat`.
+`parseTradeCard()` detects this, strips the raw JSON from the visible chat text, renders a `TradeCard` component inline, and the user confirms. The parser accepts the canonical `trade_card` format and the aomi-style `EXECUTE_BUY` format so the chat does not degrade into a copy-only code block.
+
+On Polygon, confirmation triggers `addTradeRecord` + `sendLiveOrder` when a wallet is connected. On Arc, confirmation validates the market against the deployed `ArcPredictionMarket` contract before building a real `buyShares` transaction. The result is shared back to the thread via `shareToChat`.
 
 ### Para SDK
 
@@ -133,7 +132,52 @@ Social login (Google, Twitter, Discord, email) → non-custodial wallet on Polyg
 
 ### Supported Chains
 
-Kuroko runs on **Polygon (137)** for Polymarket. The aomi backend supports Ethereum (1), Arbitrum (42161), Base (8453), Optimism (10), and Polygon (137) — the same chain set is available for future integrations.
+Kuroko supports **Polygon (137)** for Polymarket and **Arc Testnet (5042002)** with on-chain prediction markets. More networks being added.
+
+### Arc Testnet Flow
+
+On Arc, Kuroko connects to a deployed `ArcPredictionMarket` contract. The app can show live Polymarket-style market data through `/api/arc-markets`, then marks each market as either `ready_on_arc` or `not_deployed_on_arc`.
+
+The five seeded Arc markets are backed by the shared registry in `lib/data/arcMarkets.json`. Those markets can execute real Arc testnet transactions. Other mirrored live markets remain simulation-only until they are added to the shared registry and seeded on-chain.
+
+When you switch to Arc and place a trade:
+
+1. You select a market and choose YES/NO + shares + price
+2. Kuroko validates that the market maps to an existing unresolved on-chain market
+3. Kuroko builds a `buyShares(marketId, side)` transaction
+4. Para opens your wallet to review and sign
+5. The transaction sends USDC (native gas on Arc) to the contract
+6. Your position appears in Portfolio, read live from the chain
+
+Seed the shared markets after deployment:
+
+```bash
+npm run seed:arc
+```
+
+The seed script refuses to append markets if the deployed contract has drifted from the shared registry, because UI market IDs and contract market IDs must stay aligned.
+
+On Polygon, trades route through aomi → Para → Polymarket CLOB. On Arc, trades go directly to the on-chain contract. Paper trading works on both chains without a wallet connected.
+
+### Arc Guardrails
+
+Real Arc execution is only enabled when all checks pass:
+- `NEXT_PUBLIC_ARC_MARKET_CONTRACT` is configured
+- the selected UI market maps to a numeric `contractMarketId`
+- the on-chain market exists
+- the on-chain question matches the shared registry
+- the market is unresolved
+- trade amount is greater than zero
+
+If any check fails, Kuroko leaves the market in simulation/paper mode and shows a clear message instead of pretending a wallet transaction was submitted.
+
+### Arc Contract
+
+Deployed at `0x64921c648f66d9C5CeA1E36b54d9396beDaB6492` on Arc Testnet. Features:
+- `createMarket(question, resolutionTime)` — create a new prediction market
+- `buyShares(marketId, side)` — buy YES or NO shares (payable in USDC)
+- `resolveMarket(marketId, outcome)` — owner resolves the market
+- `claimPayout(marketId)` — claim winnings after resolution
 
 ---
 
@@ -148,6 +192,7 @@ app/
   execute/page.tsx            # Order terminal + fill tracking
   api/aomi/[...path]/         # aomi proxy — injects live market context
   api/markets/                # Gamma API cache (2min TTL) + CLOB enrichment
+  api/arc-markets/            # Live market mirror + Arc execution status
   api/clob/[...path]/         # CLOB proxy for order books
   api/positions/              # Positions proxy (CORS-safe)
 
@@ -163,7 +208,9 @@ components/
   MobileBottomNav.tsx         # Mobile navigation (5 tabs)
 
 lib/
+  data/arcMarkets.json             # Shared seeded Arc market registry
   services/edgeEngine.ts           # Deterministic scoring (volume/liquidity/uncertainty/movement)
+  services/arcContractService.ts   # Arc reads, validation, tx payloads, confirmations
   services/signalEngine.ts         # Honest market signals from order book data
   services/tradeIntentService.ts   # aomi Session → EIP-712 → wallet signing
   services/orderFillService.ts     # CLOB fill polling (3s interval, 60s max)
@@ -183,6 +230,8 @@ lib/
 - AI knows current probabilities, 24h/7d/30d changes, your open positions
 - `trade_card` JSON → interactive confirmation card inline in chat
 - Paper trade or live execution without leaving the thread
+- Arc-aware prompt injection via `kuroko_chain` cookie, including wallet/session context and Arc execution status
+- Raw trade-card JSON is hidden once converted into the interactive card
 - Thread persistence across navigation
 
 ### Trade Dashboard (`/trade`)
@@ -210,6 +259,7 @@ lib/
 - Slippage estimation from order book depth
 - Bankroll sizing warnings
 - Fill tracking: PENDING → OPEN → MATCHED → FILLED (3s polling)
+- Arc mode: validates on-chain market state, disables unsafe real txs, submits `buyShares`, waits for confirmation, and links to the Arc explorer
 
 ---
 
@@ -235,35 +285,24 @@ npm run dev          # Development server
 npm run dev:clean    # Clear .next cache then start (use after significant changes)
 npm run build        # Production build
 npm run lint         # TypeScript + ESLint
-npm test             # Unit tests (Vitest) — 93 tests across 11 files
+npm test             # Unit tests (Vitest) — 97 tests across 12 files
 npm run test:coverage # Coverage report
+npm run seed:arc     # Seed shared Arc markets on-chain
 ```
 
 ---
 
-## What's Next
+## Roadmap
 
-These are the three verticals aomi is actively building toward. Kuroko is the proof-of-concept for the prediction market use case — here's how the same architecture extends to each.
+### Short-term
+- **Autonomous proposal queue** — agent runs every 60s, scores all markets for correlated mispricings, queues trade proposals with reasoning. Approve, dismiss, or set auto-execute rules.
+- **Kalshi integration** — same agent layer, cross-platform. Surface pricing gaps between Polymarket and Kalshi and route the arbitrage.
+- **More chains** — Arbitrum, Base, and Optimism for Polymarket CLOB access.
 
-### Prediction Markets — Autonomous Proposal Queue
-
-The agent runs every 60s, scores all markets for correlated mispricings, and queues trade proposals with reasoning. You wake up to "3 proposals pending" — approve, dismiss, or set auto-execute rules. This is the bridge from AI-assisted to AI-native trading.
-
-### Kalshi Integration
-
-aomi has a native Kalshi plugin in its SDK. Same agent layer, cross-platform. When the same event is priced differently on Polymarket and Kalshi, surface the gap and route the arbitrage. The `Session` pattern is identical — swap the app ID, the execution layer handles the rest.
-
-### Wallet AI Assistant
-
-The demo that closes aomi's wallet client pipeline: a clean reference showing how a wallet (MetaMask, Rainbow, any Para-integrated wallet) embeds `<AomiFrame />` to give users an AI that explains transactions before signing. User types "what does this contract do?" — the agent simulates the transaction, shows exact token changes and gas costs, and lets the user sign or reject with full context. No more blind signing.
-
-### GameFi
-
-In-game asset trading, tournament prize pool distribution, NFT marketplace execution — all via natural language through `<AomiFrame />`. A GameFi studio drops the widget into their game client. Players type "sell my sword for the best price" — the agent routes through the right marketplace, simulates the transaction, and executes on confirmation. The aomi plugin architecture (12 reference apps: DeFi, Delta, Kalshi, Para, Polymarket, Social, and more) means each new marketplace is a plugin, not a rewrite.
-
-### DeFi Momentum Bot
-
-The `aomi-client-example` pattern — momentum rotation between risk and stable assets using moving-average signals — extended with Kuroko's edge scoring. Server-side scoring with CLOB depth, recent fill data, and whale activity signals feeding the allocation model. The bot runs locally, delegates execution to aomi, signs with viem. No custody, no API-key juggling.
+### Longer-term
+- **Wallet AI assistant** — embed `<AomiFrame />` in any wallet. User types "what does this contract do?" — agent simulates the transaction, shows exact token changes and gas costs, lets the user sign or reject with full context. No more blind signing.
+- **GameFi** — in-game asset trading, tournament prize pools, NFT marketplace execution — all via natural language through `<AomiFrame />`.
+- **DeFi momentum bot** — momentum rotation between risk and stable assets using moving-average signals, extended with Kuroko's edge scoring. No custody, no API-key juggling.
 
 ---
 
