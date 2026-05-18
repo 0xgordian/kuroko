@@ -25,6 +25,14 @@ function removeBackdrop() {
   document.getElementById(BACKDROP_ID)?.remove();
 }
 
+function showParaModalHost() {
+  const modal = document.querySelector('cpsl-auth-modal') as HTMLElement | null;
+  if (modal) {
+    modal.style.removeProperty('display');
+    modal.style.removeProperty('pointer-events');
+  }
+}
+
 function injectShadowStyles() {
   const modal = document.querySelector('cpsl-auth-modal') as HTMLElement | null;
   if (!modal || !modal.shadowRoot) return;
@@ -126,6 +134,16 @@ function injectShadowStyles() {
 }
 
 function cleanupStaleOverlays() {
+  removeBackdrop();
+
+  // Para sometimes leaves the custom-element host mounted after auth finishes.
+  // Hide it when the SDK says the modal is closed; the next open call restores it.
+  const modal = document.querySelector('cpsl-auth-modal') as HTMLElement | null;
+  if (modal) {
+    modal.style.setProperty('display', 'none', 'important');
+    modal.style.setProperty('pointer-events', 'none', 'important');
+  }
+
   // Remove any stale fixed overlays Para may have left behind
   document.querySelectorAll('body > div[style*="position: fixed"]').forEach((el) => {
     const div = el as HTMLElement;
@@ -145,6 +163,7 @@ function BackdropInner() {
 
   useEffect(() => {
     if (isOpen) {
+      showParaModalHost();
       addBackdrop();
 
       // Inject a global style that targets the Para modal host element
@@ -191,9 +210,13 @@ function BackdropInner() {
         observer?.disconnect();
       };
     } else {
-      removeBackdrop();
-      const t = setTimeout(cleanupStaleOverlays, 100);
-      return () => clearTimeout(t);
+      cleanupStaleOverlays();
+      const timers = [
+        setTimeout(cleanupStaleOverlays, 100),
+        setTimeout(cleanupStaleOverlays, 500),
+        setTimeout(cleanupStaleOverlays, 1500),
+      ];
+      return () => timers.forEach(clearTimeout);
     }
   }, [isOpen]);
 
