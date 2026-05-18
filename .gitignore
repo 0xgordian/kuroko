@@ -17,6 +17,11 @@
 .DS_Store
 **/.DS_Store
 *.pem
+/.agents/
+
+# foundry
+/broadcast/
+/cache/
 
 # debug
 npm-debug.log*
