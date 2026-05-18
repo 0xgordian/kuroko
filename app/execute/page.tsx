@@ -9,6 +9,13 @@ import { sendLiveOrder } from '@/lib/services/tradeIntentService';
 import { addTradeRecord } from '@/lib/services/tradeHistoryService';
 import { pollOrderFill, type OrderFillResult, type OrderStatus } from '@/lib/services/orderFillService';
 import { getSizingContext, getBankroll, setBankroll } from '@/lib/services/bankrollService';
+import {
+  buildBuySharesTx,
+  getArcTxUrl,
+  validateArcMarketForTrade,
+  waitForArcTransaction,
+  type ArcMarketValidation,
+} from '@/lib/services/arcContractService';
 import { useAomiAuthAdapter } from '@/lib/aomi-auth-adapter';
 import TopNav from '@/components/TopNav';
 import Footer from '@/components/Footer';
@@ -150,15 +157,24 @@ function FillStatusPanel({ fill }: { fill: OrderFillResult | null }) {
 
 type Side = 'YES' | 'NO';
 
+type ArcTxState = {
+  phase: 'preparing' | 'awaiting_wallet' | 'submitted' | 'confirmed' | 'failed';
+  txHash?: string;
+  message: string;
+};
+
 function ExecuteContent() {
   // ── Wallet / auth ─────────────────────────────────────────────────────────
   const authAdapter = useAomiAuthAdapter();
   const isWalletConnected = authAdapter.identity.isConnected;
   const walletAddress = authAdapter.identity.address ?? null;
+  const isArc = authAdapter.identity.chainId === 5042002;
   const hasLiveIntentPath = Boolean(process.env.NEXT_PUBLIC_AOMI_API_KEY);
-  const liveModeLabel = hasLiveIntentPath
-    ? isWalletConnected ? 'Signing Ready' : 'Connect Wallet'
-    : 'Paper Mode';
+  const liveModeLabel = isArc
+    ? 'Arc Demo'
+    : hasLiveIntentPath
+      ? isWalletConnected ? 'Signing Ready' : 'Connect Wallet'
+      : 'Paper Mode';
   const [markets, setMarkets] = useState<Market[]>([]);
   const [loadingMarkets, setLoadingMarkets] = useState(true);
   const [isFallback, setIsFallback] = useState(false);
@@ -167,6 +183,9 @@ function ExecuteContent() {
   const [book, setBook] = useState<OrderBook | null>(null);
   const [loadingBook, setLoadingBook] = useState(false);
   const [analysis, setAnalysis] = useState<MarketAnalysis | null>(null);
+  const [arcValidation, setArcValidation] = useState<ArcMarketValidation | null>(null);
+  const [loadingArcValidation, setLoadingArcValidation] = useState(false);
+  const [arcTxState, setArcTxState] = useState<ArcTxState | null>(null);
 
   // Order form
   const [side, setSide] = useState<Side>('YES');
@@ -186,11 +205,24 @@ function ExecuteContent() {
   // ── Load markets ──────────────────────────────────────────────────────────
   const loadMarkets = useCallback(async () => {
     setLoadingMarkets(true);
+    if (isArc) {
+      try {
+        const res = await fetch('/api/arc-markets');
+        const data = await res.json();
+        setMarkets(Array.isArray(data) ? data as Market[] : []);
+        setIsFallback(false);
+      } catch {
+        setMarkets([]);
+        setIsFallback(true);
+      }
+      setLoadingMarkets(false);
+      return;
+    }
     const { markets: ms, isFallback: fb } = await fetchActiveMarkets();
     setMarkets(ms);
     setIsFallback(fb);
     setLoadingMarkets(false);
-  }, []);
+  }, [isArc]);
 
   useEffect(() => { void loadMarkets(); }, [loadMarkets]);
 
@@ -219,6 +251,14 @@ function ExecuteContent() {
     setBook(null);
     setAnalysis(null);
     setFillResult(null);
+    setArcTxState(null);
+
+    if (isArc) {
+      setLoadingBook(false);
+      setAnalysis(analyseMarket(selectedMarket, null));
+      setLimitPrice(String(selectedMarket.currentProbability));
+      return;
+    }
 
     const tokenId = selectedMarket.clobTokenId;
     if (!tokenId) {
@@ -241,6 +281,36 @@ function ExecuteContent() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedMarket]);
 
+  // ── Validate Arc market against deployed contract ─────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    setArcValidation(null);
+
+    if (!isArc || !selectedMarket) {
+      setLoadingArcValidation(false);
+      return;
+    }
+
+    setLoadingArcValidation(true);
+    validateArcMarketForTrade(selectedMarket.id, selectedMarket.question, selectedMarket.arcContractMarketId)
+      .then((result) => {
+        if (!cancelled) setArcValidation(result);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setArcValidation({
+            ok: false,
+            reason: err instanceof Error ? err.message : 'Unable to validate Arc market.',
+          });
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingArcValidation(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [isArc, selectedMarket]);
+
   // ── Update limit price when side changes ─────────────────────────────────
   useEffect(() => {
     if (!book) return;
@@ -257,6 +327,21 @@ function ExecuteContent() {
   const payout = sharesNum;
   const returnPct = totalCost > 0 ? ((payout - totalCost) / totalCost) * 100 : 0;
   const sizing = bankroll ? getSizingContext(totalCost) : null;
+  const arcRealTradeBlocked = Boolean(
+    isArc &&
+    isWalletConnected &&
+    selectedMarket &&
+    (loadingArcValidation || !arcValidation?.ok),
+  );
+  const arcStatusMessage = isArc
+    ? !isWalletConnected
+      ? 'No wallet connected — this order will run as a paper trade'
+      : loadingArcValidation
+        ? 'Checking on-chain Arc market before enabling real trading...'
+        : arcValidation?.ok
+          ? `Ready for real Arc transaction on market #${arcValidation.contractMarketId}`
+          : arcValidation?.reason ?? 'Arc market is not ready for real trading.'
+    : null;
 
   // ── Filtered markets ──────────────────────────────────────────────────────
   const filtered = search.trim().length > 1
@@ -269,6 +354,89 @@ function ExecuteContent() {
 
     setSubmitting(true);
     setFillResult(null);
+
+    // ── Arc: paper trade when disconnected; real tx only after on-chain validation
+    if (isArc) {
+      if (!isWalletConnected || !walletAddress) {
+        addTradeRecord({
+          marketQuestion: selectedMarket.question,
+          marketId: selectedMarket.id,
+          side,
+          shares: sharesNum,
+          pricePerShare: priceNum,
+          totalCost,
+          mode: 'PAPER_TRADE',
+          status: 'confirmed',
+        });
+        toast.success('Paper trade recorded', {
+          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 12 },
+          iconTheme: { primary: '#4ade80', secondary: '#111' },
+        });
+        setSubmitting(false);
+        return;
+      }
+
+      try {
+        setArcTxState({ phase: 'preparing', message: 'Preparing Arc transaction...' });
+        const validation = arcValidation?.ok
+          ? arcValidation
+          : await validateArcMarketForTrade(selectedMarket.id, selectedMarket.question, selectedMarket.arcContractMarketId);
+
+        if (!validation.ok) throw new Error(validation.reason);
+
+        const amountWei = BigInt(priceNum) * BigInt(sharesNum) * BigInt('10000000000000000');
+        if (amountWei <= 0n) throw new Error('Trade amount must be greater than 0');
+
+        const txPayload = buildBuySharesTx(validation.contractMarketId, side === 'YES', amountWei);
+        setArcTxState({ phase: 'awaiting_wallet', message: 'Waiting for wallet signature...' });
+        const txHash = await authAdapter.sendTransaction(txPayload);
+        setArcTxState({ phase: 'submitted', txHash, message: 'Transaction submitted. Waiting for Arc confirmation...' });
+        toast.success(
+          <span>
+            Arc tx submitted:{' '}
+            <a href={getArcTxUrl(txHash)} target="_blank" rel="noreferrer" style={{ color: '#93c5fd', textDecoration: 'underline' }}>
+              {txHash.slice(0, 10)}...
+            </a>
+          </span>,
+          {
+            style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(59,130,246,0.4)', borderRadius: 12 },
+            iconTheme: { primary: '#3b82f6', secondary: '#111' },
+            duration: 8000,
+          },
+        );
+
+        await waitForArcTransaction(txHash);
+        setArcTxState({ phase: 'confirmed', txHash, message: 'Arc transaction confirmed. Portfolio will show the on-chain position.' });
+        try {
+          localStorage.setItem('kuroko_arc_positions_refresh', String(Date.now()));
+          window.dispatchEvent(new Event('kuroko:arc-trade-confirmed'));
+        } catch {
+          // Non-critical: portfolio still refreshes when opened.
+        }
+
+        addTradeRecord({
+          marketQuestion: selectedMarket.question,
+          marketId: selectedMarket.id,
+          side,
+          shares: sharesNum,
+          pricePerShare: priceNum,
+          totalCost,
+          mode: 'EXECUTED',
+          status: 'confirmed',
+          txHash,
+        });
+
+        toast.success('Arc trade confirmed', {
+          style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(59,130,246,0.4)', borderRadius: 12 },
+          iconTheme: { primary: '#3b82f6', secondary: '#111' },
+        });
+      } catch (err) {
+        setArcTxState({ phase: 'failed', message: err instanceof Error ? err.message : 'Arc transaction failed' });
+        toast.error(err instanceof Error ? err.message : 'Arc transaction failed');
+      }
+      setSubmitting(false);
+      return;
+    }
 
     const tokenId = selectedMarket.clobTokenId;
 
@@ -347,7 +515,7 @@ function ExecuteContent() {
     } finally {
       setSubmitting(false);
     }
-  }, [selectedMarket, sharesNum, priceNum, totalCost, side, submitting, isWalletConnected, walletAddress, authAdapter]);
+  }, [selectedMarket, sharesNum, priceNum, totalCost, side, submitting, isWalletConnected, walletAddress, authAdapter, isArc, arcValidation]);
 
   // ── Save bankroll ─────────────────────────────────────────────────────────
   const handleSaveBankroll = () => {
@@ -367,6 +535,7 @@ function ExecuteContent() {
         liveModeLabel={liveModeLabel}
         isWalletConnected={isWalletConnected}
         walletAddress={walletAddress}
+        chainId={authAdapter.identity.chainId}
         onConnectWallet={!isWalletConnected ? () => authAdapter.connect() : undefined}
         onManageWallet={isWalletConnected ? () => authAdapter.manageAccount() : undefined}
       />
@@ -463,6 +632,11 @@ function ExecuteContent() {
                           {m.probabilityChange24h != null && Math.abs(m.probabilityChange24h) > 1 && (
                             <span className="font-terminal text-[10px]" style={{ color: m.probabilityChange24h > 0 ? '#4ade80' : '#f87171' }}>
                               {m.probabilityChange24h > 0 ? '+' : ''}{m.probabilityChange24h.toFixed(1)}pp
+                            </span>
+                          )}
+                          {isArc && (
+                            <span className="font-terminal text-[9px] tracking-widest uppercase" style={{ color: m.arcStatus === 'ready_on_arc' ? '#3b82f6' : '#555' }}>
+                              {m.arcStatus === 'ready_on_arc' ? `Arc #${m.arcContractMarketId}` : 'Sim only'}
                             </span>
                           )}
                         </div>
@@ -615,7 +789,7 @@ function ExecuteContent() {
                   </div>
 
                   {/* Wallet status / connect prompt */}
-                  {!isWalletConnected && (
+                  {!isWalletConnected && !isArc && (
                     <div className="border p-3 flex items-center justify-between gap-3"
                       style={{ borderColor: 'rgba(124,58,237,0.25)', backgroundColor: 'rgba(124,58,237,0.05)', borderRadius: 12 }}>
                       <div>
@@ -638,6 +812,27 @@ function ExecuteContent() {
                     </div>
                   )}
 
+                  {isArc && (
+                    <div className="border p-3"
+                      style={{
+                        borderColor: arcRealTradeBlocked ? 'rgba(248,113,113,0.3)' : 'rgba(59,130,246,0.25)',
+                        backgroundColor: arcRealTradeBlocked ? 'rgba(248,113,113,0.06)' : 'rgba(59,130,246,0.05)',
+                        borderRadius: 12,
+                      }}>
+                      <p className="font-terminal text-[10px] tracking-widest uppercase mb-0.5" style={{ color: '#3b82f6' }}>
+                        Arc Execution
+                      </p>
+                      <p className="text-xs" style={{ color: '#555' }}>
+                        {arcStatusMessage}
+                      </p>
+                      {arcValidation?.ok && (
+                        <p className="font-terminal text-[10px] mt-1" style={{ color: '#3b82f6' }}>
+                          Contract market #{arcValidation.contractMarketId}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   {isWalletConnected && walletAddress && (
                     <div className="flex items-center justify-between px-1">
                       <span className="font-terminal text-[10px]" style={{ color: '#555' }}>Wallet</span>
@@ -654,17 +849,21 @@ function ExecuteContent() {
                   {/* Submit */}
                   <button
                     onClick={handleSubmit}
-                    disabled={submitting || sharesNum <= 0}
+                    disabled={submitting || sharesNum <= 0 || arcRealTradeBlocked}
                     className="w-full py-3 font-terminal text-xs font-bold tracking-widest uppercase transition-all"
                     style={{
-                      backgroundColor: submitting ? '#333' : '#7c3aed',
-                      color: submitting ? '#666' : '#fff',
+                      backgroundColor: submitting || arcRealTradeBlocked ? '#333' : '#7c3aed',
+                      color: submitting || arcRealTradeBlocked ? '#666' : '#fff',
                       borderRadius: 12,
-                      cursor: submitting ? 'not-allowed' : 'pointer',
+                      cursor: submitting || arcRealTradeBlocked ? 'not-allowed' : 'pointer',
                     }}
                   >
                     {submitting
                       ? 'Submitting…'
+                      : isArc && isWalletConnected
+                      ? `Buy ${sharesNum} ${side} @ ${priceNum}¢ on Arc`
+                      : isArc
+                      ? `Paper Trade ${sharesNum} ${side} @ ${priceNum}¢`
                       : isWalletConnected
                       ? `Buy ${sharesNum} ${side} @ ${priceNum}¢`
                       : `Paper Trade ${sharesNum} ${side} @ ${priceNum}¢`}
@@ -673,6 +872,30 @@ function ExecuteContent() {
 
                 {/* Fill status */}
                 <FillStatusPanel fill={fillResult} />
+                {arcTxState && (
+                  <div className="border panel-bracket p-4 space-y-2" style={{ backgroundColor: '#111', borderColor: 'rgba(59,130,246,0.25)', borderRadius: 12, overflow: 'hidden' }}>
+                    <div className="flex items-center justify-between">
+                      <span className="font-terminal text-[10px] tracking-widest uppercase" style={{ color: '#555' }}>Arc Tx</span>
+                      <span className="font-terminal text-[10px] tracking-widest uppercase" style={{
+                        color: arcTxState.phase === 'failed' ? '#f87171' : arcTxState.phase === 'confirmed' ? '#4ade80' : '#3b82f6',
+                      }}>
+                        {arcTxState.phase.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: '#a0a0a0' }}>{arcTxState.message}</p>
+                    {arcTxState.txHash && (
+                      <a
+                        href={getArcTxUrl(arcTxState.txHash)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-terminal text-[10px] tracking-widest uppercase"
+                        style={{ color: '#93c5fd', textDecoration: 'underline' }}
+                      >
+                        View on Arc explorer
+                      </a>
+                    )}
+                  </div>
+                )}
               </>
             )}
           </div>
@@ -681,15 +904,22 @@ function ExecuteContent() {
           <div className="lg:col-span-3 space-y-4">
             <div className="border panel-bracket" style={{ backgroundColor: '#111', borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, overflow: 'hidden' }}>
               <div className="px-4 py-3 border-b flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                <p className="t-label">Order Book</p>
-                {book && (
+                <p className="t-label">{isArc ? 'Market Info' : 'Order Book'}</p>
+                {book && !isArc && (
                   <span className="font-terminal text-[10px]" style={{ color: '#555' }}>
                     mid {Math.round(book.mid_price * 100)}¢
                   </span>
                 )}
               </div>
               <div className="p-3">
-                <OrderBookPanel book={book} isLoading={loadingBook} />
+                {isArc ? (
+                  <div className="text-center py-6">
+                    <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#3b82f6' }}>Arc Demo</p>
+                    <p className="text-xs" style={{ color: '#555' }}>Order book not available for demo markets. Use the estimate price in the order form.</p>
+                  </div>
+                ) : (
+                  <OrderBookPanel book={book} isLoading={loadingBook} />
+                )}
               </div>
             </div>
 
