@@ -20,6 +20,12 @@ export interface Market {
   probabilityChange30d?: number | null;
   /** CLOB YES token ID for order book and live trading */
   clobTokenId?: string;
+  /** Arc testnet execution status when the app is in Arc mode */
+  arcStatus?: 'ready_on_arc' | 'not_deployed_on_arc';
+  /** Matching ArcPredictionMarket ID when this market is seeded on Arc */
+  arcContractMarketId?: number;
+  /** True when real market data is being used with Arc testnet execution */
+  arcMirror?: boolean;
 }
 
 /** Edge opportunity detected by the AI analysis engine */
