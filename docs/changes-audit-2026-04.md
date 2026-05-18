@@ -195,7 +195,7 @@ Full sweep of all 152 files in the codebase covering:
 | `lib/services/__tests__/bankrollService.test.ts` | 12 | Get/set/clear, context calculation, sizing warnings |
 | `lib/services/__tests__/tradeHistoryService.test.ts` | 10 | Add/get/clear, sorting, field integrity |
 
-**Total: 93 tests passing across 11 test files** (up from 16 tests in 5 files).
+**April total: 93 tests passing across 11 test files** (up from 16 tests in 5 files). Current May snapshot is 97 tests across 12 files after the Arc additions.
 
 ---
 
@@ -490,3 +490,97 @@ Three-layer approach to force Para modal icons white:
 Added `"dev:clean": "rm -rf .next && next dev"` script. Clears the stale build cache before starting the dev server — fixes the `ChunkLoadError: Loading chunk app/layout failed` error that occurs after significant code changes.
 
 ---
+
+## Arc Integration Product-Readiness Addendum (May 2026)
+
+### 44. Dual-Chain Arc Testnet Path
+
+**Files:** `lib/config.ts`, `components/control-bar/network-select.tsx`, `components/aomi-auth-adapter.tsx`, `components/aomi-frame.tsx`, `components/TopNav.tsx`
+
+Kuroko now supports Polygon/Polymarket and Arc Testnet. Arc uses chain ID `5042002`, RPC `https://rpc.testnet.arc.network`, and native USDC for gas/value. The network selector updates local app state and persists the selection; chain context is passed to the aomi proxy through the `kuroko_chain` cookie.
+
+### 45. ArcPredictionMarket Contract + Foundry Toolchain
+
+**Files:** `contracts/ArcPredictionMarket.sol`, `foundry.toml`, `scripts/DeployArc.s.sol`, `scripts/deploy-arc.ts`
+
+Added the Arc prediction market contract and deploy scripts. Current deployed testnet contract:
+
+```
+0x64921c648f66d9C5CeA1E36b54d9396beDaB6492
+```
+
+### 46. Shared Arc Market Registry + Seed Script
+
+**Files:** `lib/data/arcMarkets.json`, `lib/data/arcMarkets.ts`, `scripts/seed-arc-markets.mjs`
+
+The API, UI, seed script, portfolio reads, and validation logic now share the same Arc market definitions. `npm run seed:arc` creates the shared markets on-chain and refuses to append if the contract state has drifted from the registry.
+
+### 47. Arc Market API Mirror Mode
+
+**File:** `app/api/arc-markets/route.ts`
+
+`/api/arc-markets` now attempts to mirror live `/api/markets` data, then annotates each market with:
+
+- `arcMirror`
+- `arcStatus: ready_on_arc | not_deployed_on_arc`
+- `arcContractMarketId`
+
+If live market fetch fails, it falls back to the five seeded registry markets.
+
+### 48. Product-Grade Arc Validation
+
+**File:** `lib/services/arcContractService.ts`
+
+Added `validateArcMarketForTrade()` to enforce:
+
+- configured contract address
+- valid shared market definition
+- positive numeric contract market ID
+- existing on-chain market
+- exact question match with registry
+- unresolved market state
+- positive transaction amount
+
+### 49. Execute Page Arc Transaction Flow
+
+**File:** `app/execute/page.tsx`
+
+Arc mode now validates the selected market, disables unsafe real transactions, builds `buyShares`, routes through Para with Arc RPC, waits for confirmation, displays the Arc explorer link, records the trade, and refreshes Portfolio state.
+
+### 50. Portfolio Arc Reads
+
+**File:** `app/portfolio/page.tsx`
+
+Portfolio reads `yesShares` and `noShares` from the deployed Arc contract for the connected wallet and refreshes after Arc trade confirmations.
+
+### 51. Chat Trade Card Normalization
+
+**Files:** `components/assistant-ui/trade-card.tsx`, `components/assistant-ui/thread.tsx`, `components/assistant-ui/markdown-text.tsx`
+
+Chat now accepts both canonical `trade_card` JSON and aomi-style `EXECUTE_BUY` JSON. Once parsed, the raw JSON is stripped from visible Markdown, preventing the dark code block from covering text. Arc chat-card execution validates contract market readiness before sending any real transaction.
+
+### 52. Arc Prompt and Session Context Fixes
+
+**File:** `app/api/aomi/[...path]/route.ts`
+
+The aomi proxy now:
+
+- selects Polygon or Arc prompt based on `kuroko_chain`
+- injects Kuroko app session context from `user_state`
+- treats Kuroko app context as authoritative over stale backend network tools
+- tells the model not to invent market names
+- tells the model that Arc "trade" means prediction-market order unless the user explicitly asks for a DEX/swap/router/pool/bridge/token pair
+- keeps Arc steering hidden in the system prompt instead of appending it to visible user messages
+
+### 53. Para Overlay and Responsive Nav Fixes
+
+**Files:** `components/ParaBackdrop.tsx`, `components/TopNav.tsx`
+
+Fixed stale Para overlay cleanup so a dark layer does not remain over the chat after login. TopNav was also adjusted to avoid nav/status collisions on narrower screens.
+
+### 54. Current Verification Snapshot
+
+- `npm run lint` passes with the existing font warning
+- `npm test` passes: 97 tests across 12 files
+- `npm run build` passes after clearing stale `.next`
+- Known non-blocking warnings: Google Fonts optimization can fail without network; viem/ox tempo emits a critical dependency warning
