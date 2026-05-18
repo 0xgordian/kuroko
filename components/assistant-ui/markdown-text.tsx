@@ -6,6 +6,7 @@ import {
   unstable_memoizeMarkdownComponents as memoizeMarkdownComponents,
   useIsMarkdownCodeBlock,
 } from "@assistant-ui/react-markdown";
+import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { type FC, memo, useState } from "react";
 import { Icon } from '@iconify/react';
@@ -21,6 +22,17 @@ const MarkdownTextImpl = () => (
 );
 
 export const MarkdownText = memo(MarkdownTextImpl);
+
+export const MarkdownTextFromString: FC<{ text: string }> = ({ text }) => (
+  <div className="aui-md">
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      components={defaultComponents as any}
+    >
+      {text}
+    </ReactMarkdown>
+  </div>
+);
 
 const useCopyToClipboard = ({ copiedDuration = 3000 } = {}) => {
   const [isCopied, setIsCopied] = useState(false);
