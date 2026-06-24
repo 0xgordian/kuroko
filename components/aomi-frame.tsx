@@ -159,6 +159,22 @@ function RuntimeUserSync() {
     });
   }, [setUser, addExtValue, isConnected, address, chainId, chain]);
 
+  // Reactively sync user state changes to the runtime
+  useEffect(() => {
+    const unsub = onUserStateChange((nextUser) => {
+      const nextAddress = nextUser?.evm?.address ?? undefined;
+      const nextChainId = nextUser?.evm?.chain_id ?? undefined;
+      const nextConnected = nextUser?.connection?.is_connected ?? false;
+      if (nextAddress !== address || nextChainId !== chainId || nextConnected !== isConnected) {
+        setUser({
+          connection: { is_connected: isConnected },
+          evm: { address: address ?? undefined, chain_id: chainId },
+        });
+      }
+    });
+    return unsub;
+  }, [onUserStateChange, setUser, address, chainId, isConnected]);
+
   return null;
 }
 // =============================================================================
