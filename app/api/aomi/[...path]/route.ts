@@ -546,9 +546,17 @@ async function proxy(request: NextRequest, path: string[]) {
       cache: 'no-store',
     });
 
-    // Swallow 404s — non-critical endpoints (state sync, session mgmt) when no API key
+    // Swallow 404s only for non-critical paths (state sync, session mgmt) when no API key
+    const upstreamPath = upstreamUrl.pathname;
+    const isNonCritical = upstreamPath.includes('/state') || upstreamPath.includes('/session');
     if (upstreamResponse.status === 404) {
-      return NextResponse.json({ ok: true }, { status: 200 });
+      if (isNonCritical) {
+        return NextResponse.json({ ok: true }, { status: 200 });
+      }
+      return NextResponse.json(
+        { error: 'Upstream endpoint not found', path: upstreamPath },
+        { status: 502 }
+      );
     }
 
     // Arc guardrail: detect and correct bad AI responses about Arc being unsupported

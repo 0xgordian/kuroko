@@ -700,7 +700,7 @@ const ARC_BAD_PATTERNS = [
  */
 const TradeCardAwareText: FC = () => {
   const part = useMessagePartText();
-  const rawText = part && 'text' in part ? (part as { text: string }).text ?? '' : '';
+  const rawText = part?.text ?? '';
   if (!rawText) return null;
   const cleaned = stripTradeCardJson(rawText);
   if (!cleaned.trim()) return null;

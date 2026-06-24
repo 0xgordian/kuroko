@@ -15,8 +15,8 @@ import { AomiRuntimeProvider, cn, useAomiRuntime } from "@aomi-labs/react";
 import type { AomiClientOptions } from "@aomi-labs/client";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
-// Error boundary that swallows aomi backend 404s (postState, etc.)
-// These happen when no API key is configured and are non-fatal
+// Error boundary that swallows aomi backend postState errors.
+// These happen when no API key is configured and are non-fatal.
 class AomiErrorBoundary extends Component<
   { children: ReactNode },
   { hasError: boolean; error: Error | null }
@@ -27,18 +27,15 @@ class AomiErrorBoundary extends Component<
   }
 
   static getDerivedStateFromError(error: Error) {
-    // Only catch 404 errors from aomi backend — let everything else propagate
-    if (error?.message?.includes('404') || error?.message?.includes('postState')) {
-      return { hasError: false, error: null }; // swallow silently
+    // Only catch postState errors from aomi backend — let everything else propagate
+    if (error?.message?.includes('postState')) {
+      return { hasError: false, error: null };
     }
     return { hasError: true, error };
   }
 
   componentDidCatch(error: Error) {
-    // Swallow 404/postState errors silently
-    if (error?.message?.includes('404') || error?.message?.includes('postState')) {
-      return;
-    }
+    if (error?.message?.includes('postState')) return;
     console.error('[AomiFrame] Unhandled error:', error);
   }
 
@@ -368,7 +365,7 @@ const Composer: FC<ComposerProps> = ({
       value={{ enabled: withControl, controlBarProps }}
     >
       <div className={cn("flex flex-1 flex-col overflow-hidden", className)}>
-        <Thread key={`${currentThreadId}-${threadViewKey}`} />
+        <Thread key={currentThreadId} />
         {children}
       </div>
     </ComposerControlContext.Provider>

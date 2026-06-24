@@ -73,22 +73,18 @@ function GlobalInit() {
     // so we also need to patch the global error handler.
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const msg = event?.reason?.message ?? String(event?.reason ?? '');
-      if (
-        msg.includes('404') ||
-        msg.includes('postState') ||
-        msg.includes('Not Found') ||
-        msg.includes('HTTP 404')
-      ) {
+      if (msg.includes('postState')) {
         event.preventDefault();
         event.stopImmediatePropagation();
       }
     };
 
     // Also patch console.error to suppress the Next.js dev overlay trigger
+    // Only suppresses postState errors from aomi backend (non-fatal, occurs without API key)
     const origConsoleError = console.error.bind(console);
     console.error = (...args: unknown[]) => {
       const msg = args.map(String).join(' ');
-      if (msg.includes('postState') || (msg.includes('404') && msg.includes('aomi'))) return;
+      if (msg.includes('postState')) return;
       origConsoleError(...args);
     };
 

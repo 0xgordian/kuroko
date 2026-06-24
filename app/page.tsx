@@ -68,7 +68,7 @@ function AutoSendBridge({ query, chainId, onFirstSend }: { query: string | null;
     const latestShare = shareHistory[0];
     if (latestShare.timestamp > lastReadShareRef.current) {
       lastReadShareRef.current = latestShare.timestamp;
-      void sendRef.current(`[System] ${latestShare.message}`).catch(() => {});
+      void sendRef.current(`[Session init] ${latestShare.message}`).catch(() => {});
     }
   }, [shareHistory]);
 
