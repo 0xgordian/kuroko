@@ -30,15 +30,17 @@ export const AppSelect: FC<AppSelectProps> = ({
 
   const DEFAULT_APP_ID = process.env.NEXT_PUBLIC_AOMI_APP_ID ?? null;
 
+  const appId = DEFAULT_APP_ID;
+
   // Fetch authorized apps on mount, then auto-select default app if configured
   useEffect(() => {
     void getAuthorizedApps().then(() => {
-      if (DEFAULT_APP_ID && !getCurrentThreadApp()) {
-        onAppSelect(DEFAULT_APP_ID);
+      if (appId && !getCurrentThreadApp()) {
+        onAppSelect(appId);
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getAuthorizedApps]);
+  }, [getAuthorizedApps, onAppSelect]);
 
   const selectedApp = getCurrentThreadApp();
   const apps = state.authorizedApps;

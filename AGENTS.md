@@ -112,11 +112,36 @@ On Arc, chat-card execution uses `validateArcMarketForTrade()` before building `
 
 ## Verification Snapshot
 Latest local checks:
-- `npm run lint` passes with the existing `app/layout.tsx` custom font warning
+- `npm run lint` passes (only the pre-existing `app/layout.tsx` custom font warning)
 - `npm test` passes: 97 tests across 12 files
-- `npm run build` passes after clearing stale `.next`
+- `npm run build` passes (only viem/ox critical dependency warning + Google Fonts warning)
 
 Known non-blocking warnings:
 - Google Fonts may fail to optimize when network access is unavailable
 - viem/ox tempo emits a critical dependency warning through aomi/viem imports
 - stale `.next` can cause missing chunk/page errors; fix with `rm -rf .next` then rebuild or use `npm run dev:clean`
+
+## Production Audit (June 2026) — 14 issues identified, 10 resolved
+All P0, P1 issues fixed. See conversation history for full detail.
+
+| Priority | Issue | File | Status |
+|----------|-------|------|--------|
+| P0 | Arc NO-order limit price defaults to YES probability | `execute/page.tsx:319-328` | Fixed |
+| P0 | `buildBuySharesTx` sends native token instead of USDC | `arcContractService.ts:228` | Won't fix — Arc uses USDC as native gas, `payable` + `msg.value` is correct |
+| P0 | Stale closure in handleQuery drops early queries | `trade/page.tsx:131-144` | Fixed — uses `useRef` for fresh market reads |
+| P0 | Arc event key mismatch POLL↔POL | multiple | Won't fix — keys already match `kuroko:arc-trade-confirmed` |
+| P1 | "Ask AI" full browser reload | `trade/page.tsx:193` | Fixed — `router.push()` instead of `window.location.href` |
+| P1 | Sequential Arc portfolio RPC calls | `portfolio/page.tsx:155-163` | Fixed — `Promise.all` parallelized |
+| P1 | Edge analysis YES bias below 50% | `edgeEngine.ts:55` | Fixed — threshold 45%→50% |
+| P1 | `handleSubmit` stale `arcValidation` re-validation | `execute/page.tsx:390-392` | Defensive code, safe |
+| P2 | "+0% return" when shares=0 | `execute/page.tsx:781-782` | Fixed — shows `—` instead |
+| P2 | 16 `console.error` in production paths | multiple | Fixed — silenced 4 noise sources in thread.tsx (composer reset, sendMessage catch, voice errors) |
+| P2 | 7 `console.warn` in production paths | `tradeIntentService.ts:76` | Removed noisy warn; rest are intentional |
+| P2 | `console.error` monkey-patched by app-providers | `app-providers.tsx:89-93` | Intentional — suppresses postState/aomi 404 noise |
+| P2 | 3 `eslint-disable` exhaustive-deps | multiple | Intentional — refs intentionally excluded from deps |
+| P2 | No Arc paper trade tracking in portfolio | `execute/page.tsx:370-385,426-436` | Already implemented — both Arc paper and real trades are tracked |
+
+## Key Architecture Notes (post-audit)
+- **Arc native USDC**: Arc testnet uses USDC as native gas token (18 decimals). `buildBuySharesTx` sends `msg.value` with `priceNum * sharesNum * 10^16` — this is correct because `payable` on Arc == USDC payment.
+- **Refs over closures**: Custom trade callbacks (`handleQuery`, `handleSubmit`) use `useRef` to read fresh state rather than relying on closure captures. Follow this pattern for any new async callback.
+- **Default price on side change**: When switching YES↔NO on Arc, limit price inverts to `100 - probability`. On CLOB markets, it reads `best_ask`/`best_bid` from the order book.

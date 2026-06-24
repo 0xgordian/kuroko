@@ -106,7 +106,8 @@ function AutoSendBridge({ query, chainId, onFirstSend }: { query: string | null;
 
     const t = setTimeout(trySend, 2500);
     return () => clearTimeout(t);
-  }, [setApiKey, chainId, sessionContextKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setApiKey, chainId, sessionContextKey]);
 
   useEffect(() => {
     if (!query || sentRef.current) return;
