@@ -778,8 +778,8 @@ function ExecuteContent() {
                     </div>
                     <div className="flex justify-between">
                       <span className="t-label">Return</span>
-                      <span className="font-terminal text-xs font-bold" style={{ color: returnPct >= 0 ? '#4ade80' : '#f87171' }}>
-                        {returnPct >= 0 ? '+' : ''}{returnPct.toFixed(0)}%
+                      <span className="font-terminal text-xs font-bold" style={{ color: returnPct > 0 ? '#4ade80' : returnPct < 0 ? '#f87171' : 'rgba(255,255,255,0.3)' }}>
+                        {returnPct > 0 ? `+${returnPct.toFixed(0)}%` : returnPct < 0 ? `${returnPct.toFixed(0)}%` : '—'}
                       </span>
                     </div>
                     {sizing?.warning && (
