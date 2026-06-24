@@ -12,6 +12,7 @@ import {
   Component,
 } from "react";
 import { AomiRuntimeProvider, cn, useAomiRuntime } from "@aomi-labs/react";
+import type { AomiClientOptions } from "@aomi-labs/client";
 import { useAomiAuthAdapter } from "@/lib/aomi-auth-adapter";
 
 // Error boundary that swallows aomi backend 404s (postState, etc.)
