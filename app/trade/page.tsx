@@ -188,13 +188,15 @@ function HomeContent() {
     setFetchingBetId(null);
   }, [openSimulation]);
 
+  const router = useRouter();
+
   const handleAskAomi = useCallback((opp: EdgeOpportunity) => {
     const change = opp.market.probabilityChange24h;
     const changeStr = change !== null && change !== undefined
       ? ` 24h change: ${change > 0 ? '+' : ''}${change.toFixed(1)}%.` : '';
     const msg = `Analyze this Polymarket opportunity: "${opp.market.question}" — currently at ${opp.market.currentProbability}% YES.${changeStr} Volume: ${(opp.market.volume / 1000).toFixed(0)}K. Edge score: ${opp.edgeScore}/100 (${opp.edgeStrength}) on the ${opp.side} side. Should I trade this?`;
-    window.location.href = `/?q=${encodeURIComponent(msg)}`;
-  }, []);
+    router.push(`/?q=${encodeURIComponent(msg)}`);
+  }, [router]);
 
   const handleSetAlert = useCallback((opp: EdgeOpportunity) => {
     addAlert({
