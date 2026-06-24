@@ -7,7 +7,7 @@ import { fetchActiveMarkets } from '@/lib/services/marketService';
 import { fetchUserPositions, type UserPosition } from '@/lib/services/clobService';
 import { checkTradeOutcomes } from '@/lib/services/tradeHistoryService';
 import { useAomiAuthAdapter } from '@/lib/aomi-auth-adapter';
-import { ARC_MARKET_CONTRACT, getOnChainMarket, getUserShares } from '@/lib/services/arcContractService';
+import { ARC_MARKET_CONTRACT, getOnChainMarket, getUserShares, buildClaimTx } from '@/lib/services/arcContractService';
 import { ARC_DEMO_MARKETS } from '@/lib/data/arcMarkets';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import TopNav from '@/components/TopNav';
@@ -19,6 +19,7 @@ import PositionGuardPanel from '@/components/PositionGuardPanel';
 import Footer from '@/components/Footer';
 import { useSwipeTabs } from '@/hooks/useSwipeTabs';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
+import toast from 'react-hot-toast';
 
 function MarketSelect({
   markets,
@@ -96,6 +97,7 @@ function PortfolioContent() {
   const [isLoadingPositions, setIsLoadingPositions] = useState(false);
   const [arcPositions, setArcPositions] = useState<Array<{ marketId: number; question: string; side: 'YES' | 'NO'; shares: number; resolved: boolean; outcome: boolean }>>([]);
   const [loadingArcPositions, setLoadingArcPositions] = useState(false);
+  const [claimingMarketId, setClaimingMarketId] = useState<number | null>(null);
   const [selectedMarket, setSelectedMarket] = useState<Market | null>(null);
   const [mobileTab, setMobileTab] = useState<PortfolioTab>('portfolio');
 
@@ -300,14 +302,50 @@ function PortfolioContent() {
                       <div>
                         <p className="font-terminal text-[10px] tracking-widest uppercase mb-2" style={{ color: '#555' }}>On-Chain Positions</p>
                         <div className="space-y-1.5">
-                          {arcPositions.map((p) => (
+                          {arcPositions.map((p) => {
+                            const isClaiming = claimingMarketId === p.marketId;
+                            const canClaim = p.resolved && (
+                              (p.outcome && p.side === 'YES') || (!p.outcome && p.side === 'NO')
+                            );
+                            return (
                             <div key={`${p.marketId}-${p.side}`} className="flex items-center justify-between text-xs" style={{ color: '#a0a0a0' }}>
-                              <span className="truncate max-w-[180px]">{p.question.slice(0, 30)}</span>
-                              <span style={{ color: p.side === 'YES' ? '#4ade80' : '#f87171' }}>
-                                {p.side} {p.shares > 10_000_000_000_000 ? `${(p.shares / 1_000_000_000_000_000_000).toFixed(4)} USDC` : `${p.shares} shares`}
-                              </span>
+                              <span className="truncate max-w-[140px]">{p.question.slice(0, 30)}</span>
+                              <div className="flex items-center gap-2 shrink-0">
+                                <span style={{ color: p.side === 'YES' ? '#4ade80' : '#f87171' }}>
+                                  {p.side} {p.shares > 10_000_000_000_000 ? `${(p.shares / 1_000_000_000_000_000_000).toFixed(4)} USDC` : `${p.shares} shares`}
+                                </span>
+                                {canClaim && (
+                                  <button
+                                    onClick={async () => {
+                                      if (!canClaim || isClaiming) return;
+                                      setClaimingMarketId(p.marketId);
+                                      try {
+                                        const txPayload = buildClaimTx(p.marketId);
+                                        const txHash = await authAdapter.sendTransaction(txPayload);
+                                        toast.success(`Claim submitted: ${txHash.slice(0, 10)}...`);
+                                      } catch (err) {
+                                        toast.error(err instanceof Error ? err.message : 'Claim failed');
+                                      } finally {
+                                        setClaimingMarketId(null);
+                                        void loadArcPositions();
+                                      }
+                                    }}
+                                    disabled={isClaiming}
+                                    className="font-terminal text-[10px] tracking-widest uppercase px-2 py-0.5 border transition-all hover:opacity-80"
+                                    style={{
+                                      backgroundColor: 'rgba(74,222,128,0.1)',
+                                      borderColor: 'rgba(74,222,128,0.3)',
+                                      color: '#4ade80',
+                                      borderRadius: 8,
+                                    }}
+                                  >
+                                    {isClaiming ? '...' : 'Claim'}
+                                  </button>
+                                )}
+                              </div>
                             </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     ) : (
