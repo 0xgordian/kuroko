@@ -156,17 +156,11 @@ function ChatContent() {
     }).catch(() => {});
   }, [storeMarkets.length, setStoreMarkets]);
 
-  // backendUrl includes wallet address as query param so the aomi proxy can
-  // inject the user's open positions into the AI context.
-  // useMemo so it only changes when wallet address actually changes — prevents runtime remount.
-  const backendUrl = (() => {
-    const base = BACK_END_URL.startsWith('http')
-      ? BACK_END_URL
-      : (typeof window !== 'undefined' ? window.location.origin : '') + BACK_END_URL;
-    // Do NOT append wallet as query param — it corrupts the aomi SDK's path construction
-    // The proxy reads x-wallet-address header instead (set by aomi runtime automatically)
-    return base;
-  })();
+  // Use relative URL so the aomi client makes same-origin requests.
+  // Absolute URLs (e.g. http://localhost:3000/api/aomi) get normalized
+  // to http://127.0.0.1:3000/... by @aomi-labs/react, which triggers cross-origin
+  // CORS preflight from localhost:3000 and gets blocked.
+  const backendUrl = BACK_END_URL;
 
   return (
     <div className="flex flex-col overflow-hidden pt-12 pb-16 lg:pb-0" style={{ backgroundColor: '#09090b', height: 'calc(100vh - 48px)' }}>
