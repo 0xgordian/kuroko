@@ -183,6 +183,8 @@ type RootProps = {
   showSidebar?: boolean;
   /** Backend URL for the Aomi runtime */
   backendUrl?: string;
+  /** Additional client options (apiKey, getAccountBearer, etc.) */
+  clientOptions?: Omit<AomiClientOptions, "baseUrl">;
 };
 
 type HeaderProps = {
