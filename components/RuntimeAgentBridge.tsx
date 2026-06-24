@@ -37,7 +37,7 @@ export function RuntimeAgentBridge() {
   }, [dispatchTool, markets, showNotification]);
 
   useEffect(() => {
-    const unsub = subscribe('system', (event) => {
+    const unsub = subscribe('*', (event) => {
       handleEvent(event as AomiSystemEvent);
     });
     return unsub;
