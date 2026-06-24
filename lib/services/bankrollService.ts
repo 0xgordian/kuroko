@@ -117,3 +117,34 @@ export function getSizingContext(proposedCost: number): {
 
   return { pctOfBankroll, pctOfDeployed, warning };
 }
+
+/**
+ * Kelly Criterion optimal bet sizing for binary prediction markets.
+ *
+ * @param estimatedProb  Your estimated probability of the outcome winning (0.0 - 1.0)
+ * @param marketPrice    Current market price / probability (0.0 - 1.0)
+ * @param bankroll       Total bankroll in USD
+ * @returns Optimal bet amount in USD and fraction of bankroll, or null if edge <= 0
+ */
+export function kellySizing(
+  estimatedProb: number,
+  marketPrice: number,
+  bankroll: number,
+): { betAmount: number; fraction: number; edge: number } | null {
+  if (estimatedProb <= 0 || estimatedProb >= 1) return null;
+  if (marketPrice <= 0 || marketPrice >= 1) return null;
+  if (bankroll <= 0) return null;
+
+  // Edge = your probability minus the market price
+  const edge = estimatedProb - marketPrice;
+  if (edge <= 0) return null; // No edge, no bet
+
+  // Kelly fraction for binary bet: f* = edge / (1 - marketPrice)
+  // Where you pay marketPrice to win $1
+  const fraction = edge / (1 - marketPrice);
+  // Cap at 25% of bankroll for risk management
+  const cappedFraction = Math.min(fraction, 0.25);
+  const betAmount = bankroll * cappedFraction;
+
+  return { betAmount, fraction: cappedFraction, edge };
+}

@@ -16,6 +16,7 @@ import {
   waitForArcTransaction,
   type ArcMarketValidation,
 } from '@/lib/services/arcContractService';
+import { kellySizing } from '@/lib/services/bankrollService';
 import { useAomiAuthAdapter } from '@/lib/aomi-auth-adapter';
 import TopNav from '@/components/TopNav';
 import Footer from '@/components/Footer';
@@ -329,6 +330,9 @@ function ExecuteContent() {
     setLimitPrice(String(defaultPrice));
   }, [side, book, selectedMarket]);
 
+  // ── User probability estimate for Kelly sizing ─────────────────────────────
+  const [userEstimate, setUserEstimate] = useState('');
+
   // ── Derived order values ──────────────────────────────────────────────────
   const sharesNum = Math.max(0, parseInt(shares) || 0);
   const priceNum = Math.max(1, Math.min(99, parseInt(limitPrice) || 50));
@@ -336,6 +340,12 @@ function ExecuteContent() {
   const payout = sharesNum;
   const returnPct = totalCost > 0 ? ((payout - totalCost) / totalCost) * 100 : 0;
   const sizing = bankroll ? getSizingContext(totalCost) : null;
+  const marketProb = selectedMarket?.currentProbability ?? 50;
+  const userEstimateNum = parseInt(userEstimate) || 0;
+  const sideProb = side === 'YES' ? marketProb : 100 - marketProb;
+  const kellyResult = bankroll && userEstimateNum > 0
+    ? kellySizing(userEstimateNum / 100, sideProb / 100, bankroll)
+    : null;
   const arcRealTradeBlocked = Boolean(
     isArc &&
     isWalletConnected &&
@@ -793,6 +803,35 @@ function ExecuteContent() {
                         <span className="font-terminal text-[10px]" style={{ color: analysis.slippageBps > 200 ? '#f87171' : '#a0a0a0' }}>
                           {analysis.slippageBps} bps
                         </span>
+                      </div>
+                    )}
+                    {bankroll != null && (
+                      <div className="pt-2 border-t space-y-1.5" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+                        <div className="flex items-center gap-2">
+                          <span className="t-label shrink-0">Prob. estimate</span>
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="number"
+                              min="1"
+                              max="99"
+                              value={userEstimate}
+                              onChange={(e) => setUserEstimate(e.target.value.replace(/\D/g, '').slice(0, 2))}
+                              placeholder={`${sideProb}`}
+                              className="w-12 h-6 text-center text-[10px] font-terminal border"
+                              style={{ backgroundColor: '#0d0d0d', borderColor: 'rgba(255,255,255,0.1)', borderRadius: 6, color: '#f0f0f0' }}
+                            />
+                            <span className="font-terminal text-[10px]" style={{ color: '#555' }}>%</span>
+                          </div>
+                        </div>
+                        {kellyResult ? (
+                          <p className="font-terminal text-[10px]" style={{ color: '#7c3aed' }}>
+                            Kelly: <strong>${kellyResult.betAmount.toFixed(2)}</strong> ({kellyResult.fraction > 0.1 ? '⚠' : ''}{(kellyResult.fraction * 100).toFixed(1)}% of bankroll)
+                          </p>
+                        ) : userEstimateNum > 0 && !kellyResult ? (
+                          <p className="font-terminal text-[10px]" style={{ color: '#555' }}>
+                            No edge at your estimate — try a higher probability
+                          </p>
+                        ) : null}
                       </div>
                     )}
                   </div>
