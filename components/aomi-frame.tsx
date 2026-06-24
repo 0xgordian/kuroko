@@ -138,7 +138,7 @@ const ComposerControlContext = createContext<ComposerControlContextValue>({
 export const useComposerControl = () => useContext(ComposerControlContext);
 
 function RuntimeUserSync() {
-  const { setUser, addExtValue } = useAomiRuntime();
+  const { setUser, addExtValue, onUserStateChange } = useAomiRuntime();
   const { identity } = useAomiAuthAdapter();
   const address = identity.address;
   const chainId = identity.chainId ?? 137;
@@ -147,14 +147,8 @@ function RuntimeUserSync() {
 
   useEffect(() => {
     setUser({
-      is_connected: isConnected,
-      isConnected,
-      address,
-      wallet_address: address,
-      walletAddress: address,
-      chain_id: chainId,
-      chainId,
-      network: chain === 'arc' ? 'Arc Testnet' : 'Polygon',
+      connection: { is_connected: isConnected },
+      evm: { address: address ?? undefined, chain_id: chainId },
     });
     addExtValue('kuroko', {
       app: 'Kuroko',
