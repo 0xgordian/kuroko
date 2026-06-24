@@ -102,8 +102,8 @@ export const Thread: FC = () => {
     try {
       const composer = api.composer();
       composer.setText("");
-    } catch (error) {
-      console.error("Failed to reset composer input:", error);
+    } catch {
+      // Composer reset is best-effort; mount will succeed regardless
     }
   }, [api, threadViewKey]);
 
@@ -318,9 +318,7 @@ const ThreadSuggestions: FC = () => {
   })();
 
   const handleSuggestionClick = (text: string) => {
-    void sendMessage(text).catch((error) => {
-      console.error("[ThreadSuggestions] sendMessage failed:", error);
-    });
+    void sendMessage(text).catch(() => {});
   };
 
   return (
@@ -453,12 +451,11 @@ const Composer: FC = () => {
         setIsListening(false);
         recognitionRef.current = null;
         // Auto-send on final transcript
-        void sendMessage(transcript).catch(console.error);
+        void sendMessage(transcript).catch(() => {});
       }
     };
 
-    recognition.onerror = (event: any) => {
-      console.error('[Voice] Error:', event.error);
+    recognition.onerror = () => {
       setIsListening(false);
     };
 

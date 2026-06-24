@@ -73,7 +73,7 @@ export async function sendTradeIntent(
   options: TradeIntentOptions = {},
 ): Promise<TradeIntentResponse> {
   if (!hasCredentials()) {
-    console.warn('[TradeIntentService] No aomi API key — paper-trade mode.');
+    // No aomi API key — paper-trade mode.
     return paperTradeStub(intent);
   }
 
