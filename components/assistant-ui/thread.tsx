@@ -17,7 +17,8 @@ import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import * as m from "motion/react-m";
 
 import { Button } from "@/components/ui/button";
-import { MarkdownText, MarkdownTextFromString } from "@/components/assistant-ui/markdown-text";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ToolFallback } from "@/components/assistant-ui/tool-fallback";
 import { TooltipIconButton } from "@/components/assistant-ui/tooltip-icon-button";
 
@@ -28,7 +29,7 @@ import { AppSelect } from "@/components/control-bar/app-select";
 import { ApiKeyInput } from "@/components/control-bar/api-key-input";
 import { NetworkSelect } from "@/components/control-bar/network-select";
 import { ConnectButton } from "@/components/control-bar/connect-button";
-import { useAssistantApi, useMessage } from "@assistant-ui/react";
+import { useAssistantApi, useMessage, useMessagePartText } from "@assistant-ui/react";
 import { TradeCard, parseTradeCard, stripTradeCardJson } from "./trade-card";
 import { PositionCard, parsePositionRequest } from "./position-card";
 import { useAppStore } from "@/lib/stores/appStore";
@@ -690,13 +691,30 @@ const ARC_BAD_PATTERNS = [
   { pattern: /dapp|dApp|DApp/i, hint: 'Kuroko is the app. Pick a seeded Arc prediction market.' },
 ];
 
+/**
+ * Text component for MessagePrimitive.Parts that strips trade card JSON
+ * from each text part, preventing raw JSON from appearing in the chat.
+ * Uses ReactMarkdown for rendering since by the time a Text slot renders,
+ * the part text is complete (streaming is handled by Part creation, not by
+ * the Text component itself).
+ */
+const TradeCardAwareText: FC = () => {
+  const part = useMessagePartText();
+  const rawText = part && 'text' in part ? (part as { text: string }).text ?? '' : '';
+  if (!rawText) return null;
+  const cleaned = stripTradeCardJson(rawText);
+  if (!cleaned.trim()) return null;
+  return (
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>{cleaned}</ReactMarkdown>
+  );
+};
+
 const AssistantMessage: FC = () => {
   const authAdapter = useAomiAuthAdapter();
   const isArc = authAdapter.identity.chainId === ARC_CHAIN_ID;
   const content = useMessage((state) => state.content) as Array<{ type: string; text?: string }>;
   const text = content.filter((p) => p.type === 'text').map((p) => p.text ?? '').join('');
   const tradeCard = parseTradeCard(text);
-  const visibleText = tradeCard ? stripTradeCardJson(text) : text;
   const showPositions = parsePositionRequest(text);
 
   // Arc guardrail: detect bad AI responses
@@ -730,16 +748,12 @@ const AssistantMessage: FC = () => {
             className="aui-assistant-message-content px-4 py-3 break-words text-sm leading-relaxed"
             style={{ color: '#e0e0e0' }}
           >
-            {tradeCard ? (
-              <MarkdownTextFromString text={visibleText} />
-            ) : (
-              <MessagePrimitive.Parts
-                components={{
-                  Text: MarkdownText,
-                  tools: { Fallback: ToolFallback },
-                }}
-              />
-            )}
+            <MessagePrimitive.Parts
+              components={{
+                Text: TradeCardAwareText,
+                tools: { Fallback: ToolFallback },
+              }}
+            />
             {tradeCard && <TradeCard data={tradeCard} />}
             {showPositions && <PositionCard />}
             {arcGuardrailHit && (
