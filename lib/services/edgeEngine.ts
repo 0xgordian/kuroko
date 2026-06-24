@@ -52,7 +52,7 @@ function determineSide(market: Market): 'YES' | 'NO' {
     if (change > 3) return 'YES';
     if (change < -3) return 'NO';
   }
-  if (market.currentProbability < 45) return 'NO';
+  if (market.currentProbability < 50) return 'NO';
   return 'YES';
 }
 
