@@ -224,6 +224,7 @@ const Root: FC<RootProps> = ({
   walletPosition = "footer",
   showSidebar = true,
   backendUrl,
+  clientOptions,
 }) => {
   const { identity } = useAomiAuthAdapter();
   const chainId = identity?.chainId ?? 137;
@@ -244,7 +245,7 @@ const Root: FC<RootProps> = ({
 
   return (
     <AomiErrorBoundary>
-      <AomiRuntimeProvider backendUrl={resolvedBackendUrl}>
+      <AomiRuntimeProvider backendUrl={resolvedBackendUrl} clientOptions={clientOptions}>
       <RuntimeUserSync />
       <RuntimeAgentBridge />
       <SidebarProvider defaultOpen={false} className="!min-h-0 h-auto" style={{ height: frameStyle.height, width: frameStyle.width }}>
