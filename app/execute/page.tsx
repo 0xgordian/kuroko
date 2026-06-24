@@ -256,7 +256,11 @@ function ExecuteContent() {
     if (isArc) {
       setLoadingBook(false);
       setAnalysis(analyseMarket(selectedMarket, null));
-      setLimitPrice(String(selectedMarket.currentProbability));
+      setLimitPrice(String(
+        side === 'YES'
+          ? selectedMarket.currentProbability
+          : 100 - selectedMarket.currentProbability
+      ));
       return;
     }
 
@@ -278,8 +282,7 @@ function ExecuteContent() {
         setLimitPrice(String(defaultPrice));
       }
     }).finally(() => setLoadingBook(false));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedMarket]);
+    }, [selectedMarket, side, isArc]);
 
   // ── Validate Arc market against deployed contract ─────────────────────────
   useEffect(() => {
