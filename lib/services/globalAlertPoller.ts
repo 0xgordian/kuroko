@@ -8,6 +8,7 @@ import { fetchActiveMarkets } from './marketService';
 import { checkGuards, toggleGuard, getGuards } from './positionGuardService';
 import { sendLiveOrder } from './tradeIntentService';
 import { addTradeRecord } from './tradeHistoryService';
+import toast from 'react-hot-toast';
 
 let pollerStarted = false;
 let intervalId: ReturnType<typeof setInterval> | null = null;
@@ -44,6 +45,14 @@ export function startGlobalAlertPoller() {
       triggeredAlerts.forEach((alert) => {
         const prob = probs[alert.marketId] ?? alert.threshold;
         fireNotification(alert, prob);
+        toast.success(
+          `Alert: ${alert.marketQuestion.slice(0, 60)} is now at ${prob}%`,
+          {
+            style: { background: '#111', color: '#f0f0f0', border: '1px solid rgba(74,222,128,0.3)', borderRadius: 12 },
+            iconTheme: { primary: '#4ade80', secondary: '#111' },
+            duration: 5000,
+          },
+        );
       });
 
       // ── Guard auto-execution ──────────────────────────────────────────────
