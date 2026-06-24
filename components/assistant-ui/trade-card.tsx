@@ -334,7 +334,7 @@ export const TradeCard: FC<TradeCardProps> = ({ data }) => {
             </div>
             <div className="text-right">
               <p className="font-terminal text-[9px] tracking-widest uppercase mb-0.5" style={{ color: '#444' }}>Return</p>
-              <p className="font-terminal text-lg font-bold" style={{ color: '#4ade80' }}>+{estimatedReturn.toFixed(0)}%</p>
+              <p className="font-terminal text-lg font-bold" style={{ color: estimatedReturn > 0 ? '#4ade80' : estimatedReturn < 0 ? '#f87171' : 'rgba(255,255,255,0.3)' }}>{estimatedReturn > 0 ? `+${estimatedReturn.toFixed(0)}%` : estimatedReturn < 0 ? `${estimatedReturn.toFixed(0)}%` : '—'}</p>
             </div>
           </div>
 
@@ -423,8 +423,8 @@ export const TradeCard: FC<TradeCardProps> = ({ data }) => {
               </div>
               <div className="text-right">
                 <p className="font-terminal text-[9px] tracking-widest uppercase mb-1" style={{ color: '#444' }}>Return</p>
-                <p className="font-terminal text-2xl font-bold" style={{ color: '#4ade80' }}>
-                  +{estimatedReturn.toFixed(0)}%
+                <p className="font-terminal text-2xl font-bold" style={{ color: estimatedReturn > 0 ? '#4ade80' : estimatedReturn < 0 ? '#f87171' : 'rgba(255,255,255,0.3)' }}>
+                  {estimatedReturn > 0 ? `+${estimatedReturn.toFixed(0)}%` : estimatedReturn < 0 ? `${estimatedReturn.toFixed(0)}%` : '—'}
                 </p>
               </div>
             </div>
