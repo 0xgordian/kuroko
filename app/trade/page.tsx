@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 import type { Market, BetProposal } from '@/types';
 import { fetchActiveMarkets, onMarketsRefresh } from '@/lib/services/marketService';
@@ -128,20 +128,23 @@ function HomeContent() {
     }
   }, [visibleMarkets, searchParams, openSimulation]);
 
+  const marketsRef = useRef(categoryFilteredMarkets);
+  marketsRef.current = categoryFilteredMarkets;
+
   const handleQuery = useCallback(async (query: string) => {
-    if (!visibleMarkets.length) {
-      setIsQuerying(true);
-      await new Promise((r) => setTimeout(r, 1500));
-      if (!visibleMarkets.length) { setIsQuerying(false); return; }
-    }
     setIsQuerying(true);
     setQueryResult(null);
     setMobileTab('analysis');
+    const m = marketsRef.current;
+    if (!m.length) {
+      await new Promise((r) => setTimeout(r, 1500));
+      if (!marketsRef.current.length) { setIsQuerying(false); return; }
+    }
     await new Promise((r) => setTimeout(r, 400));
-    const result = findEdges(categoryFilteredMarkets, query);
+    const result = findEdges(marketsRef.current, query);
     setQueryResult(result);
     setIsQuerying(false);
-  }, [visibleMarkets, categoryFilteredMarkets, setQueryResult]);
+  }, [setQueryResult]);
 
   const handleProposeBet = useCallback(async (opp: EdgeOpportunity) => {
     const betId = opp.market.id;
