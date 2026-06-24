@@ -73,9 +73,14 @@ export function RuntimeTxHandler() {
           }
 
           const result = await adapter.sendTransaction?.(payload) as { txHash?: string; amount?: string } | string | undefined;
-
+          const txHash = typeof result === 'string' ? result : (result?.txHash ?? '');
+          if (!txHash) {
+            rejectWalletRequest(req.id, "No transaction hash returned from wallet");
+            return;
+          }
           resolveWalletRequest(req.id, {
-            txHash: typeof result === 'string' ? result : (result?.txHash ?? ''),
+            kind: "transaction",
+            txHash,
             amount: typeof result !== 'string' ? result?.amount : undefined,
           });
           return;
@@ -113,8 +118,14 @@ export function RuntimeTxHandler() {
           typed_data: signArgs,
         };
         const result = await adapter.signTypedData?.(signaturePayload);
+        const signature = typeof result === 'string' ? result : (result as { signature?: string })?.signature ?? '';
+        if (!signature) {
+          rejectWalletRequest(req.id, "No signature returned from wallet");
+          return;
+        }
         resolveWalletRequest(req.id, {
-          signature: typeof result === 'string' ? result : (result as { signature?: string })?.signature,
+          kind: "eip712_sign",
+          signature,
         });
       } catch (error) {
         console.error("[RuntimeTxHandler] Request failed:", error);
