@@ -316,12 +316,18 @@ function ExecuteContent() {
 
   // ── Update limit price when side changes ─────────────────────────────────
   useEffect(() => {
-    if (!book) return;
+    if (!book) {
+      const prob = selectedMarket?.currentProbability;
+      if (prob != null) {
+        setLimitPrice(String(side === 'YES' ? prob : 100 - prob));
+      }
+      return;
+    }
     const defaultPrice = side === 'YES'
       ? Math.round(book.best_ask * 100)
       : Math.round((1 - book.best_bid) * 100);
     setLimitPrice(String(defaultPrice));
-  }, [side, book]);
+  }, [side, book, selectedMarket]);
 
   // ── Derived order values ──────────────────────────────────────────────────
   const sharesNum = Math.max(0, parseInt(shares) || 0);
