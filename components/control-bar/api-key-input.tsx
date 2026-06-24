@@ -27,7 +27,7 @@ export const ApiKeyInput: FC<ApiKeyInputProps> = ({
   title = "Aomi API Key",
   description = "Enter your API key to authenticate with Aomi services.",
 }) => {
-  const { state, setState } = useControl();
+  const { state, setApiKey } = useControl();
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showKey, setShowKey] = useState(false);
@@ -94,7 +94,7 @@ export const ApiKeyInput: FC<ApiKeyInputProps> = ({
               variant="outline"
               className="rounded-full"
               onClick={() => {
-                setState({ apiKey: null });
+                setApiKey(null);
                 setInputValue("");
               }}
             >
@@ -105,7 +105,7 @@ export const ApiKeyInput: FC<ApiKeyInputProps> = ({
             className="rounded-full"
             onClick={() => {
               if (inputValue.trim()) {
-                setState({ apiKey: inputValue.trim() });
+                setApiKey(inputValue.trim());
                 setOpen(false);
                 setInputValue("");
               }
