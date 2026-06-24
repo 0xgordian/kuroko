@@ -152,11 +152,16 @@ function PortfolioContent() {
     setLoadingArcPositions(true);
     try {
       const results: Array<{ marketId: number; question: string; side: 'YES' | 'NO'; shares: number; resolved: boolean; outcome: boolean }> = [];
-      for (const definition of ARC_DEMO_MARKETS) {
-        const [shares, market] = await Promise.all([
-          getUserShares(definition.contractMarketId, walletAddress),
-          getOnChainMarket(definition.contractMarketId),
-        ]);
+      const snapshots = await Promise.all(
+        ARC_DEMO_MARKETS.map(async (definition) => {
+          const [shares, market] = await Promise.all([
+            getUserShares(definition.contractMarketId, walletAddress),
+            getOnChainMarket(definition.contractMarketId),
+          ]);
+          return { definition, shares, market };
+        })
+      );
+      for (const { definition, shares, market } of snapshots) {
         if (!market || market.id === 0 || market.question !== definition.question) continue;
         if (shares.yes > 0) results.push({ marketId: definition.contractMarketId, question: market.question, side: 'YES', shares: shares.yes, resolved: market.resolved, outcome: market.outcome });
         if (shares.no > 0) results.push({ marketId: definition.contractMarketId, question: market.question, side: 'NO', shares: shares.no, resolved: market.resolved, outcome: market.outcome });
