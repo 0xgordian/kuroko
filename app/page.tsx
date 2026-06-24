@@ -77,7 +77,8 @@ function AutoSendBridge({ query, chainId, onFirstSend }: { query: string | null;
     if (AOMI_API_KEY) setApiKey(AOMI_API_KEY);
 
     let attempts = 0;
-    const MAX_ATTEMPTS = 8;
+    const MAX_ATTEMPTS = 12;
+    const RETRY_DELAY_MS = 1500;
 
     const trySend = () => {
       attempts++;
@@ -90,15 +91,20 @@ function AutoSendBridge({ query, chainId, onFirstSend }: { query: string | null;
         }).catch(() => {
           contextSentRef.current = false;
           try { sessionStorage.removeItem(sessionContextKey); } catch { /* ignore */ }
+          if (attempts < MAX_ATTEMPTS) {
+            setTimeout(trySend, RETRY_DELAY_MS);
+          }
         });
       } catch {
         contextSentRef.current = false;
         try { sessionStorage.removeItem(sessionContextKey); } catch { /* ignore */ }
-        if (attempts < MAX_ATTEMPTS) setTimeout(trySend, 500 * attempts);
+        if (attempts < MAX_ATTEMPTS) {
+          setTimeout(trySend, RETRY_DELAY_MS);
+        }
       }
     };
 
-    const t = setTimeout(trySend, 1200);
+    const t = setTimeout(trySend, 2500);
     return () => clearTimeout(t);
   }, [setApiKey, chainId, sessionContextKey]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -552,14 +552,19 @@ async function proxy(request: NextRequest, path: string[]) {
     }
 
     // Arc guardrail: detect and correct bad AI responses about Arc being unsupported
+    // Only applies to non-streaming responses — SSE streams pass through unmodified
     if (isArcGuardrail && upstreamResponse.ok) {
-      const bodyText = await upstreamResponse.text();
-      const { text: guardedText } = guardrailArcResponse(bodyText, true);
-      return new NextResponse(guardedText, {
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-        headers: copyResponseHeaders(upstreamResponse.headers),
-      });
+      const contentType = upstreamResponse.headers.get('content-type') || '';
+      const isStreaming = contentType.includes('text/event-stream');
+      if (!isStreaming) {
+        const bodyText = await upstreamResponse.text();
+        const { text: guardedText } = guardrailArcResponse(bodyText, true);
+        return new NextResponse(guardedText, {
+          status: upstreamResponse.status,
+          statusText: upstreamResponse.statusText,
+          headers: copyResponseHeaders(upstreamResponse.headers),
+        });
+      }
     }
 
     return new NextResponse(upstreamResponse.body, {
