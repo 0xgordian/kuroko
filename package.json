@@ -14,8 +14,9 @@
     "seed:arc": "node scripts/seed-arc-markets.mjs"
   },
   "dependencies": {
-    "@aomi-labs/client": "^0.1.27",
-    "@aomi-labs/react": "^0.3.11",
+    "@aomi-labs/client": "^0.1.42",
+    "@aomi-labs/react": "^0.3.23",
+    "@aomi-labs/widget-lib": "^1.2.21",
     "@assistant-ui/react": "^0.11.58",
     "@assistant-ui/react-markdown": "^0.11.10",
     "@cosmjs/amino": "^0.38.1",
